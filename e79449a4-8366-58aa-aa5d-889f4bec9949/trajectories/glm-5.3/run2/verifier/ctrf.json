@@ -51,7 +51,7 @@
       "testEnvironment": "iac_guardrails_paymesh-policy",
       "extra": {
         "model": "glm-5.3",
-        "run": "run_3",
+        "run": "run_2",
         "source": "ctrf.json",
         "reward": 0.0
       }

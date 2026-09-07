@@ -2,7 +2,7 @@
   "schema_version": 3,
   "task_id": "e79449a4-8366-58aa-aa5d-889f4bec9949",
   "model": "opus-5",
-  "run": "run_23",
+  "run": "run_4",
   "overall_score": 0.2979,
   "tests_score": 0.0,
   "rubric_score": 0.595745,

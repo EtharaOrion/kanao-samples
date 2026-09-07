@@ -2,7 +2,7 @@
   "schema_version": 3,
   "task_id": "8aef516b-702c-5660-a8f0-da85401c9170",
   "model": "glm-5.3",
-  "run": "run8",
+  "run": "run_8",
   "overall_score": 0.0833,
   "tests_score": 0.041667,
   "rubric_score": 0.125,

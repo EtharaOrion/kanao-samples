@@ -145,8 +145,8 @@ peaking on `hard`. The tier ordering emerges only from their blend. Section
 hardens, and glm-5.3 $2.51 → $0.49 → $0.60 - both non-monotonic, both cheapest on the `hard` task.
 Cost here is a function of the estate, not of how hard the task is: the `medium` task runs a live
 release pipeline that the agent rebuilds repeatedly, and both models spend roughly ten times the
-tokens on it that they spend anywhere else, with the longest trajectories in the sample (79 and 68
-steps against a corpus mean of 39). Across the sample, 48 runs consumed **$95.52** of agent spend,
+tokens on it that they spend anywhere else, with the longest trajectories in the sample
+(single-run maxima of 125 and 121 steps, means of 79 and 68 per run, against a corpus mean of 39). Across the sample, 48 runs consumed **$95.52** of agent spend,
 1,872 steps, 98.47 M input tokens and 4.40 M output tokens, plus $12.61 of judging.
 
 ## Analysis
@@ -236,8 +236,9 @@ The agent sees `instruction.md` and the built container and nothing else. `solut
 are verifier-side: the reference repair and the answer key never enter the agent's container, which
 is what closes the oracle-replay path. `task.toml` carries `schema_version = "1.1"`, the declared
 artifact list, `[metadata].difficulty` and `category`, separate agent and verifier timeouts, and
-`environment_mode = "shared"` - the verifier runs inside the agent's container once the agent's
-turn is over, reading the estate exactly as it was left.
+`environment_mode = "separate"` - the verifier runs in its own container once the agent's turn
+is over, reading the estate through the declared `artifacts` list rather than sharing the agent's
+container.
 
 `allow_internet` is `true` in all three tasks, and it was used. An audit of all 48 recorded
 trajectories finds outbound requests in **3 runs, all glm-5.3**: two `marrowfleet` runs installing
@@ -267,7 +268,7 @@ the network. See [Reproduction](#reproduction) for the audit.
         └── usage.json        # tokens and cost, agent and judge kept apart
 ```
 
-`score.json` carries `tests_score`, `rubric_score`, `overall_score`, the `judge_council` seat, and
+`score.json` carries `tests_score`, `rubric_score`, `overall_score`, the `llm_judge` seat, and
 one entry per rubric criterion with the judge's vote and justification. `usage.json` attributes
 tokens and dollars separately to the agent and to the judge - every cost figure in this document is
 summed from its `sources.agent` block, and step counts are the length of `agent/trajectory.json`'s

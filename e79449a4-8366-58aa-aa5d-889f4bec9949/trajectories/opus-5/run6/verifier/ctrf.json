@@ -51,7 +51,7 @@
       "testEnvironment": "iac_guardrails_paymesh-policy",
       "extra": {
         "model": "opus-5",
-        "run": "run_15",
+        "run": "run_6",
         "source": "ctrf.json",
         "reward": 0.0
       }
