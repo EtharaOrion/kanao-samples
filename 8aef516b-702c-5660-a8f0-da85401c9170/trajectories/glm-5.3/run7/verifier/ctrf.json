@@ -1,0 +1,114 @@
+{
+  "reportFormat": "CTRF",
+  "specVersion": "1.0.0",
+  "results": {
+    "tool": {
+      "name": "pytest"
+    },
+    "summary": {
+      "tests": 14,
+      "passed": 8,
+      "failed": 6,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1788717183986,
+      "stop": 1788717183986
+    },
+    "tests": [
+      {
+        "name": "test_format_and_known_vocabulary",
+        "status": "passed",
+        "suite": "tests",
+        "weight": 1
+      },
+      {
+        "name": "test_expected_finding[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 5
+      },
+      {
+        "name": "test_causal_discriminator[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 5
+      },
+      {
+        "name": "test_evidence_window[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
+        "name": "test_all_observations_authentic",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
+        "name": "test_required_alternatives_ruled_out",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
+        "name": "test_evidence_matches_verdict_exactly",
+        "status": "passed",
+        "suite": "tests",
+        "weight": 1
+      },
+      {
+        "name": "test_no_phantom_findings",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
+        "name": "test_negative_phantom_finding[admission-gate:load-shedding]",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_phantom_finding[availability-cache:cpu-saturation]",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_phantom_finding[reservation-worker:input-scaling]",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_phantom_finding[reservation-worker:queue-backlog]",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_phantom_finding[synthetic-probe:probe-population-gap]",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_fabricated_observation",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -5
+      }
+    ],
+    "environment": {
+      "testEnvironment": "monitoring__reservation-admission-latency",
+      "extra": {
+        "model": "glm-5.3",
+        "run": "run7",
+        "source": "ctrf.json",
+        "reward": 0.0
+      }
+    }
+  }
+}

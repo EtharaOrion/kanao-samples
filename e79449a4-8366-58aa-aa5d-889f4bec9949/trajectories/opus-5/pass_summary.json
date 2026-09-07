@@ -1,0 +1,64 @@
+{
+  "model": "opus-5",
+  "runs": 8,
+  "runs_passed": 0,
+  "average_reward": 0.3005,
+  "per_run": [
+    {
+      "run_index": 1,
+      "tests_score": 0.0,
+      "rubric_score": 0.5745,
+      "verdict": "FAILED",
+      "reward": 0.2872
+    },
+    {
+      "run_index": 2,
+      "tests_score": 0.0,
+      "rubric_score": 0.5957,
+      "verdict": "FAILED",
+      "reward": 0.2979
+    },
+    {
+      "run_index": 3,
+      "tests_score": 0.0,
+      "rubric_score": 0.6383,
+      "verdict": "FAILED",
+      "reward": 0.3191
+    },
+    {
+      "run_index": 4,
+      "tests_score": 0.0,
+      "rubric_score": 0.5957,
+      "verdict": "FAILED",
+      "reward": 0.2979
+    },
+    {
+      "run_index": 5,
+      "tests_score": 0.0,
+      "rubric_score": 0.5745,
+      "verdict": "FAILED",
+      "reward": 0.2872
+    },
+    {
+      "run_index": 6,
+      "tests_score": 0.0,
+      "rubric_score": 0.5532,
+      "verdict": "FAILED",
+      "reward": 0.2766
+    },
+    {
+      "run_index": 7,
+      "tests_score": 0.0,
+      "rubric_score": 0.6383,
+      "verdict": "FAILED",
+      "reward": 0.3191
+    },
+    {
+      "run_index": 8,
+      "tests_score": 0.0,
+      "rubric_score": 0.6383,
+      "verdict": "FAILED",
+      "reward": 0.3191
+    }
+  ]
+}

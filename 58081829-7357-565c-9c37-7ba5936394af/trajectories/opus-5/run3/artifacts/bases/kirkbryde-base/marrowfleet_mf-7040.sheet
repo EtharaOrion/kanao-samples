@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-7040
+base: kirkbryde-base
+rank: first-officer
+category: long-haul
+period: 2041-B5
+sectors: MF520:460 MF521:520
+factor: 85
+limit: standard
+credit: 833
+key: mfl-2041
+seal: 429693de41f9da20

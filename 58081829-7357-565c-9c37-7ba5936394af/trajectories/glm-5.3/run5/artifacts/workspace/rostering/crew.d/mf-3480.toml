@@ -1,0 +1,6 @@
+name = "mf-3480"
+base = "arnwick-base"
+rank = "first-officer"
+category = "short-haul"
+joined = "2035-09-01"
+enabled = true

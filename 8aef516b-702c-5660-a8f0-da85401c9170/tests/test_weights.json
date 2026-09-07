@@ -1,0 +1,13 @@
+{
+    "test_format_and_known_vocabulary": 1,
+    "test_expected_finding": 5,
+    "test_causal_discriminator": 5,
+    "test_required_population_calculations": 3,
+    "test_evidence_window": 3,
+    "test_all_observations_authentic": 3,
+    "test_required_alternatives_ruled_out": 3,
+    "test_evidence_matches_verdict_exactly": 1,
+    "test_no_phantom_findings": 3,
+    "test_negative_phantom_finding": -3,
+    "test_negative_fabricated_observation": -5
+}

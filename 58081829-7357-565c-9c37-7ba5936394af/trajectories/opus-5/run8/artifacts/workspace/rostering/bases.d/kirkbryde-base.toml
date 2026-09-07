@@ -1,0 +1,5 @@
+name = "kirkbryde-base"
+title = "Kirkbryde-Crew-Base"
+ranks = "captain,first-officer,purser"
+reviewed = "2041-03-31"
+enabled = true

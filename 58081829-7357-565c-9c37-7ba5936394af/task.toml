@@ -1,0 +1,39 @@
+schema_version = "1.1"
+artifacts = [
+    "/var/lib/marrowfleet/policy-selection.json",
+    "/workspace/policy",
+    "/workspace/rostering",
+    "/srv/bases",
+    "/var/lib/marrowfleet/roster.register",
+]
+
+[task]
+uuid_v5 = "58081829-7357-565c-9c37-7ba5936394af"
+authors = [
+    "ayush.teotiaint17@ethara.ai",
+    "tejaswa.dayal@ethara.ai",
+]
+name = "kanao/ci_repair__marrowfleet-crew-roster"
+description = "Repair a crew-rostering release pipeline so every base closes the period with complete duty sheets, crewable ranks and correct duty credit under the operating and validation contracts."
+keywords = ["deployment", "ci", "release", "crew-rostering", "lang:go"]
+
+[metadata]
+difficulty = "medium"
+category = "deployment"
+tags = ["deployment", "ci", "release-pipeline", "crew-rostering"]
+calibrated = false
+estimated_duration_sec = 2700.0
+expert_time_estimate_min = 45.0
+junior_time_estimate_min = 180.0
+
+[verifier]
+timeout_sec = 900.0
+environment_mode = "shared"
+
+[agent]
+timeout_sec = 5400.0
+
+[environment]
+build_timeout_sec = 1800.0
+allow_internet = true
+mcp_servers = []

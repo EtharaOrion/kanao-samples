@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-2210
+base: arnwick-base
+rank: captain
+category: long-haul
+period: 2041-B4
+sectors: MF110:460 MF111:480
+factor: 85
+limit: standard
+credit: 799
+key: mfl-2041
+seal: 47b4b2f2509cd0b6

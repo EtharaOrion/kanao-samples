@@ -1,0 +1,102 @@
+{
+  "reportFormat": "CTRF",
+  "specVersion": "1.0.0",
+  "results": {
+    "tool": {
+      "name": "pytest"
+    },
+    "summary": {
+      "tests": 12,
+      "passed": 6,
+      "failed": 6,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1788785796626,
+      "stop": 1788785796691
+    },
+    "tests": [
+      {
+        "name": "test_format_and_known_vocabulary",
+        "status": "passed",
+        "suite": "test_outputs",
+        "weight": 1
+      },
+      {
+        "name": "test_expected_finding[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "test_outputs",
+        "weight": 5
+      },
+      {
+        "name": "test_causal_discriminator[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "test_outputs",
+        "weight": 5
+      },
+      {
+        "name": "test_required_population_calculations[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "test_outputs",
+        "weight": 3
+      },
+      {
+        "name": "test_evidence_window[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "test_outputs",
+        "weight": 3
+      },
+      {
+        "name": "test_all_observations_authentic",
+        "status": "passed",
+        "suite": "test_outputs",
+        "weight": 3
+      },
+      {
+        "name": "test_required_alternatives_ruled_out",
+        "status": "passed",
+        "suite": "test_outputs",
+        "weight": 3
+      },
+      {
+        "name": "test_evidence_matches_verdict_exactly",
+        "status": "passed",
+        "suite": "test_outputs",
+        "weight": 1
+      },
+      {
+        "name": "test_no_phantom_findings",
+        "status": "failed",
+        "suite": "test_outputs",
+        "weight": 3
+      },
+      {
+        "name": "test_negative_phantom_finding[reservation-worker:queue-backlog]",
+        "status": "passed",
+        "suite": "test_outputs",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_phantom_finding[synthetic-probe:probe-population-gap]",
+        "status": "passed",
+        "suite": "test_outputs",
+        "weight": -3
+      },
+      {
+        "name": "test_negative_fabricated_observation",
+        "status": "failed",
+        "suite": "test_outputs",
+        "weight": -5
+      }
+    ],
+    "environment": {
+      "testEnvironment": "monitoring__reservation-admission-latency",
+      "extra": {
+        "model": "opus-5",
+        "run": "run7",
+        "source": "junit.xml",
+        "reward": 0.074074
+      }
+    }
+  }
+}

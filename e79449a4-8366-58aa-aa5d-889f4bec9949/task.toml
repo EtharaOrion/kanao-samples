@@ -1,0 +1,57 @@
+schema_version = "1.1"
+artifacts = [
+    "/app/workspace/envs/prod/policies.tf",
+    "/app/workspace/envs/prod/main.tf",
+    "/app/workspace/envs/prod/variables.tf",
+    "/app/workspace/envs/prod/versions.tf",
+    "/app/workspace/envs/prod/outputs.tf",
+    "/app/workspace/envs/prod/prod.tfvars",
+    "/app/workspace/policies/require-ip-restriction.json",
+    "/app/workspace/policies/deny-public-sql.json",
+    "/app/workspace/policies/require-tags.json",
+    "/app/workspace/modules/compute-serverless/main.tf",
+    "/app/workspace/modules/networking/main.tf",
+    "/app/workspace/modules/data-sql/main.tf",
+    "/app/workspace/modules/compute-serverless/variables.tf",
+    "/app/workspace/modules/compute-serverless/outputs.tf",
+    "/app/workspace/modules/networking/variables.tf",
+    "/app/workspace/modules/networking/outputs.tf",
+    "/app/workspace/modules/data-sql/variables.tf",
+    "/app/workspace/modules/data-sql/outputs.tf",
+    "/app/workspace/policies/require-https-only.json",
+    "/app/workspace/policies/require-tls-version.json",
+    "/app/workspace/.github/workflows/terraform-ci.yml",
+    "/app/workspace/policies/require-slot-ip-restriction.json",
+    "/app/workspace/docs/POLICY-AS-CODE-STANDARD.md",
+]
+
+[task]
+uuid_v5 = "e79449a4-8366-58aa-aa5d-889f4bec9949"
+authors = [
+    "jatin.sihag@ethara.ai",
+    "aditi.sharma@ethara.ai",
+]
+name = "kanao/iac_guardrails_paymesh-policy"
+description = "Bring a payments platform's Terraform environment up to its policy-as-code standard so the custom guardrail refuses out-of-band changes at every binding the standard assesses."
+keywords = ["iac", "terraform"]
+
+[metadata]
+difficulty = "hard"
+category = "iac"
+tags = ["iac", "terraform", "policy-as-code", "azure-policy", "guardrails"]
+calibrated = false
+estimated_duration_sec = 7200.0
+expert_time_estimate_min = 120.0
+junior_time_estimate_min = 420.0
+
+[verifier]
+timeout_sec = 900.0
+environment_mode = "shared"
+
+[agent]
+timeout_sec = 9900.0
+
+[environment]
+build_timeout_sec = 1800.0
+allow_internet = true
+mcp_servers = []

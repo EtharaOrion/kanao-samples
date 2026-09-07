@@ -1,0 +1,61 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+collected 13 items
+
+../tests/test_outputs.py ..F..F.F....F                                   [100%]
+
+=================================== FAILURES ===================================
+_________ test_causal_discriminator[reservation-worker:capacity-cliff] _________
+
+finding = ('reservation-worker', 'capacity-cliff')
+
+    @pytest.mark.parametrize("finding", EXPECTED, ids=lambda pair: ":".join(pair))
+    def test_causal_discriminator(finding):
+>       assert _causal_valid(finding)
+E       AssertionError: assert False
+E        +  where False = _causal_valid(('reservation-worker', 'capacity-cliff'))
+
+/tests/test_outputs.py:293: AssertionError
+_____________________ test_required_alternatives_ruled_out _____________________
+
+    def test_required_alternatives_ruled_out():
+>       assert _required_ruleouts_valid()
+E       assert False
+E        +  where False = _required_ruleouts_valid()
+
+/tests/test_outputs.py:306: AssertionError
+___________________________ test_no_phantom_findings ___________________________
+
+    def test_no_phantom_findings():
+>       assert _no_phantoms()
+E       assert False
+E        +  where False = _no_phantoms()
+
+/tests/test_outputs.py:314: AssertionError
+_____________________ test_negative_fabricated_observation _____________________
+
+    def test_negative_fabricated_observation():
+>       assert _has_fabricated_observation()
+E       assert False
+E        +  where False = _has_fabricated_observation()
+
+/tests/test_outputs.py:323: AssertionError
+==================================== PASSES ====================================
+---------------- generated xml file: /tmp/monitoring-junit.xml -----------------
+=========================== short test summary info ============================
+PASSED ../tests/test_outputs.py::test_format_and_known_vocabulary
+PASSED ../tests/test_outputs.py::test_expected_finding[reservation-worker:capacity-cliff]
+PASSED ../tests/test_outputs.py::test_evidence_window[reservation-worker:capacity-cliff]
+PASSED ../tests/test_outputs.py::test_all_observations_authentic
+PASSED ../tests/test_outputs.py::test_evidence_matches_verdict_exactly
+PASSED ../tests/test_outputs.py::test_negative_phantom_finding[admission-gate:load-shedding]
+PASSED ../tests/test_outputs.py::test_negative_phantom_finding[reservation-worker:input-scaling]
+PASSED ../tests/test_outputs.py::test_negative_phantom_finding[reservation-worker:queue-backlog]
+PASSED ../tests/test_outputs.py::test_negative_phantom_finding[synthetic-probe:probe-population-gap]
+FAILED ../tests/test_outputs.py::test_causal_discriminator[reservation-worker:capacity-cliff]
+FAILED ../tests/test_outputs.py::test_required_alternatives_ruled_out - asser...
+FAILED ../tests/test_outputs.py::test_no_phantom_findings - assert False
+FAILED ../tests/test_outputs.py::test_negative_fabricated_observation - asser...
+========================= 4 failed, 9 passed in 0.06s ==========================
+reward=0.041667

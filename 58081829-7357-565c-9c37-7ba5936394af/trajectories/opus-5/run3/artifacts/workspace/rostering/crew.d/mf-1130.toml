@@ -1,0 +1,6 @@
+name = "mf-1130"
+base = "thurlby-base"
+rank = "purser"
+category = "short-haul"
+joined = "2041-05-06"
+enabled = true

@@ -1,0 +1,17 @@
+{
+  "task": {
+    "path": "e79449a4-8366-58aa-aa5d-889f4bec9949"
+  },
+  "trial_name": "iac_guardrails_paymesh-policy",
+  "trials_dir": "e79449a4-8366-58aa-aa5d-889f4bec9949/trajectories/opus-5",
+  "agent": {
+    "name": "terminus-2",
+    "model_name": "anthropic/opus-5"
+  },
+  "verifier": {
+    "env": {
+      "REWARDKIT_JUDGE": "gpt-5.6-sol"
+    }
+  },
+  "job_id": "e5465eb0-c49b-42dc-a307-1852b3147f39"
+}

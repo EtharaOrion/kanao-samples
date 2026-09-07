@@ -1,0 +1,6 @@
+# The crew roster register.
+sheets_root: /var/lib/marrowfleet/sheets
+base_root: /srv/bases
+signing_key: mfl-2041
+key_fingerprint: 7c1d4a90e35b26f8
+credit_base: 100

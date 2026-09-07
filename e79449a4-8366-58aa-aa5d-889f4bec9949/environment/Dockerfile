@@ -1,0 +1,29 @@
+FROM debian:12-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        bash curl unzip git ca-certificates python3 python3-pip \
+        less vim-tiny tmux jq \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip3 install --break-system-packages --no-cache-dir pytest==8.4.1
+
+ARG TARGETARCH
+RUN curl -fsSL -o /tmp/tf.zip \
+        "https://releases.hashicorp.com/terraform/1.15.8/terraform_1.15.8_linux_${TARGETARCH}.zip" \
+    && unzip -q /tmp/tf.zip -d /usr/local/bin && rm /tmp/tf.zip \
+    && chmod +x /usr/local/bin/terraform && terraform version
+
+COPY workspace /app/workspace
+WORKDIR /app/workspace
+
+# Providers are vendored at build time and mirrored on disk, so every later
+# terraform run - in this tree or in a copy of it - resolves them without
+# reaching the network.
+RUN cd /app/workspace/envs/prod \
+    && terraform init -backend=false -input=false -no-color \
+    && terraform providers mirror /opt/tf-mirror
+
+RUN printf 'provider_installation {\n  filesystem_mirror {\n    path    = "/opt/tf-mirror"\n    include = ["*/*"]\n  }\n  direct {\n    exclude = ["*/*"]\n  }\n}\n' > /etc/terraform.rc
+ENV TF_CLI_CONFIG_FILE=/etc/terraform.rc
+
+WORKDIR /app/workspace/envs/prod

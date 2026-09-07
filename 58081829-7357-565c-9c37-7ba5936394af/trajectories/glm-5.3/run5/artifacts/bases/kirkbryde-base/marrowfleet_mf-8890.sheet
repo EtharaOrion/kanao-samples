@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-8890
+base: kirkbryde-base
+rank: purser
+category: short-haul
+period: 2041-B5
+sectors: MF418:275 MF419:240
+factor: 100
+limit: standard
+credit: 515
+key: mfl-2041
+seal: da62cc93ecb07cc7

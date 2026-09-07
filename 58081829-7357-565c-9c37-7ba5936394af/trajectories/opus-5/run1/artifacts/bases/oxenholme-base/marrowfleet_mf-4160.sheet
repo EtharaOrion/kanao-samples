@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-4160
+base: oxenholme-base
+rank: captain
+category: long-haul
+period: 2041-B5
+sectors: MF330:500 MF331:540
+factor: 85
+limit: standard
+credit: 884
+key: mfl-2041
+seal: 3179c0311848b442

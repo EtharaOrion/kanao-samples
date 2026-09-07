@@ -1,0 +1,23 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Web/sites/config"
+      },
+      {
+        "field": "fullName",
+        "like": "*-${environment}/web"
+      },
+      {
+        "not": {
+          "field": "Microsoft.Web/sites/config/web.minTlsVersion",
+          "equals": "1.2"
+        }
+      }
+    ]
+  },
+  "then": {
+    "effect": "Deny"
+  }
+}

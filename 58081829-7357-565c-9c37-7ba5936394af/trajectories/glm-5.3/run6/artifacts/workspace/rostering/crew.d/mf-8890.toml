@@ -1,0 +1,6 @@
+name = "mf-8890"
+base = "kirkbryde-base"
+rank = "purser"
+category = "short-haul"
+joined = "2038-01-30"
+enabled = true

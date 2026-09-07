@@ -1,0 +1,60 @@
+{
+  "reportFormat": "CTRF",
+  "specVersion": "1.0.0",
+  "results": {
+    "tool": {
+      "name": "pytest"
+    },
+    "summary": {
+      "tests": 5,
+      "passed": 2,
+      "failed": 3,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1788613132188,
+      "stop": 1788613649695
+    },
+    "tests": [
+      {
+        "name": "test_outcome_a_guardrails_see_their_targets_under_review",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 5
+      },
+      {
+        "name": "test_outcome_b_every_definition_is_enforced_under_review",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 1
+      },
+      {
+        "name": "test_outcome_c_documents_follow_their_binding_under_review",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 5
+      },
+      {
+        "name": "test_negative_verifier_package_was_removed",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -5
+      },
+      {
+        "name": "test_negative_policy_inputs_were_altered",
+        "status": "passed",
+        "suite": "tests",
+        "weight": -3
+      }
+    ],
+    "environment": {
+      "testEnvironment": "iac_guardrails_paymesh-policy",
+      "extra": {
+        "model": "opus-5",
+        "run": "run_16",
+        "source": "ctrf.json",
+        "reward": 0.0
+      }
+    }
+  }
+}

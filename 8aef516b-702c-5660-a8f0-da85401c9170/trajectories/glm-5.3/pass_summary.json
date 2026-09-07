@@ -1,0 +1,105 @@
+{
+  "model": "glm-5.3",
+  "runs": 8,
+  "runs_with_rubric": 8,
+  "runs_passed": 0,
+  "average_reward": 0.1653,
+  "per_run": [
+    {
+      "run_index": 1,
+      "tests_total": 13,
+      "tests_passed": 7,
+      "tests_failed": 6,
+      "criteria_total": 9,
+      "criteria_passed": 7,
+      "tests_score": 0.0,
+      "rubric_score": 0.5,
+      "verdict": "FAILED",
+      "reward": 0.25
+    },
+    {
+      "run_index": 2,
+      "tests_total": 13,
+      "tests_passed": 7,
+      "tests_failed": 6,
+      "criteria_total": 9,
+      "criteria_passed": 6,
+      "tests_score": 0.0,
+      "rubric_score": 0.3125,
+      "verdict": "FAILED",
+      "reward": 0.1562
+    },
+    {
+      "run_index": 3,
+      "tests_total": 14,
+      "tests_passed": 10,
+      "tests_failed": 4,
+      "criteria_total": 9,
+      "criteria_passed": 5,
+      "tests_score": 0.0,
+      "rubric_score": 0.125,
+      "verdict": "FAILED",
+      "reward": 0.0625
+    },
+    {
+      "run_index": 4,
+      "tests_total": 13,
+      "tests_passed": 9,
+      "tests_failed": 4,
+      "criteria_total": 9,
+      "criteria_passed": 6,
+      "tests_score": 0.041667,
+      "rubric_score": 0.3125,
+      "verdict": "FAILED",
+      "reward": 0.1771
+    },
+    {
+      "run_index": 5,
+      "tests_total": 11,
+      "tests_passed": 6,
+      "tests_failed": 5,
+      "criteria_total": 9,
+      "criteria_passed": 6,
+      "tests_score": 0.083333,
+      "rubric_score": 0.3125,
+      "verdict": "FAILED",
+      "reward": 0.1979
+    },
+    {
+      "run_index": 6,
+      "tests_total": 13,
+      "tests_passed": 9,
+      "tests_failed": 4,
+      "criteria_total": 9,
+      "criteria_passed": 7,
+      "tests_score": 0.041667,
+      "rubric_score": 0.5,
+      "verdict": "FAILED",
+      "reward": 0.2708
+    },
+    {
+      "run_index": 7,
+      "tests_total": 14,
+      "tests_passed": 8,
+      "tests_failed": 6,
+      "criteria_total": 9,
+      "criteria_passed": 5,
+      "tests_score": 0.0,
+      "rubric_score": 0.25,
+      "verdict": "FAILED",
+      "reward": 0.125
+    },
+    {
+      "run_index": 8,
+      "tests_total": 13,
+      "tests_passed": 9,
+      "tests_failed": 4,
+      "criteria_total": 9,
+      "criteria_passed": 5,
+      "tests_score": 0.041667,
+      "rubric_score": 0.125,
+      "verdict": "FAILED",
+      "reward": 0.0833
+    }
+  ]
+}

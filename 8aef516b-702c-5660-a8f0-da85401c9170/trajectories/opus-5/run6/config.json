@@ -1,0 +1,17 @@
+{
+  "task": {
+    "path": "8aef516b-702c-5660-a8f0-da85401c9170"
+  },
+  "trial_name": "monitoring__reservation-admission",
+  "trials_dir": "8aef516b-702c-5660-a8f0-da85401c9170/trajectories/opus-5",
+  "agent": {
+    "name": "terminus-2",
+    "model_name": "anthropic/opus-5"
+  },
+  "verifier": {
+    "env": {
+      "REWARDKIT_JUDGE": "gpt-5.6-sol"
+    }
+  },
+  "job_id": "94236843-4a21-4dee-b0ba-e1b96e0a2fbb"
+}

@@ -1,0 +1,26 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Web/sites/slots/config"
+      },
+      {
+        "field": "fullName",
+        "in": [
+          "func-paymesh-pagos-${environment}/blue/web",
+          "func-paymesh-pagos-canary-${environment}/blue/web"
+        ]
+      },
+      {
+        "not": {
+          "field": "Microsoft.Web/sites/slots/config/web.ipSecurityRestrictionsDefaultAction",
+          "equals": "Deny"
+        }
+      }
+    ]
+  },
+  "then": {
+    "effect": "Deny"
+  }
+}

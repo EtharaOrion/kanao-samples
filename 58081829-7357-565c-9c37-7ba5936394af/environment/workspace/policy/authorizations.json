@@ -1,0 +1,285 @@
+{
+  "subjects": [
+    "mf-3480",
+    "mf-6350"
+  ],
+  "candidates": [
+    {
+      "id": "close-18",
+      "request": {
+        "now": "2026-09-05",
+        "subjects": [
+          "mf-3480",
+          "mf-6350"
+        ],
+        "transport": {
+          "commits": [
+            {
+              "batch": "10",
+              "parts": 2,
+              "sha256": "ff7bc27fea589af1e13f534f333f74301af16508dbed97429461650ba9ee6469"
+            },
+            {
+              "batch": "2",
+              "parts": 2,
+              "sha256": "e1881576b71a93f133bf91d906f93c0a67a427bd5dffc6257ebd29457d863c09"
+            },
+            {
+              "batch": "30",
+              "parts": 1,
+              "sha256": "c20760e216075ee8152859be9c1778415973321feb5119c7293fa41606756d4f"
+            }
+          ],
+          "pages": [
+            {
+              "batch": "10",
+              "part": 1,
+              "events": []
+            },
+            {
+              "batch": "10",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "10",
+                  "subject": "mf-3480",
+                  "operation": "withdraw",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "2",
+              "part": 1,
+              "events": [
+                {
+                  "authorization": "AUTH-2",
+                  "revision": "2",
+                  "subject": "mf-6350",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                },
+                {
+                  "authorization": "AUTH-2",
+                  "revision": "10",
+                  "subject": "mf-6350",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2042-B2",
+                    "430"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "2",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "2",
+                  "subject": "mf-3480",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "2",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "2",
+                  "subject": "mf-3480",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "30",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "11",
+                  "subject": "mf-3480",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "887"
+                  ]
+                },
+                {
+                  "authorization": "AUTH-2",
+                  "revision": "11",
+                  "subject": "mf-6350",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "888"
+                  ]
+                },
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "2",
+                  "subject": "mf-3480",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "777"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "close-17",
+      "request": {
+        "now": "2026-09-05",
+        "subjects": [
+          "mf-3480",
+          "mf-6350"
+        ],
+        "transport": {
+          "commits": [
+            {
+              "batch": "10",
+              "parts": 2,
+              "sha256": "ff7bc27fea589af1e13f534f333f74301af16508dbed97429461650ba9ee6469"
+            },
+            {
+              "batch": "2",
+              "parts": 2,
+              "sha256": "e1881576b71a93f133bf91d906f93c0a67a427bd5dffc6257ebd29457d863c09"
+            }
+          ],
+          "pages": [
+            {
+              "batch": "10",
+              "part": 1,
+              "events": []
+            },
+            {
+              "batch": "10",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "10",
+                  "subject": "mf-3480",
+                  "operation": "withdraw",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "2",
+              "part": 1,
+              "events": [
+                {
+                  "authorization": "AUTH-2",
+                  "revision": "2",
+                  "subject": "mf-6350",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                },
+                {
+                  "authorization": "AUTH-2",
+                  "revision": "10",
+                  "subject": "mf-6350",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2042-B2",
+                    "430"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "2",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "2",
+                  "subject": "mf-3480",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                }
+              ]
+            },
+            {
+              "batch": "2",
+              "part": 0,
+              "events": [
+                {
+                  "authorization": "AUTH-1",
+                  "revision": "2",
+                  "subject": "mf-3480",
+                  "operation": "grant",
+                  "start": "2026-01-01",
+                  "end": "2100-01-01",
+                  "parameters": [
+                    "2099-B1",
+                    "999"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

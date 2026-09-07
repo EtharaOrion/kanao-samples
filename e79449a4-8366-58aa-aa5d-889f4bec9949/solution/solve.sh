@@ -1,0 +1,83 @@
+#!/bin/bash
+# Reference fix: deliver the outcomes the policy-as-code standard states, then
+# reproduce the artefact review reads.
+set -euo pipefail
+
+WORKDIR="${PAYMESH_WORKDIR:-/app/workspace}"
+export PAYMESH_WORKDIR="$WORKDIR"
+
+python3 - > /dev/null <<'PYSOLVE'
+import base64, json, os, pathlib
+
+GT = json.loads(base64.b64decode("eyJ0YXNrX2lkIjogInBheW1lc2gtcG9saWN5LWd1YXJkcmFpbHNfaWFjIiwgImxhbmciOiAidGVycmFmb3JtIiwgInRpZXIiOiAiY29uanVuY3RpdmUiLCAiZmF1bHQiOiAiZ3VhcmRyYWlsLXJlYWNoLWVuZm9yY2VtZW50LWFuZC1yZW5kZXJpbmciLCAiZG9tYWluIjogInBheW1lbnRzIHBsYXRmb3JtIHBvbGljeS1hcy1jb2RlIGd1YXJkcmFpbHMiLCAid29ya2RpciI6ICIvYXBwL3dvcmtzcGFjZSIsICJjb25maWdfZGlyIjogIi9hcHAvd29ya3NwYWNlL2VudnMvcHJvZCIsICJwYXRoIjogInBvbGljaWVzL3JlcXVpcmUtaXAtcmVzdHJpY3Rpb24uanNvbiIsICJiZWZvcmUiOiAiICAgICAge1xuICAgICAgICBcImFueU9mXCI6IFtcbiAgICAgICAgICB7XG4gICAgICAgICAgICBcImZpZWxkXCI6IFwiaWRcIixcbiAgICAgICAgICAgIFwibGlrZVwiOiBcIiovZnVuYy1wYXltZXNoLXBhZ29zLSR7ZW52aXJvbm1lbnR9L2NvbmZpZy93ZWJcIlxuICAgICAgICAgIH0sXG4gICAgICAgICAge1xuICAgICAgICAgICAgXCJmaWVsZFwiOiBcImlkXCIsXG4gICAgICAgICAgICBcImxpa2VcIjogXCIqL2Z1bmMtcGF5bWVzaC1wYWdvcy1jYW5hcnktJHtlbnZpcm9ubWVudH0vY29uZmlnL3dlYlwiXG4gICAgICAgICAgfVxuICAgICAgICBdXG4gICAgICB9LCIsICJhZnRlciI6ICIgICAgICB7XG4gICAgICAgIFwiZmllbGRcIjogXCJpZFwiLFxuICAgICAgICBcImxpa2VcIjogXCIqL3NpdGVzL2Z1bmMtcGF5bWVzaC1wYWdvcyovY29uZmlnL3dlYlwiXG4gICAgICB9LCIsICJzdW1tYXJ5IjogInRoZSBwYXltZW50cyBndWFyZHJhaWwgc2VsZWN0cyBpdHMgdGFyZ2V0cyB3aXRoIGEgcGF0dGVybiBvdXRzaWRlIHRoZSBvcGVyYXRvcidzIGNvbnN0cmFpbnQgc28gdGhlIGNvbnRyb2wgcGxhbmUgcmVmdXNlcyB0aGUgd2hvbGUgZGVmaW5pdGlvbiwgcmVhZHMgdGhlIHBhcmVudCBzaXRlIHJhdGhlciB0aGFuIHRoZSBjaGlsZCBvYmplY3QgdGhhdCBob2xkcyB0aGUgc2V0dGluZywgbmFtZXMgYW4gYWxpYXMgdGhlIHBsYXRmb3JtIGRvZXMgbm90IHB1Ymxpc2gsIG9ubHkgcmVjb3JkcyB3aGF0IGl0IHNlZXMgcmF0aGVyIHRoYW4gcmVmdXNpbmcgaXQsIHJ1bnMgaW4gYSBtb2RlIHRoYXQgc2tpcHMgaXRzIG93biBvYmplY3RzIHdoaWxlIGEgc2libGluZyBydW5zIGluIGEgbW9kZSB0b28gYnJvYWQgZm9yIGl0cyBvd24sIGlzIG5ldmVyIGFzc2lnbmVkLCBhbmQgaXMgbG9hZGVkIHZlcmJhdGltIHNvIHRoZSBlbnZpcm9ubWVudCBzbHVnIG5ldmVyIHJlYWNoZXMgaXQiLCAiZXhwZWN0ZWRfcmVzb3VyY2VzIjogWyJhenVyZXJtX3BvbGljeV9kZWZpbml0aW9uLnRoaXMiLCAiYXp1cmVybV9zdWJzY3JpcHRpb25fcG9saWN5X2Fzc2lnbm1lbnQudGhpcyIsICJhenVyZXJtX2xpbnV4X2Z1bmN0aW9uX2FwcC50aGlzIiwgImF6dXJlcm1fc2VydmljZV9wbGFuLnRoaXMiLCAiYXp1cmVybV92aXJ0dWFsX25ldHdvcmsudGhpcyIsICJhenVyZXJtX3N1Ym5ldC50aGlzIiwgImF6dXJlcm1fbXNzcWxfc2VydmVyLnRoaXMiLCAiYXp1cmVybV9tc3NxbF9kYXRhYmFzZS50aGlzIiwgImF6dXJlcm1fcmVzb3VyY2VfZ3JvdXAudGhpcyJdLCAib3JhY2xlIjogeyJncmFkZWRfYXJ0ZWZhY3QiOiAidGhlIGVudmlyb25tZW50J3Mgb3duIHBvbGljeSBjYXRhbG9ndWUsIGV2YWx1YXRlZCBvZmZsaW5lIHdpdGggdGVycmFmb3JtIGNvbnNvbGUgYXQgdHdvIGRpZmZlcmVudCBlbnZpcm9ubWVudCBiaW5kaW5ncyIsICJ0YXJnZXRzIjogWyJsb2NhbC5wb2xpY3lfZGVmaW5pdGlvbnMiLCAibG9jYWwuYXNzaWduZWRfcG9saWNpZXMiXSwgInJlcXVpcmVzIjogeyJ0ZXJyYWZvcm1fY29uc29sZSI6IHRydWUsICJkaWZmZXJlbnRpYWxfYmluZGluZyI6IHRydWV9LCAicHJvcGVydGllcyI6IDMsICJjb25kaXRpb25zX3Blcl9wcm9wZXJ0eSI6IFs0LCAzLCA0XX0sICJmYXVsdHMiOiBbeyJwYXRoIjogInBvbGljaWVzL3JlcXVpcmUtaXAtcmVzdHJpY3Rpb24uanNvbiIsICJiZWZvcmUiOiAiICAgICAge1xuICAgICAgICBcImFueU9mXCI6IFtcbiAgICAgICAgICB7XG4gICAgICAgICAgICBcImZpZWxkXCI6IFwiaWRcIixcbiAgICAgICAgICAgIFwibGlrZVwiOiBcIiovZnVuYy1wYXltZXNoLXBhZ29zLSR7ZW52aXJvbm1lbnR9L2NvbmZpZy93ZWJcIlxuICAgICAgICAgIH0sXG4gICAgICAgICAge1xuICAgICAgICAgICAgXCJmaWVsZFwiOiBcImlkXCIsXG4gICAgICAgICAgICBcImxpa2VcIjogXCIqL2Z1bmMtcGF5bWVzaC1wYWdvcy1jYW5hcnktJHtlbnZpcm9ubWVudH0vY29uZmlnL3dlYlwiXG4gICAgICAgICAgfVxuICAgICAgICBdXG4gICAgICB9LCIsICJhZnRlciI6ICIgICAgICB7XG4gICAgICAgIFwiZmllbGRcIjogXCJpZFwiLFxuICAgICAgICBcImxpa2VcIjogXCIqL3NpdGVzL2Z1bmMtcGF5bWVzaC1wYWdvcyovY29uZmlnL3dlYlwiXG4gICAgICB9LCIsICJwcm9wZXJ0eSI6ICJlYWNoIHBhdHRlcm4gc3RheXMgaW5zaWRlIHRoZSBvcGVyYXRvcidzIGNvbnN0cmFpbnQgYW5kIGJvdGggYXBwcyBhcmUgY292ZXJlZCIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICJwb2xpY2llcy9yZXF1aXJlLWlwLXJlc3RyaWN0aW9uLmpzb24iLCAiYmVmb3JlIjogIiAgICAgICAgXCJlcXVhbHNcIjogXCJNaWNyb3NvZnQuV2ViL3NpdGVzL2NvbmZpZ1wiIiwgImFmdGVyIjogIiAgICAgICAgXCJlcXVhbHNcIjogXCJNaWNyb3NvZnQuV2ViL3NpdGVzXCIiLCAicHJvcGVydHkiOiAidGhlIHJ1bGUgcmVhZHMgdGhlIG9iamVjdCB0aGF0IGhvbGRzIHRoZSBzZXR0aW5nIiwgIm9jY3VycmVuY2UiOiAwfSwgeyJwYXRoIjogInBvbGljaWVzL3JlcXVpcmUtaXAtcmVzdHJpY3Rpb24uanNvbiIsICJiZWZvcmUiOiAiICAgICAgICAgIFwiZmllbGRcIjogXCJNaWNyb3NvZnQuV2ViL3NpdGVzL2NvbmZpZy93ZWIuaXBTZWN1cml0eVJlc3RyaWN0aW9uc0RlZmF1bHRBY3Rpb25cIiwiLCAiYWZ0ZXIiOiAiICAgICAgICAgIFwiZmllbGRcIjogXCJNaWNyb3NvZnQuV2ViL3NpdGVzL3NpdGVDb25maWcuaXBTZWN1cml0eVJlc3RyaWN0aW9uc0RlZmF1bHRBY3Rpb25cIiwiLCAicHJvcGVydHkiOiAidGhlIGFsaWFzIGlzIHRoZSBvbmUgdGhlIHBsYXRmb3JtIHB1Ymxpc2hlcyBmb3IgdGhhdCBvYmplY3QiLCAib2NjdXJyZW5jZSI6IDB9LCB7InBhdGgiOiAiZW52cy9wcm9kL3BvbGljaWVzLnRmIiwgImJlZm9yZSI6ICIgICAgcmVxdWlyZV9pcF9yZXN0cmljdGlvbiA9IHtcbiAgICAgIG1vZGUgICAgICAgICA9IFwiQWxsXCIiLCAiYWZ0ZXIiOiAiICAgIHJlcXVpcmVfaXBfcmVzdHJpY3Rpb24gPSB7XG4gICAgICBtb2RlICAgICAgICAgPSBcIkluZGV4ZWRcIiIsICJwcm9wZXJ0eSI6ICJ0aGUgcGF5bWVudHMgZGVmaW5pdGlvbiBydW5zIGluIHRoZSBtb2RlIGl0cyBvYmplY3RzIG5lZWQiLCAib2NjdXJyZW5jZSI6IDB9LCB7InBhdGgiOiAiZW52cy9wcm9kL3BvbGljaWVzLnRmIiwgImJlZm9yZSI6ICIgICAgcmVxdWlyZV90YWdzID0ge1xuICAgICAgbW9kZSAgICAgICAgID0gXCJJbmRleGVkXCIiLCAiYWZ0ZXIiOiAiICAgIHJlcXVpcmVfdGFncyA9IHtcbiAgICAgIG1vZGUgICAgICAgICA9IFwiQWxsXCIiLCAicHJvcGVydHkiOiAiYSBkZWZpbml0aW9uIG92ZXIgdGFnZ2VkIHR5cGVzIHN0YXlzIGluIHRoZSBuYXJyb3cgbW9kZSIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICJlbnZzL3Byb2QvcG9saWNpZXMudGYiLCAiYmVmb3JlIjogIiAgYXNzaWduZWRfcG9saWNpZXMgPSBbXCJkZW55X3B1YmxpY19zcWxcIiwgXCJyZXF1aXJlX3RhZ3NcIiwgXCJyZXF1aXJlX3Rsc192ZXJzaW9uXCIsIFwicmVxdWlyZV9odHRwc19vbmx5XCIsIFwicmVxdWlyZV9pcF9yZXN0cmljdGlvblwiXSIsICJhZnRlciI6ICIgIGFzc2lnbmVkX3BvbGljaWVzID0gW1wiZGVueV9wdWJsaWNfc3FsXCIsIFwicmVxdWlyZV90YWdzXCJdIiwgInByb3BlcnR5IjogImV2ZXJ5IGRlZmluaXRpb24gdGhlIGNhdGFsb2d1ZSBob2xkcyBjYXJyaWVzIGFuIGFzc2lnbm1lbnQiLCAib2NjdXJyZW5jZSI6IDB9LCB7InBhdGgiOiAiZW52cy9wcm9kL3BvbGljaWVzLnRmIiwgImJlZm9yZSI6ICIgICAgICBydWxlICAgICAgICAgPSB0ZW1wbGF0ZWZpbGUoXCIke3BhdGgubW9kdWxlfS8uLi8uLi9wb2xpY2llcy9yZXF1aXJlLWlwLXJlc3RyaWN0aW9uLmpzb25cIiwgeyBlbnZpcm9ubWVudCA9IHZhci5lbnZpcm9ubWVudCB9KSIsICJhZnRlciI6ICIgICAgICBydWxlICAgICAgICAgPSBmaWxlKFwiJHtwYXRoLm1vZHVsZX0vLi4vLi4vcG9saWNpZXMvcmVxdWlyZS1pcC1yZXN0cmljdGlvbi5qc29uXCIpIiwgInByb3BlcnR5IjogInRoZSBwYXltZW50cyBkb2N1bWVudCBpcyByZW5kZXJlZCBmb3IgdGhlIGVudmlyb25tZW50IGl0IHJ1bnMgaW4iLCAib2NjdXJyZW5jZSI6IDB9LCB7InBhdGgiOiAiZW52cy9wcm9kL3BvbGljaWVzLnRmIiwgImJlZm9yZSI6ICIgICAgICBydWxlICAgICAgICAgPSB0ZW1wbGF0ZWZpbGUoXCIke3BhdGgubW9kdWxlfS8uLi8uLi9wb2xpY2llcy9yZXF1aXJlLWh0dHBzLW9ubHkuanNvblwiLCB7IGVudmlyb25tZW50ID0gdmFyLmVudmlyb25tZW50IH0pIiwgImFmdGVyIjogIiAgICAgIHJ1bGUgICAgICAgICA9IGZpbGUoXCIke3BhdGgubW9kdWxlfS8uLi8uLi9wb2xpY2llcy9yZXF1aXJlLWh0dHBzLW9ubHkuanNvblwiKSIsICJwcm9wZXJ0eSI6ICJ0aGUgdHJhbnNwb3J0IGRvY3VtZW50IGlzIHJlbmRlcmVkIGZvciB0aGUgZW52aXJvbm1lbnQgaXQgcnVucyBpbiIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICJwb2xpY2llcy9yZXF1aXJlLWlwLXJlc3RyaWN0aW9uLmpzb24iLCAiYmVmb3JlIjogIiAgICBcImVmZmVjdFwiOiBcIkRlbnlcIiIsICJhZnRlciI6ICIgICAgXCJlZmZlY3RcIjogXCJBdWRpdFwiIiwgInByb3BlcnR5IjogInRoZSBwYXltZW50cyBkb2N1bWVudCBhc2tzIHRoZSBjb250cm9sIHBsYW5lIHRvIHJlZnVzZSIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICJlbnZzL3Byb2QvcG9saWNpZXMudGYiLCAiYmVmb3JlIjogIiAgICByZXF1aXJlX3Rsc192ZXJzaW9uID0ge1xuICAgICAgbW9kZSAgICAgICAgID0gXCJBbGxcIiIsICJhZnRlciI6ICIgICAgcmVxdWlyZV90bHNfdmVyc2lvbiA9IHtcbiAgICAgIG1vZGUgICAgICAgICA9IFwiSW5kZXhlZFwiIiwgInByb3BlcnR5IjogInRoZSB0cmFuc3BvcnQtdmVyc2lvbiBkZWZpbml0aW9uIHJ1bnMgaW4gdGhlIG1vZGUgaXRzIG9iamVjdHMgbmVlZCIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICJlbnZzL3Byb2QvcG9saWNpZXMudGYiLCAiYmVmb3JlIjogIiAgICAgIHJ1bGUgICAgICAgICA9IHRlbXBsYXRlZmlsZShcIiR7cGF0aC5tb2R1bGV9Ly4uLy4uL3BvbGljaWVzL3JlcXVpcmUtdGxzLXZlcnNpb24uanNvblwiLCB7IGVudmlyb25tZW50ID0gdmFyLmVudmlyb25tZW50IH0pIiwgImFmdGVyIjogIiAgICAgIHJ1bGUgICAgICAgICA9IGZpbGUoXCIke3BhdGgubW9kdWxlfS8uLi8uLi9wb2xpY2llcy9yZXF1aXJlLXRscy12ZXJzaW9uLmpzb25cIikiLCAicHJvcGVydHkiOiAidGhlIHRyYW5zcG9ydC12ZXJzaW9uIGRvY3VtZW50IGlzIHJlbmRlcmVkIGZvciB0aGUgZW52aXJvbm1lbnQgaXQgcnVucyBpbiIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICJlbnZzL3Byb2QvcG9saWNpZXMudGYiLCAiYmVmb3JlIjogIiAgICBkZW55X3B1YmxpY19zcWwgPSB7XG4gICAgICBtb2RlICAgICAgICAgPSBcIkluZGV4ZWRcIlxuIiwgImFmdGVyIjogIiAgICBkZW55X3B1YmxpY19zcWwgPSB7XG4gICAgICBtb2RlICAgICAgICAgPSBcIkFsbFwiXG4iLCAicHJvcGVydHkiOiAiYSBkZWZpbml0aW9uIG92ZXIgdGFnZ2VkIHR5cGVzIHN0YXlzIGluIHRoZSBuYXJyb3cgbW9kZSIsICJvY2N1cnJlbmNlIjogMH0sIHsicGF0aCI6ICIuZ2l0aHViL3dvcmtmbG93cy90ZXJyYWZvcm0tY2kueW1sIiwgImJlZm9yZSI6ICIgICAgICAgICAgZWNobyBcIiRFWFBSXCIgfCB0ZXJyYWZvcm0gY29uc29sZSAtdmFyLWZpbGU9cHJvZC50ZnZhcnMgPiAvdG1wL2NhdGFsb2d1ZS1wcm9kLnR4dFxuICAgICAgICAgIGVjaG8gXCIkRVhQUlwiIHwgdGVycmFmb3JtIGNvbnNvbGUgLXZhci1maWxlPXByb2QudGZ2YXJzIC12YXIgZW52aXJvbm1lbnQ9ZGV2ID4gL3RtcC9jYXRhbG9ndWUtZGV2LnR4dFxuIiwgImFmdGVyIjogIiAgICAgICAgICBlY2hvIFwiJEVYUFJcIiB8IHRlcnJhZm9ybSBjb25zb2xlIC12YXItZmlsZT1wcm9kLnRmdmFycyA+IC90bXAvY2F0YWxvZ3VlLXByb2QudHh0XG4iLCAicHJvcGVydHkiOiAidGhlIHBpcGVsaW5lIHJlbmRlcnMgdGhlIGNhdGFsb2d1ZSBhdCBtb3JlIHRoYW4gb25lIGJpbmRpbmciLCAib2NjdXJyZW5jZSI6IDB9XSwgInByb3RlY3RlZCI6IHsiZG9jcy9QT0xJQ1ktQVMtQ09ERS1TVEFOREFSRC5tZCI6ICI5MWVkYWQ4MGZkOWNjODQzYTVmNzRlYWI4NjEyYWExMzI5ZTk3MTY3NmE2Y2E0NzYzZmQzNDkxNjU1MDUyOTU2IiwgInBvbGljaWVzL2RlbnktcHVibGljLXNxbC5qc29uIjogImIyZjMwNjY2NTEyODY2OWY5NWQyMTlmYTVlZDNlYzk5Y2Q0ZTFiOWE3ZWU5OTQ0N2U1MGRiNDk5YTBiYzEzODAiLCAicG9saWNpZXMvcmVxdWlyZS10YWdzLmpzb24iOiAiYzU2YTIyMTA0NDg4ODRjODg0ZTg1YTY1MzMxNGMzYjNjZDU2MzM0ZmQ5ZDEyNzJiNjEwMjBiOGI1ZWM2YjFkYSJ9fQ==").decode())
+
+GT["workdir"] = os.environ.get("PAYMESH_WORKDIR", GT["workdir"])
+
+def replace_nth(text, before, after, n):
+    idx = -1
+    for _ in range(n + 1):
+        idx = text.find(before, idx + 1)
+        if idx == -1:
+            raise SystemExit("solve.sh: anchor not found: " + before[:60])
+    return text[:idx] + after + text[idx + len(before):]
+
+for f in reversed(GT["faults"]):
+    q = pathlib.Path(GT["workdir"]) / f["path"]
+    u = q.open("r", newline="").read()
+    u = replace_nth(u, f["after"], f["before"], f.get("occurrence", 0))
+    with q.open("w", newline="") as fh:
+        fh.write(u)
+PYSOLVE
+
+# The slot surface is a separate child resource and alias. It is intentionally
+# repaired after the generated legacy catalogue faults so this additional
+# dimension stays legible instead of being hidden in the encoded fixture.
+python3 - <<'PYSLOTS'
+import json
+import os
+import pathlib
+import re
+
+root = pathlib.Path(os.environ.get('PAYMESH_WORKDIR', '/app/workspace'))
+policy = {
+    'if': {'allOf': [
+        {'field': 'type', 'equals': 'Microsoft.Web/sites/slots/config'},
+        {'anyOf': [
+            {'field': 'id', 'like': '*/sites/func-paymesh-pagos-${environment}/slots/blue/config/web'},
+            {'field': 'id', 'like': '*/sites/func-paymesh-pagos-canary-${environment}/slots/blue/config/web'},
+        ]},
+        {'not': {
+            'field': 'Microsoft.Web/sites/slots/config/web.ipSecurityRestrictionsDefaultAction',
+            'equals': 'Deny',
+        }},
+    ]}, 'then': {'effect': 'Deny'}}
+(root / 'policies/require-slot-ip-restriction.json').write_text(
+    json.dumps(policy, indent=2) + '\n')
+
+path = root / 'envs/prod/policies.tf'
+text = path.read_text()
+text = text.replace(
+    'require_slot_ip_restriction = {\n      mode         = "Indexed"',
+    'require_slot_ip_restriction = {\n      mode         = "All"')
+text = text.replace(
+    'rule         = file("${path.module}/../../policies/require-slot-ip-restriction.json")',
+    'rule         = templatefile("${path.module}/../../policies/require-slot-ip-restriction.json", { environment = var.environment })')
+
+def add_assignment(match):
+    body = match.group(1)
+    if '"require_slot_ip_restriction"' not in body:
+        body = body.rstrip() + ', "require_slot_ip_restriction"'
+    return 'assigned_policies = [' + body + ']'
+
+text, count = re.subn(r'assigned_policies\s*=\s*\[([^\]]*)\]', add_assignment, text, count=1)
+if count != 1:
+    raise SystemExit('slot assignment anchor not found')
+path.write_text(text)
+PYSLOTS
+
+cd "$WORKDIR/envs/prod"
+terraform init -backend=false -input=false -no-color >/dev/null
+terraform validate -no-color
+echo 'base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))' \
+  | terraform console -no-color -var-file=prod.tfvars >/dev/null
+echo "solve.sh: guardrail catalogue rendered, scoped and enforced"

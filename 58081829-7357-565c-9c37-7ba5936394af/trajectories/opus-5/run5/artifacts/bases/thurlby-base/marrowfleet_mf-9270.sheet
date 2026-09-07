@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-9270
+base: thurlby-base
+rank: captain
+category: long-haul
+period: 2041-B5
+sectors: MF640:495 MF641:470
+factor: 85
+limit: standard
+credit: 820
+key: mfl-2041
+seal: df5a698d8ff650c9

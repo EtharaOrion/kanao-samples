@@ -1,0 +1,54 @@
+name: terraform-ci
+
+on:
+  pull_request:
+    paths:
+      - "envs/**"
+      - "modules/**"
+      - "policies/**"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate:
+    name: validate and review the policy catalogue
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: envs/prod
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.15.8
+
+      - name: fmt
+        run: terraform fmt -check -recursive ..
+
+      - name: init
+        run: terraform init -backend=false -input=false
+
+      - name: validate
+        run: terraform validate
+
+      # No subscription is attached to a pull request build, so the catalogue
+      # is read offline. The review job renders it once for this environment
+      # and once at a second binding, and compares the two.
+      - name: render the policy catalogue at both bindings
+        run: |
+          EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
+          echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt
+          echo "$EXPR" | terraform console -var-file=prod.tfvars -var environment=dev > /tmp/catalogue-dev.txt
+
+      # The reviewer itself lives in the platform org, not in this repository,
+      # so a change here cannot change what it looks for. It reads the two
+      # renderings above against docs/POLICY-AS-CODE-STANDARD.md.
+      - name: review the rendered catalogue
+        uses: paymesh-platform/policy-review-action@v3
+        with:
+          catalogue: /tmp/catalogue-prod.txt
+          catalogue-alt: /tmp/catalogue-dev.txt
+          standard: docs/POLICY-AS-CODE-STANDARD.md

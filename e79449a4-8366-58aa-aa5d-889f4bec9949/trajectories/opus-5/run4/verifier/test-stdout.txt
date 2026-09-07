@@ -1,0 +1,46 @@
+>       assert elsewhere == [], 'outcome A is met but review fails on: ' + ', '.join(elsewhere)
+E       AssertionError: outcome A is met but review fails on: dev:evaluation_mode, prod:evaluation_mode
+E       assert ['dev:evaluat...luation_mode'] == []
+E         
+E         Left contains 2 more items, first extra item: 'dev:evaluation_mode'
+E         Use -v to get more diff
+
+/tests/test_outputs.py:397: AssertionError
+___________ test_outcome_b_every_definition_is_enforced_under_review ___________
+
+    def test_outcome_b_every_definition_is_enforced_under_review():
+        gaps = _review_gaps()
+>       assert not gaps['B'], 'outcome B is not met, at: ' + ', '.join(sorted(set(gaps['B'])))
+E       AssertionError: outcome B is not met, at: dev:evaluation_mode, prod:evaluation_mode
+E       assert not ['prod:evaluation_mode', 'prod:evaluation_mode', 'dev:evaluation_mode', 'dev:evaluation_mode']
+
+/tests/test_outputs.py:402: AssertionError
+__________ test_outcome_c_documents_follow_their_binding_under_review __________
+
+    def test_outcome_c_documents_follow_their_binding_under_review():
+        gaps = _review_gaps()
+        unmet = {key: sorted(set(value)) for key, value in gaps.items() if value}
+        assert 'C' not in unmet, 'outcome C is not met, at: ' + ', '.join(unmet.get('C', []))
+>       assert unmet == {}, 'outcome C is met but review fails on: ' + repr(unmet)
+E       AssertionError: outcome C is met but review fails on: {'B': ['dev:evaluation_mode', 'prod:evaluation_mode']}
+E       assert {'B': ['dev:e...uation_mode']} == {}
+E         
+E         Left contains 1 more item:
+E         {'B': ['dev:evaluation_mode', 'prod:evaluation_mode']}
+E         Use -v to get more diff
+
+/tests/test_outputs.py:411: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED ../../../../tests/test_outputs.py::test_negative_verifier_package_was_removed
+PASSED ../../../../tests/test_outputs.py::test_negative_policy_inputs_were_altered
+FAILED ../../../../tests/test_outputs.py::test_outcome_a_guardrails_see_their_targets_under_review
+FAILED ../../../../tests/test_outputs.py::test_outcome_b_every_definition_is_enforced_under_review
+FAILED ../../../../tests/test_outputs.py::test_outcome_c_documents_follow_their_binding_under_review
+========================= 3 failed, 2 passed in 2.10s ==========================
+[FAIL] test_outcome_a_guardrails_see_their_targets_under_review (weight +5)
+[FAIL] test_outcome_b_every_definition_is_enforced_under_review (weight +5)
+[FAIL] test_outcome_c_documents_follow_their_binding_under_review (weight +5)
+[PASS] test_negative_verifier_package_was_removed (weight -5)
+[PASS] test_negative_policy_inputs_were_altered (weight -3)
+[grade] raw=+0 positive_total=15 reward=+0.000000

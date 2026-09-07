@@ -1,0 +1,38 @@
+{
+  "input_tokens": 593113,
+  "output_tokens": 45036,
+  "cache_read_tokens": 522468,
+  "cache_write_tokens": 0,
+  "cost_usd": 1.821397,
+  "sources": {
+    "agent": {
+      "input_tokens": 561491,
+      "output_tokens": 41764,
+      "cache_read_tokens": 509412,
+      "cache_write_tokens": 0,
+      "cost_usd": 1.6242472500000003
+    },
+    "judge": {
+      "input_tokens": 31622,
+      "output_tokens": 3272,
+      "cache_read_tokens": 13056,
+      "cache_write_tokens": 0,
+      "request_count": 1,
+      "cost_usd": 0.19715,
+      "per_member": {
+        "primary": {
+          "model": "gpt-5.6-sol",
+          "input_tokens": 31622,
+          "output_tokens": 3272,
+          "cache_read_tokens": 13056,
+          "cache_write_tokens": 0,
+          "request_count": 1,
+          "cost_usd": 0.19715
+        }
+      }
+    }
+  },
+  "notes": [
+    "agent.input_tokens includes its cache_read_tokens (harbor reports one combined prompt figure); agent.cache_write_tokens is 0 because harbor does not split the write side"
+  ]
+}

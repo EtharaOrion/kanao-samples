@@ -1,0 +1,6 @@
+name = "mf-6350"
+base = "kirkbryde-base"
+rank = "captain"
+category = "short-haul"
+joined = "2033-04-05"
+enabled = true

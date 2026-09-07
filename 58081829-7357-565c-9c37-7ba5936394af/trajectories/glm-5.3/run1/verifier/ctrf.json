@@ -1,0 +1,96 @@
+{
+  "reportFormat": "CTRF",
+  "specVersion": "1.0.0",
+  "results": {
+    "tool": {
+      "name": "pytest"
+    },
+    "summary": {
+      "tests": 11,
+      "passed": 2,
+      "failed": 9,
+      "pending": 0,
+      "skipped": 0,
+      "other": 0,
+      "start": 1788698739567,
+      "stop": 1788699774808
+    },
+    "tests": [
+      {
+        "name": "test_every_crew_member_is_credited_what_the_sectors_and_the_limitations_give",
+        "status": "passed",
+        "suite": "tests/test_outputs.py",
+        "weight": 3
+      },
+      {
+        "name": "test_policy_corrections_withdrawals_and_effective_boundaries",
+        "status": "passed",
+        "suite": "tests/test_outputs.py",
+        "weight": 5
+      },
+      {
+        "name": "test_every_crew_member_states_the_period_the_sectors_register_is_current_for",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": 1
+      },
+      {
+        "name": "test_every_base_stands_the_drop_its_own_fragment_declares",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": 5
+      },
+      {
+        "name": "test_the_published_reader_settles_every_sheet_the_run_built",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": 5
+      },
+      {
+        "name": "test_the_roster_register_records_the_seal_the_run_stamped",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": 1
+      },
+      {
+        "name": "test_a_crew_member_was_taken_out_of_the_register",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": -3
+      },
+      {
+        "name": "test_a_base_was_taken_out_of_the_register",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": -3
+      },
+      {
+        "name": "test_the_signing_key_tree_was_opened_up",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": -3
+      },
+      {
+        "name": "test_policy_repair_boundaries_were_changed",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": -3
+      },
+      {
+        "name": "test_committed_history_is_complete_before_any_projection",
+        "status": "failed",
+        "suite": "tests/test_outputs.py",
+        "weight": 5
+      }
+    ],
+    "environment": {
+      "testEnvironment": "ci_repair__marrowfleet-crew-roster",
+      "extra": {
+        "model": "glm-5.3",
+        "run": "run_1",
+        "source": "ctrf.json",
+        "reward": 0.32
+      }
+    }
+  }
+}

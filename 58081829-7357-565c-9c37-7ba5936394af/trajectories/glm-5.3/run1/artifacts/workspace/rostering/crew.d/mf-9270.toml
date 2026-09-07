@@ -1,0 +1,6 @@
+name = "mf-9270"
+base = "thurlby-base"
+rank = "captain"
+category = "long-haul"
+joined = "2030-10-11"
+enabled = true

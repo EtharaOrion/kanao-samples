@@ -1,0 +1,17 @@
+{
+  "task": {
+    "path": "58081829-7357-565c-9c37-7ba5936394af"
+  },
+  "trial_name": "ci_repair__marrowfleet-crew-roster",
+  "trials_dir": "58081829-7357-565c-9c37-7ba5936394af/trajectories/opus-5",
+  "agent": {
+    "name": "terminus-2",
+    "model_name": "anthropic/opus-5"
+  },
+  "verifier": {
+    "env": {
+      "REWARDKIT_JUDGE": "gpt-5.6-sol"
+    }
+  },
+  "job_id": "c54bb5f6-a618-4a89-8947-192401f73cdc"
+}

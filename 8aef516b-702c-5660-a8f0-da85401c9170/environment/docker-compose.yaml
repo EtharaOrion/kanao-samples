@@ -1,0 +1,101 @@
+services:
+  main:
+    build:
+      context: ${CONTEXT_DIR}
+      target: workstation
+    entrypoint: ["bash", "-c", "sleep infinity"]
+    networks:
+      - estate
+  synthetic-probe:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=synthetic-probe
+    networks:
+      - estate
+  reservation-edge:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=reservation-edge
+    networks:
+      - estate
+  admission-gate:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=admission-gate
+    networks:
+      - estate
+  reservation-worker:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=reservation-worker
+    networks:
+      - estate
+  availability-cache:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=availability-cache
+    networks:
+      - estate
+  inventory:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=inventory
+    networks:
+      - estate
+  confirmation:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=confirmation
+    networks:
+      - estate
+  user-wait-log:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/start.sh"]
+    environment:
+      - SERVICE_NAME=user-wait-log
+    networks:
+      - estate
+  workload:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["/opt/svc/workload.sh"]
+    restart: on-failure
+    networks:
+      - estate
+  recorder:
+    build:
+      context: ${CONTEXT_DIR}
+      target: runtime
+    entrypoint: ["python3", "/opt/svc/recorder/record.py"]
+    volumes:
+      - ${KANAO_EVIDENCE_DIR:-/tmp/opus5-extreme/${COMPOSE_PROJECT_NAME}}:/evidence
+    restart: on-failure
+    networks:
+      - estate
+networks:
+  estate:
+    name: ${COMPOSE_PROJECT_NAME}-estate

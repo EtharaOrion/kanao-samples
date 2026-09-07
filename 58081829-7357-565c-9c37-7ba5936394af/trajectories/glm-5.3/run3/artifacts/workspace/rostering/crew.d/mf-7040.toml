@@ -1,0 +1,6 @@
+name = "mf-7040"
+base = "kirkbryde-base"
+rank = "first-officer"
+category = "long-haul"
+joined = "2036-08-19"
+enabled = true

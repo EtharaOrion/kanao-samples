@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-5720
+base: oxenholme-base
+rank: first-officer
+category: standby
+period: 2041-B5
+sectors: MFS01:400 MFS02:380
+factor: 60
+limit: standard
+credit: 468
+key: mfl-2041
+seal: 4d91e9a375b9b5ad

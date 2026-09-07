@@ -1,0 +1,52 @@
+{
+  "id": "890de09d-ee98-4700-91e2-e705e67662a0",
+  "started_at": "2026-09-06T22:46:12.600575",
+  "updated_at": "2026-09-06T23:09:48.801673",
+  "finished_at": "2026-09-06T23:09:48.801673",
+  "n_total_trials": 1,
+  "stats": {
+    "n_completed_trials": 1,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0,
+    "n_cancelled_trials": 0,
+    "n_retries": 0,
+    "evals": {
+      "terminus-2__glm-5.3__adhoc": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "metrics": [
+          {
+            "earned": 2.0,
+            "positive_total": 24.0,
+            "reward": 0.08333333333333333
+          }
+        ],
+        "pass_at_k": {},
+        "reward_stats": {
+          "reward": {
+            "0.08333333333333333": [
+              "8aef516b-702c-5660-a8f0-da85401c9170__mZfDXcf"
+            ]
+          },
+          "positive_total": {
+            "24": [
+              "8aef516b-702c-5660-a8f0-da85401c9170__mZfDXcf"
+            ]
+          },
+          "earned": {
+            "2": [
+              "8aef516b-702c-5660-a8f0-da85401c9170__mZfDXcf"
+            ]
+          }
+        },
+        "exception_stats": {}
+      }
+    },
+    "n_input_tokens": 639822,
+    "n_cache_tokens": 581440,
+    "n_cache_creation_tokens": 57792,
+    "n_output_tokens": 69075,
+    "cost_usd": 0.557066
+  }
+}

@@ -1,0 +1,4593 @@
+{
+  "anomalies": [
+    {
+      "service": "admission-gate",
+      "class": "load-shedding",
+      "reason": "The admission-owned casebook repeatedly exposes a monotonically increasing rejection signal: 0 at interval 0, 49 by interval 7, and 469 by interval 67. Over the same lifecycle, per-interval group completions fall from 94 to 18. This identifies admission shedding as a contributor to declining customer-facing completions; it is not merely an edge or downstream cache latency failure.",
+      "observations": [
+        {
+          "kind": "casebook",
+          "service": "admission-gate",
+          "uptime_sec": 22.832404,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 189,
+            "expected_scheduled_arrivals": 200,
+            "latest_p99_ms": 216,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 2
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "596cb20caf31e46cbb646f296ae64393578170eecff1c72931e895862807c5d7"
+        },
+        {
+          "kind": "casebook",
+          "service": "admission-gate",
+          "uptime_sec": 161.217337,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            },
+            {
+              "interval": 10,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1410,
+              "queue_oldest_age_sec": 180,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 70
+            },
+            {
+              "interval": 11,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1525,
+              "queue_oldest_age_sec": 197,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 77
+            },
+            {
+              "interval": 12,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1640,
+              "queue_oldest_age_sec": 214,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 84
+            },
+            {
+              "interval": 13,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1755,
+              "queue_oldest_age_sec": 231,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 91
+            },
+            {
+              "interval": 14,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1870,
+              "queue_oldest_age_sec": 248,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 98
+            },
+            {
+              "interval": 15,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1985,
+              "queue_oldest_age_sec": 265,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 709,
+            "expected_scheduled_arrivals": 1700,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 17
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "81b7e7326e69c7d468cbadf633c17956401ec9fc6cfcb800dad6813ffcd41ddd"
+        },
+        {
+          "kind": "casebook",
+          "service": "admission-gate",
+          "uptime_sec": 613.289043,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            },
+            {
+              "interval": 10,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1410,
+              "queue_oldest_age_sec": 180,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 70
+            },
+            {
+              "interval": 11,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1525,
+              "queue_oldest_age_sec": 197,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 77
+            },
+            {
+              "interval": 12,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1640,
+              "queue_oldest_age_sec": 214,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 84
+            },
+            {
+              "interval": 13,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1755,
+              "queue_oldest_age_sec": 231,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 91
+            },
+            {
+              "interval": 14,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1870,
+              "queue_oldest_age_sec": 248,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 98
+            },
+            {
+              "interval": 15,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1985,
+              "queue_oldest_age_sec": 265,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            },
+            {
+              "interval": 17,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2215,
+              "queue_oldest_age_sec": 299,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 119
+            },
+            {
+              "interval": 18,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2330,
+              "queue_oldest_age_sec": 316,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 126
+            },
+            {
+              "interval": 19,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2445,
+              "queue_oldest_age_sec": 333,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 133
+            },
+            {
+              "interval": 20,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2560,
+              "queue_oldest_age_sec": 350,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 140
+            },
+            {
+              "interval": 21,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2675,
+              "queue_oldest_age_sec": 367,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 147
+            },
+            {
+              "interval": 22,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2790,
+              "queue_oldest_age_sec": 384,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 154
+            },
+            {
+              "interval": 23,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2905,
+              "queue_oldest_age_sec": 401,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 161
+            },
+            {
+              "interval": 24,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3020,
+              "queue_oldest_age_sec": 418,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 168
+            },
+            {
+              "interval": 25,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3135,
+              "queue_oldest_age_sec": 435,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 175
+            },
+            {
+              "interval": 26,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3250,
+              "queue_oldest_age_sec": 452,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 182
+            },
+            {
+              "interval": 27,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3365,
+              "queue_oldest_age_sec": 469,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 189
+            },
+            {
+              "interval": 28,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3480,
+              "queue_oldest_age_sec": 486,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 196
+            },
+            {
+              "interval": 29,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3595,
+              "queue_oldest_age_sec": 503,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 203
+            },
+            {
+              "interval": 30,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3710,
+              "queue_oldest_age_sec": 520,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 210
+            },
+            {
+              "interval": 31,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3825,
+              "queue_oldest_age_sec": 537,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 217
+            },
+            {
+              "interval": 32,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3940,
+              "queue_oldest_age_sec": 554,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 224
+            },
+            {
+              "interval": 33,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4055,
+              "queue_oldest_age_sec": 571,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 231
+            },
+            {
+              "interval": 34,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4170,
+              "queue_oldest_age_sec": 588,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 238
+            },
+            {
+              "interval": 35,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4285,
+              "queue_oldest_age_sec": 605,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 245
+            },
+            {
+              "interval": 36,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4400,
+              "queue_oldest_age_sec": 622,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 252
+            },
+            {
+              "interval": 37,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4515,
+              "queue_oldest_age_sec": 639,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 259
+            },
+            {
+              "interval": 38,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4630,
+              "queue_oldest_age_sec": 656,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 266
+            },
+            {
+              "interval": 39,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4745,
+              "queue_oldest_age_sec": 673,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 273
+            },
+            {
+              "interval": 40,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4860,
+              "queue_oldest_age_sec": 690,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 280
+            },
+            {
+              "interval": 41,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4975,
+              "queue_oldest_age_sec": 707,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 287
+            },
+            {
+              "interval": 42,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5090,
+              "queue_oldest_age_sec": 724,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 294
+            },
+            {
+              "interval": 43,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5205,
+              "queue_oldest_age_sec": 741,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 301
+            },
+            {
+              "interval": 44,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5320,
+              "queue_oldest_age_sec": 758,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 308
+            },
+            {
+              "interval": 45,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5435,
+              "queue_oldest_age_sec": 775,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 315
+            },
+            {
+              "interval": 46,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5550,
+              "queue_oldest_age_sec": 792,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 322
+            },
+            {
+              "interval": 47,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5665,
+              "queue_oldest_age_sec": 809,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 329
+            },
+            {
+              "interval": 48,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5780,
+              "queue_oldest_age_sec": 826,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 336
+            },
+            {
+              "interval": 49,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5895,
+              "queue_oldest_age_sec": 843,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 343
+            },
+            {
+              "interval": 50,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6010,
+              "queue_oldest_age_sec": 860,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 350
+            },
+            {
+              "interval": 51,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6125,
+              "queue_oldest_age_sec": 877,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 357
+            },
+            {
+              "interval": 52,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6240,
+              "queue_oldest_age_sec": 894,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 364
+            },
+            {
+              "interval": 53,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6355,
+              "queue_oldest_age_sec": 911,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 371
+            },
+            {
+              "interval": 54,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6470,
+              "queue_oldest_age_sec": 928,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 378
+            },
+            {
+              "interval": 55,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6585,
+              "queue_oldest_age_sec": 945,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 385
+            },
+            {
+              "interval": 56,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6700,
+              "queue_oldest_age_sec": 962,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 392
+            },
+            {
+              "interval": 57,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6815,
+              "queue_oldest_age_sec": 979,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 399
+            },
+            {
+              "interval": 58,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6930,
+              "queue_oldest_age_sec": 996,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 406
+            },
+            {
+              "interval": 59,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7045,
+              "queue_oldest_age_sec": 1013,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 413
+            },
+            {
+              "interval": 60,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7160,
+              "queue_oldest_age_sec": 1030,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 420
+            },
+            {
+              "interval": 61,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7275,
+              "queue_oldest_age_sec": 1047,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 427
+            },
+            {
+              "interval": 62,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7390,
+              "queue_oldest_age_sec": 1064,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 434
+            },
+            {
+              "interval": 63,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7505,
+              "queue_oldest_age_sec": 1081,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 441
+            },
+            {
+              "interval": 64,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7620,
+              "queue_oldest_age_sec": 1098,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 448
+            },
+            {
+              "interval": 65,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7735,
+              "queue_oldest_age_sec": 1115,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 455
+            },
+            {
+              "interval": 66,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7850,
+              "queue_oldest_age_sec": 1132,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 462
+            },
+            {
+              "interval": 67,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7965,
+              "queue_oldest_age_sec": 1149,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 469
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 1933,
+            "expected_scheduled_arrivals": 6800,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 68
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "adce3f6bacacd1a2fb5316bffa6bea6c2abaf733d99ecbad0863a672c5154ff3"
+        }
+      ],
+      "calculations": {
+        "rejected_series_latest_casebook": [
+          0,
+          7,
+          14,
+          21,
+          28,
+          35,
+          42,
+          49,
+          56,
+          63,
+          70,
+          77,
+          84,
+          91,
+          98,
+          105,
+          112,
+          119,
+          126,
+          133,
+          140,
+          147,
+          154,
+          161,
+          168,
+          175,
+          182,
+          189,
+          196,
+          203,
+          210,
+          217,
+          224,
+          231,
+          238,
+          245,
+          252,
+          259,
+          266,
+          273,
+          280,
+          287,
+          294,
+          301,
+          308,
+          315,
+          322,
+          329,
+          336,
+          343,
+          350,
+          357,
+          364,
+          371,
+          378,
+          385,
+          392,
+          399,
+          406,
+          413,
+          420,
+          427,
+          434,
+          441,
+          448,
+          455,
+          462,
+          469
+        ],
+        "rejected_change_first_to_latest": 469,
+        "completed_first": 94,
+        "completed_latest": 18,
+        "completed_reduction_fraction": 0.8085106382978724,
+        "comparison_note": "rejected is treated as a rising counter-like signal, not summed as per-interval requests."
+      }
+    },
+    {
+      "service": "reservation-worker",
+      "class": "capacity-cliff",
+      "reason": "The worker-owned lifecycle records show effective worker slots falling from 10 to 2 and group completions per 100 scheduled arrivals falling from 94 to 18. Its single-room control still reports 98/100 completions at 85 ms p99 with 10 worker slots. The group-specific collapse is therefore local worker capacity loss, not a uniform inventory or confirmation failure.",
+      "observations": [
+        {
+          "kind": "casebook",
+          "service": "reservation-worker",
+          "uptime_sec": 23.773554,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 189,
+            "expected_scheduled_arrivals": 200,
+            "latest_p99_ms": 216,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 2
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "1e495524ddbc9804a776a7c2043193e00bbf395418558839ea3f86249a7540e8"
+        },
+        {
+          "kind": "casebook",
+          "service": "reservation-worker",
+          "uptime_sec": 162.153377,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            },
+            {
+              "interval": 10,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1410,
+              "queue_oldest_age_sec": 180,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 70
+            },
+            {
+              "interval": 11,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1525,
+              "queue_oldest_age_sec": 197,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 77
+            },
+            {
+              "interval": 12,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1640,
+              "queue_oldest_age_sec": 214,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 84
+            },
+            {
+              "interval": 13,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1755,
+              "queue_oldest_age_sec": 231,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 91
+            },
+            {
+              "interval": 14,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1870,
+              "queue_oldest_age_sec": 248,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 98
+            },
+            {
+              "interval": 15,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1985,
+              "queue_oldest_age_sec": 265,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            },
+            {
+              "interval": 17,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2215,
+              "queue_oldest_age_sec": 299,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 119
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 733,
+            "expected_scheduled_arrivals": 1800,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 18
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "3a9742dd3850fe68f706fcee0195d7bc5bd3b9ef678054ec57cab7e428e95388"
+        },
+        {
+          "kind": "casebook",
+          "service": "reservation-worker",
+          "uptime_sec": 614.223339,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            },
+            {
+              "interval": 10,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1410,
+              "queue_oldest_age_sec": 180,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 70
+            },
+            {
+              "interval": 11,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1525,
+              "queue_oldest_age_sec": 197,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 77
+            },
+            {
+              "interval": 12,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1640,
+              "queue_oldest_age_sec": 214,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 84
+            },
+            {
+              "interval": 13,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1755,
+              "queue_oldest_age_sec": 231,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 91
+            },
+            {
+              "interval": 14,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1870,
+              "queue_oldest_age_sec": 248,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 98
+            },
+            {
+              "interval": 15,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1985,
+              "queue_oldest_age_sec": 265,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            },
+            {
+              "interval": 17,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2215,
+              "queue_oldest_age_sec": 299,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 119
+            },
+            {
+              "interval": 18,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2330,
+              "queue_oldest_age_sec": 316,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 126
+            },
+            {
+              "interval": 19,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2445,
+              "queue_oldest_age_sec": 333,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 133
+            },
+            {
+              "interval": 20,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2560,
+              "queue_oldest_age_sec": 350,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 140
+            },
+            {
+              "interval": 21,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2675,
+              "queue_oldest_age_sec": 367,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 147
+            },
+            {
+              "interval": 22,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2790,
+              "queue_oldest_age_sec": 384,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 154
+            },
+            {
+              "interval": 23,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2905,
+              "queue_oldest_age_sec": 401,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 161
+            },
+            {
+              "interval": 24,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3020,
+              "queue_oldest_age_sec": 418,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 168
+            },
+            {
+              "interval": 25,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3135,
+              "queue_oldest_age_sec": 435,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 175
+            },
+            {
+              "interval": 26,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3250,
+              "queue_oldest_age_sec": 452,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 182
+            },
+            {
+              "interval": 27,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3365,
+              "queue_oldest_age_sec": 469,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 189
+            },
+            {
+              "interval": 28,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3480,
+              "queue_oldest_age_sec": 486,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 196
+            },
+            {
+              "interval": 29,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3595,
+              "queue_oldest_age_sec": 503,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 203
+            },
+            {
+              "interval": 30,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3710,
+              "queue_oldest_age_sec": 520,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 210
+            },
+            {
+              "interval": 31,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3825,
+              "queue_oldest_age_sec": 537,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 217
+            },
+            {
+              "interval": 32,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3940,
+              "queue_oldest_age_sec": 554,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 224
+            },
+            {
+              "interval": 33,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4055,
+              "queue_oldest_age_sec": 571,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 231
+            },
+            {
+              "interval": 34,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4170,
+              "queue_oldest_age_sec": 588,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 238
+            },
+            {
+              "interval": 35,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4285,
+              "queue_oldest_age_sec": 605,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 245
+            },
+            {
+              "interval": 36,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4400,
+              "queue_oldest_age_sec": 622,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 252
+            },
+            {
+              "interval": 37,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4515,
+              "queue_oldest_age_sec": 639,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 259
+            },
+            {
+              "interval": 38,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4630,
+              "queue_oldest_age_sec": 656,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 266
+            },
+            {
+              "interval": 39,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4745,
+              "queue_oldest_age_sec": 673,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 273
+            },
+            {
+              "interval": 40,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4860,
+              "queue_oldest_age_sec": 690,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 280
+            },
+            {
+              "interval": 41,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4975,
+              "queue_oldest_age_sec": 707,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 287
+            },
+            {
+              "interval": 42,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5090,
+              "queue_oldest_age_sec": 724,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 294
+            },
+            {
+              "interval": 43,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5205,
+              "queue_oldest_age_sec": 741,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 301
+            },
+            {
+              "interval": 44,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5320,
+              "queue_oldest_age_sec": 758,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 308
+            },
+            {
+              "interval": 45,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5435,
+              "queue_oldest_age_sec": 775,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 315
+            },
+            {
+              "interval": 46,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5550,
+              "queue_oldest_age_sec": 792,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 322
+            },
+            {
+              "interval": 47,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5665,
+              "queue_oldest_age_sec": 809,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 329
+            },
+            {
+              "interval": 48,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5780,
+              "queue_oldest_age_sec": 826,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 336
+            },
+            {
+              "interval": 49,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5895,
+              "queue_oldest_age_sec": 843,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 343
+            },
+            {
+              "interval": 50,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6010,
+              "queue_oldest_age_sec": 860,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 350
+            },
+            {
+              "interval": 51,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6125,
+              "queue_oldest_age_sec": 877,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 357
+            },
+            {
+              "interval": 52,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6240,
+              "queue_oldest_age_sec": 894,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 364
+            },
+            {
+              "interval": 53,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6355,
+              "queue_oldest_age_sec": 911,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 371
+            },
+            {
+              "interval": 54,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6470,
+              "queue_oldest_age_sec": 928,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 378
+            },
+            {
+              "interval": 55,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6585,
+              "queue_oldest_age_sec": 945,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 385
+            },
+            {
+              "interval": 56,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6700,
+              "queue_oldest_age_sec": 962,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 392
+            },
+            {
+              "interval": 57,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6815,
+              "queue_oldest_age_sec": 979,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 399
+            },
+            {
+              "interval": 58,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6930,
+              "queue_oldest_age_sec": 996,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 406
+            },
+            {
+              "interval": 59,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7045,
+              "queue_oldest_age_sec": 1013,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 413
+            },
+            {
+              "interval": 60,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7160,
+              "queue_oldest_age_sec": 1030,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 420
+            },
+            {
+              "interval": 61,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7275,
+              "queue_oldest_age_sec": 1047,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 427
+            },
+            {
+              "interval": 62,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7390,
+              "queue_oldest_age_sec": 1064,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 434
+            },
+            {
+              "interval": 63,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7505,
+              "queue_oldest_age_sec": 1081,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 441
+            },
+            {
+              "interval": 64,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7620,
+              "queue_oldest_age_sec": 1098,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 448
+            },
+            {
+              "interval": 65,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7735,
+              "queue_oldest_age_sec": 1115,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 455
+            },
+            {
+              "interval": 66,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7850,
+              "queue_oldest_age_sec": 1132,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 462
+            },
+            {
+              "interval": 67,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7965,
+              "queue_oldest_age_sec": 1149,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 469
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 1933,
+            "expected_scheduled_arrivals": 6800,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 68
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "918e7fdf4c78d7c0d718a6c88b7b9306668d1cacfd3ef3830ed4d52426db49a3"
+        }
+      ],
+      "calculations": {
+        "first_effective_worker_slots": 10,
+        "latest_effective_worker_slots": 2,
+        "slot_reduction_fraction": 0.8,
+        "first_group_completed_per_100_scheduled": 94,
+        "latest_group_completed_per_100_scheduled": 18,
+        "group_completion_reduction_fraction": 0.8085106382978724,
+        "single_room_control": {
+          "scheduled": 100,
+          "completed": 98,
+          "p99_ms": 85,
+          "worker_slots": 10
+        }
+      }
+    },
+    {
+      "service": "reservation-worker",
+      "class": "input-scaling",
+      "reason": "Direct receipts produced by reservation-worker show single-room requests remaining at 6 ms while group requests cost 122.369251 ms initially and 166 ms in later repeated closed-loop and open-loop probes. The latest matched open-loop group/single ratio is 27.6667. This repeated class-dependent cost is locally owned by the worker and explains why larger bookings are disproportionately affected.",
+      "observations": [
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 58.307782,
+          "request_id": "reservation-worker-84",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 122.369251,
+          "outcome": "accepted",
+          "signature": "43bdf27b7aa396ed4f2110a9fc5308b5efddd6482a62bbf35a2e9c0e9efc2142"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 92.279275,
+          "request_id": "reservation-worker-131",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "543e4d05e32b5d1a410639e427c001df5185e138b27617b44c273461486ab1e8"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 92.29139,
+          "request_id": "reservation-worker-132",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "939c9fac34a900e324daf99bd52444677c5ccc63c5dd6eed5913c34fc6ef4443"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 92.463962,
+          "request_id": "reservation-worker-134",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 166.0,
+          "outcome": "accepted",
+          "signature": "9dd701f7fd144694e12146223716c41c30e8c5e5ede5761301d06ebb3d5c33d6"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 92.638614,
+          "request_id": "reservation-worker-135",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 166.0,
+          "outcome": "accepted",
+          "signature": "58e3382eaefb37a8b0f0d7de3ac0ac41429edfa052bf998679ce974e032d7246"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 239.905165,
+          "request_id": "reservation-worker-334",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "cbe6ef947571b35209bdffd0dc63e871a4dac59b4369ceb65bb287f6e073b66b"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 239.918415,
+          "request_id": "reservation-worker-335",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "a1870a9cf852d97a21e7e2ebab5769bf2b4617a86bde6e4471081362ef05df2c"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 240.09275,
+          "request_id": "reservation-worker-336",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 166.0,
+          "outcome": "accepted",
+          "signature": "45c96c5e728dc2f21d59a4732291b39181c277c7629e62af7888c135a98ad827"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 240.271182,
+          "request_id": "reservation-worker-337",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 166.0,
+          "outcome": "accepted",
+          "signature": "ae7d595dd2200c4e0ab9d4a54fa8846ed0aa74d567fe558a22129de02288f29d"
+        }
+      ],
+      "calculations": {
+        "single_room_ms": [
+          6.0,
+          6.0,
+          6.0,
+          6.0
+        ],
+        "group_ms": [
+          122.369251,
+          166.0,
+          166.0,
+          166.0,
+          166.0
+        ],
+        "single_room_open_loop_ms": [
+          6.0,
+          6.0
+        ],
+        "group_open_loop_ms": [
+          122.369251,
+          166.0,
+          166.0
+        ],
+        "latest_group_open_over_single_open_ratio": 27.666666666666668,
+        "latest_group_open_minus_single_open_ms": 160.0
+      }
+    },
+    {
+      "service": "reservation-worker",
+      "class": "queue-backlog",
+      "reason": "Worker-local signed metrics show queue depth rising from 135 to 2496 and oldest age from 31.14 to 680.64 seconds while latency rises from 162.29 to 1461.28 ms. CPU use increases at only about 0.015 CPU-seconds per local uptime second and cpu_pressure_some remains 0.02, so the growing wait is a local backlog rather than CPU saturation.",
+      "observations": [
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 23.76769,
+          "requests_total": 34,
+          "errors_total": 0,
+          "cpu_seconds_total": 0.356515,
+          "latency_ms": 162.288918,
+          "queue_depth": 135,
+          "queue_oldest_age_sec": 31.144459,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 5,
+          "durable_outcomes_total": 5,
+          "process_epoch": 0,
+          "signature": "5b4019659df82725cb75a7508ffe2d406019180827732aaf096f1dca41e234d3"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 90.151008,
+          "requests_total": 128,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.352265,
+          "latency_ms": 308.332217,
+          "queue_depth": 400,
+          "queue_oldest_age_sec": 104.166109,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "09b8306c9bd930c1126f45ce68f8f025971c19001040df0f91abf178b824f950"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 162.147079,
+          "requests_total": 228,
+          "errors_total": 0,
+          "cpu_seconds_total": 2.432206,
+          "latency_ms": 466.723575,
+          "queue_depth": 688,
+          "queue_oldest_age_sec": 183.361787,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 40,
+          "durable_outcomes_total": 40,
+          "process_epoch": 6,
+          "signature": "83275d0e4f146b82069920d68d2435a14eebf0c48b5785704ffe42eb468c0ff9"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 485.891371,
+          "requests_total": 667,
+          "errors_total": 0,
+          "cpu_seconds_total": 7.288371,
+          "latency_ms": 1178.961015,
+          "queue_depth": 1983,
+          "queue_oldest_age_sec": 539.480508,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 121,
+          "durable_outcomes_total": 121,
+          "process_epoch": 20,
+          "signature": "f1022887633bcd29a1e1a41e8912621a9e8bd103ccb9262ddd8521119273f3cc"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 614.218342,
+          "requests_total": 855,
+          "errors_total": 0,
+          "cpu_seconds_total": 9.213275,
+          "latency_ms": 1461.280352,
+          "queue_depth": 2496,
+          "queue_oldest_age_sec": 680.640176,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 153,
+          "durable_outcomes_total": 153,
+          "process_epoch": 25,
+          "signature": "8ea704d45505f9f21e029023d6e406aea869d72a91e8d60ba5f97f88d893c083"
+        }
+      ],
+      "calculations": {
+        "initial_queue_depth": 135,
+        "latest_queue_depth": 2496,
+        "queue_depth_increase": 2361,
+        "initial_queue_oldest_age_sec": 31.144459,
+        "latest_queue_oldest_age_sec": 680.640176,
+        "oldest_age_increase_sec": 649.495717,
+        "initial_latency_ms": 162.288918,
+        "latest_latency_ms": 1461.280352,
+        "cpu_seconds_per_local_uptime_second_initial_to_latest": 0.01500000037259676,
+        "cpu_pressure_some_initial": 0.02,
+        "cpu_pressure_some_latest": 0.02
+      }
+    },
+    {
+      "service": "synthetic-probe",
+      "class": "probe-population-gap",
+      "reason": "The monitor-owned dashboard deliberately selects only requests emitted after the previous closed-loop request completed. Across repeated snapshots its selected population falls from 189/200 to 733/1800 and then 1933/6800 scheduled arrivals, omitting 4867 expected arrivals in the latest record. Its latest selected closed-loop p99 is 70 ms while the same latest owned casebook interval reports 7965 ms for scheduled-to-completion p99 in the expected open-loop group population. The improving dashboard therefore does not represent the scheduled incident traffic.",
+      "observations": [
+        {
+          "kind": "casebook",
+          "service": "synthetic-probe",
+          "uptime_sec": 23.554222,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 189,
+            "expected_scheduled_arrivals": 200,
+            "latest_p99_ms": 216,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 2
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "d7e394773a9d62c39946588c914c8e0aa2311ac9472ff4bf079345b31d26f574"
+        },
+        {
+          "kind": "casebook",
+          "service": "synthetic-probe",
+          "uptime_sec": 161.942139,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            },
+            {
+              "interval": 10,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1410,
+              "queue_oldest_age_sec": 180,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 70
+            },
+            {
+              "interval": 11,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1525,
+              "queue_oldest_age_sec": 197,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 77
+            },
+            {
+              "interval": 12,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1640,
+              "queue_oldest_age_sec": 214,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 84
+            },
+            {
+              "interval": 13,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1755,
+              "queue_oldest_age_sec": 231,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 91
+            },
+            {
+              "interval": 14,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1870,
+              "queue_oldest_age_sec": 248,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 98
+            },
+            {
+              "interval": 15,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1985,
+              "queue_oldest_age_sec": 265,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 709,
+            "expected_scheduled_arrivals": 1700,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 17
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "741d5d701d1fe8d133d560d633c59d11135ea620995527aaf4ef7fb82c883f81"
+        },
+        {
+          "kind": "casebook",
+          "service": "synthetic-probe",
+          "uptime_sec": 614.017123,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            },
+            {
+              "interval": 10,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1410,
+              "queue_oldest_age_sec": 180,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 70
+            },
+            {
+              "interval": 11,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1525,
+              "queue_oldest_age_sec": 197,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 77
+            },
+            {
+              "interval": 12,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1640,
+              "queue_oldest_age_sec": 214,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 84
+            },
+            {
+              "interval": 13,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1755,
+              "queue_oldest_age_sec": 231,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 91
+            },
+            {
+              "interval": 14,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1870,
+              "queue_oldest_age_sec": 248,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 98
+            },
+            {
+              "interval": 15,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1985,
+              "queue_oldest_age_sec": 265,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            },
+            {
+              "interval": 17,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2215,
+              "queue_oldest_age_sec": 299,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 119
+            },
+            {
+              "interval": 18,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2330,
+              "queue_oldest_age_sec": 316,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 126
+            },
+            {
+              "interval": 19,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2445,
+              "queue_oldest_age_sec": 333,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 133
+            },
+            {
+              "interval": 20,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2560,
+              "queue_oldest_age_sec": 350,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 140
+            },
+            {
+              "interval": 21,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2675,
+              "queue_oldest_age_sec": 367,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 147
+            },
+            {
+              "interval": 22,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2790,
+              "queue_oldest_age_sec": 384,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 154
+            },
+            {
+              "interval": 23,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2905,
+              "queue_oldest_age_sec": 401,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 161
+            },
+            {
+              "interval": 24,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3020,
+              "queue_oldest_age_sec": 418,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 168
+            },
+            {
+              "interval": 25,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3135,
+              "queue_oldest_age_sec": 435,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 175
+            },
+            {
+              "interval": 26,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3250,
+              "queue_oldest_age_sec": 452,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 182
+            },
+            {
+              "interval": 27,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3365,
+              "queue_oldest_age_sec": 469,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 189
+            },
+            {
+              "interval": 28,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3480,
+              "queue_oldest_age_sec": 486,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 196
+            },
+            {
+              "interval": 29,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3595,
+              "queue_oldest_age_sec": 503,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 203
+            },
+            {
+              "interval": 30,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3710,
+              "queue_oldest_age_sec": 520,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 210
+            },
+            {
+              "interval": 31,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3825,
+              "queue_oldest_age_sec": 537,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 217
+            },
+            {
+              "interval": 32,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3940,
+              "queue_oldest_age_sec": 554,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 224
+            },
+            {
+              "interval": 33,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4055,
+              "queue_oldest_age_sec": 571,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 231
+            },
+            {
+              "interval": 34,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4170,
+              "queue_oldest_age_sec": 588,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 238
+            },
+            {
+              "interval": 35,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4285,
+              "queue_oldest_age_sec": 605,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 245
+            },
+            {
+              "interval": 36,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4400,
+              "queue_oldest_age_sec": 622,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 252
+            },
+            {
+              "interval": 37,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4515,
+              "queue_oldest_age_sec": 639,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 259
+            },
+            {
+              "interval": 38,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4630,
+              "queue_oldest_age_sec": 656,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 266
+            },
+            {
+              "interval": 39,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4745,
+              "queue_oldest_age_sec": 673,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 273
+            },
+            {
+              "interval": 40,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4860,
+              "queue_oldest_age_sec": 690,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 280
+            },
+            {
+              "interval": 41,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 4975,
+              "queue_oldest_age_sec": 707,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 287
+            },
+            {
+              "interval": 42,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5090,
+              "queue_oldest_age_sec": 724,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 294
+            },
+            {
+              "interval": 43,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5205,
+              "queue_oldest_age_sec": 741,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 301
+            },
+            {
+              "interval": 44,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5320,
+              "queue_oldest_age_sec": 758,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 308
+            },
+            {
+              "interval": 45,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5435,
+              "queue_oldest_age_sec": 775,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 315
+            },
+            {
+              "interval": 46,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5550,
+              "queue_oldest_age_sec": 792,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 322
+            },
+            {
+              "interval": 47,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5665,
+              "queue_oldest_age_sec": 809,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 329
+            },
+            {
+              "interval": 48,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5780,
+              "queue_oldest_age_sec": 826,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 336
+            },
+            {
+              "interval": 49,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 5895,
+              "queue_oldest_age_sec": 843,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 343
+            },
+            {
+              "interval": 50,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6010,
+              "queue_oldest_age_sec": 860,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 350
+            },
+            {
+              "interval": 51,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6125,
+              "queue_oldest_age_sec": 877,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 357
+            },
+            {
+              "interval": 52,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6240,
+              "queue_oldest_age_sec": 894,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 364
+            },
+            {
+              "interval": 53,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6355,
+              "queue_oldest_age_sec": 911,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 371
+            },
+            {
+              "interval": 54,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6470,
+              "queue_oldest_age_sec": 928,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 378
+            },
+            {
+              "interval": 55,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6585,
+              "queue_oldest_age_sec": 945,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 385
+            },
+            {
+              "interval": 56,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6700,
+              "queue_oldest_age_sec": 962,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 392
+            },
+            {
+              "interval": 57,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6815,
+              "queue_oldest_age_sec": 979,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 399
+            },
+            {
+              "interval": 58,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 6930,
+              "queue_oldest_age_sec": 996,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 406
+            },
+            {
+              "interval": 59,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7045,
+              "queue_oldest_age_sec": 1013,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 413
+            },
+            {
+              "interval": 60,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7160,
+              "queue_oldest_age_sec": 1030,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 420
+            },
+            {
+              "interval": 61,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7275,
+              "queue_oldest_age_sec": 1047,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 427
+            },
+            {
+              "interval": 62,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7390,
+              "queue_oldest_age_sec": 1064,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 434
+            },
+            {
+              "interval": 63,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7505,
+              "queue_oldest_age_sec": 1081,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 441
+            },
+            {
+              "interval": 64,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7620,
+              "queue_oldest_age_sec": 1098,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 448
+            },
+            {
+              "interval": 65,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7735,
+              "queue_oldest_age_sec": 1115,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 455
+            },
+            {
+              "interval": 66,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7850,
+              "queue_oldest_age_sec": 1132,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 462
+            },
+            {
+              "interval": 67,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 7965,
+              "queue_oldest_age_sec": 1149,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 469
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 1933,
+            "expected_scheduled_arrivals": 6800,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 68
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "32accb50ece16c9ce22bd49a7c2f75bca234d801bdf5b5aa700430e094acd808"
+        }
+      ],
+      "calculations": {
+        "selected_population_by_snapshot": [
+          {
+            "uptime_sec": 23.554222,
+            "selected_rows": 189,
+            "expected_scheduled_arrivals": 200,
+            "omitted_rows": 11,
+            "selected_fraction": 0.945
+          },
+          {
+            "uptime_sec": 161.942139,
+            "selected_rows": 709,
+            "expected_scheduled_arrivals": 1700,
+            "omitted_rows": 991,
+            "selected_fraction": 0.41705882352941176
+          },
+          {
+            "uptime_sec": 614.017123,
+            "selected_rows": 1933,
+            "expected_scheduled_arrivals": 6800,
+            "omitted_rows": 4867,
+            "selected_fraction": 0.2842647058823529
+          }
+        ],
+        "latest_selected_dashboard_p99_ms": 70,
+        "latest_open_loop_scheduled_to_completion_p99_ms": 7965,
+        "latest_omitted_expected_arrivals": 4867,
+        "latest_selected_fraction": 0.2842647058823529,
+        "population_field": "requests emitted after the previous closed-loop request completed"
+      }
+    }
+  ],
+  "ruled_out": [
+    {
+      "service": "availability-cache",
+      "class": "none",
+      "reason": "A cumulative CPU counter alone is not treated as proof of saturation. Across repeated local snapshots latency remains 18 ms, queues and errors remain zero, pressure remains 0.16, and all direct documented probe populations remain 6 ms and accepted.",
+      "observations": [
+        {
+          "kind": "metrics",
+          "service": "availability-cache",
+          "uptime_sec": 25.373297,
+          "requests_total": 35,
+          "errors_total": 0,
+          "cpu_seconds_total": 4.108953,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.16,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 6,
+          "durable_outcomes_total": 6,
+          "process_epoch": 1,
+          "signature": "f8ff10448e348e58e42b621360b04d5457a8ed5c263659a689570aff4da15179"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 94.244658,
+          "request_id": "availability-cache-141",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "aeb72e7c48e0fada4b7d30649b7e7dab7d7bc46acfda6dfb328fe27c7aa107df"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 94.257318,
+          "request_id": "availability-cache-142",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "08696388c505b57505b1380b66709279fe651f031c0eda354d73d94f70560a94"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 94.270358,
+          "request_id": "availability-cache-143",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "3bec2ed73f0ee71f619eb68d99811051ff967143339f6f2b048658c0d17a7e96"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 94.283959,
+          "request_id": "availability-cache-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "50519fbafb2187b077532ebf22c5f1efe2f4754d2018ceeda0cc639bb19d7693"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 241.872328,
+          "request_id": "availability-cache-368",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "7cc02ff7660ea9730e817dc82eeadca0f0e9e48d7e5a3e833b4e5d13c06c2815"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 241.885528,
+          "request_id": "availability-cache-369",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "e785f3c36ca9aadae6090a23307a2808dcbcabdfaa5298f75844606b33f7ae6b"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 241.898695,
+          "request_id": "availability-cache-370",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "c2321787fcffc45e470755d4d4269948e834e8339e2922fcc8cb62ea2ff4892c"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 241.911642,
+          "request_id": "availability-cache-371",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "272bf346f5e10fbc8e4ba02a7b97ca25306b777213ae461404a17c3dd3eb1429"
+        },
+        {
+          "kind": "metrics",
+          "service": "availability-cache",
+          "uptime_sec": 615.815894,
+          "requests_total": 935,
+          "errors_total": 0,
+          "cpu_seconds_total": 18.474477,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.16,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 153,
+          "durable_outcomes_total": 153,
+          "process_epoch": 25,
+          "signature": "84e813b37c44a077fe17a7ea505f88a20df6e7f7201e169599d46d15f3bf88a5"
+        }
+      ]
+    },
+    {
+      "service": "confirmation",
+      "class": "none",
+      "reason": "Repeated confirmation-local snapshots retain 18 ms latency, no queue, zero errors, and low pressure; all documented direct probe combinations remain 6 ms and accepted. Confirmation does not explain declining completions or group waits.",
+      "observations": [
+        {
+          "kind": "metrics",
+          "service": "confirmation",
+          "uptime_sec": 90.585087,
+          "requests_total": 136,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.358776,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "74f604f50fad92ab8190f0e410a47b3a75edabc02a387bdd4f02af75a3cb5021"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 93.163277,
+          "request_id": "confirmation-141",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "fd2a2cfcee5186ff517d8824debfb3582ffb81a128884eaf66d83fa2949dca97"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 93.175613,
+          "request_id": "confirmation-142",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "b65d8fee833b40b37ea4458bd0a8ebd8319cd634fbc66c68b36a268090e2f001"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 93.188916,
+          "request_id": "confirmation-143",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "72fccbbbb92a05c559acde6b807b916eb6b209bd508ba25514bf00f1b619641c"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 93.202096,
+          "request_id": "confirmation-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "a521f77fd9b5eeedc8d61609ed8c278c9bc5662cc9272dff9298c1e93537c856"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 240.791707,
+          "request_id": "confirmation-367",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "27f705b2fff596a8bbda577aced4780b26a3115e3f7b487d5f04e84f3f121324"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 240.806196,
+          "request_id": "confirmation-368",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "4693e483a954d6485f4324f1e822006daaa18af9415b962e357f1010c68347cf"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 240.819319,
+          "request_id": "confirmation-369",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "74617b41f758fb29fbc0d8d3f867fd26c5d3e88f862445fd5b5584ee13cf7854"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 240.83189,
+          "request_id": "confirmation-370",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "c19dc9854217622a144bfb803c272a1acada01415a16ee7ccf8f391a63976011"
+        },
+        {
+          "kind": "metrics",
+          "service": "confirmation",
+          "uptime_sec": 614.651426,
+          "requests_total": 935,
+          "errors_total": 0,
+          "cpu_seconds_total": 9.219771,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 153,
+          "durable_outcomes_total": 153,
+          "process_epoch": 25,
+          "signature": "ba497ccce316d73c8f1e26b4bd21ce26d49e7745ad65745c4ed3948027f1b214"
+        }
+      ]
+    },
+    {
+      "service": "inventory",
+      "class": "none",
+      "reason": "Repeated inventory-local snapshots retain 18 ms latency, no queue, zero errors, and low pressure; direct single-room and group probes in both loop modes remain 6 ms and accepted. Inventory does not own the observed group slowdown.",
+      "observations": [
+        {
+          "kind": "metrics",
+          "service": "inventory",
+          "uptime_sec": 91.345152,
+          "requests_total": 136,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.370177,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "73ef298660c42542968a949ab5674f09301e95b531c18e73ab018a8e49700633"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 93.881924,
+          "request_id": "inventory-141",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "e90a2c706e593112e8ea7c643b7219eeb52dde86e02acb6cfa71fd5ed1f6bff7"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 93.895099,
+          "request_id": "inventory-142",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "043e01785a6a980688728c51fe2836d998a804ad03460ac2d836f1c877449eab"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 93.908583,
+          "request_id": "inventory-143",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "8c423d480ee026a6748b222d263db2620226764a399c62424d632cf2da6250fc"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 93.92161,
+          "request_id": "inventory-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "594face6baa9bcb3ed47f6ac204ba21edf35dace4572d23b7b6c343a39c324dd"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 241.510008,
+          "request_id": "inventory-368",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "f421e7499d8429b140313adaa87c805a3ec82ade2668d746828f683de32d67f1"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 241.523238,
+          "request_id": "inventory-369",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "d63b391fdb8655fee7e262b756336b4c1ad3d4ea30c57c4752130bc3a022ab62"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 241.536332,
+          "request_id": "inventory-370",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "2cc510b2397b389dd816dabcf4a3320922807841dbe5e14405ae544812b6bd38"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 241.549717,
+          "request_id": "inventory-371",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "bc61d85aada8013eb95a3b8e6d50922b437aef4d37e4f5f0ae8ab0c4ed810c55"
+        },
+        {
+          "kind": "metrics",
+          "service": "inventory",
+          "uptime_sec": 615.411958,
+          "requests_total": 935,
+          "errors_total": 0,
+          "cpu_seconds_total": 9.231179,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 153,
+          "durable_outcomes_total": 153,
+          "process_epoch": 25,
+          "signature": "d2d696916da8691455fe8ca9024cafd1ec82642d1fe087ee7c180be3c6f54af2"
+        }
+      ]
+    },
+    {
+      "service": "reservation-edge",
+      "class": "none",
+      "reason": "Repeated edge-local snapshots retain 18 ms latency, zero queue depth, zero errors, and low pressure; direct receipts for every documented class/mode combination remain 6 ms and accepted. The edge does not explain group-specific waits or the worker-local backlog.",
+      "observations": [
+        {
+          "kind": "metrics",
+          "service": "reservation-edge",
+          "uptime_sec": 90.72132,
+          "requests_total": 136,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.36082,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "eaa9880abf1f92ed5ffb97c8f24577e8968d7672b4d4b608f61c0adf647d7b9a"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 92.770751,
+          "request_id": "reservation-edge-140",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "8fc3e1a228a0921475b875c2370ec1b1e35892cc48ddee0afe9841521b933c44"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 92.78404,
+          "request_id": "reservation-edge-141",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "ed2409bb7490e4f3d7814beef8a9f11d35434e59bfc97f6b1ec9604cadb37b9b"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 92.796816,
+          "request_id": "reservation-edge-142",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "a60b29b66698521b1ec80b1b63f206e01f93da906e4a6f287d0a851aef5e9ac0"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 92.810163,
+          "request_id": "reservation-edge-143",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "361d3654e4345d335c32470c5349341b0cee5e21aac909f8f5326993607a2c3e"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 240.389667,
+          "request_id": "reservation-edge-367",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "7a7ffed67a67592ee46cad07353d2f649ce7ae151e405d03ba8443217b84a684"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 240.403987,
+          "request_id": "reservation-edge-368",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "0ebdcac62d9636fa13c7bfe76de8cfdfb26395aaa06c07ad0fa29d094c6bf687"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 240.418595,
+          "request_id": "reservation-edge-369",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "ffb0d7e2c29a2452104fc816b2e26f9164e8272acff94ebcca7d0977d9c31d48"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 240.431767,
+          "request_id": "reservation-edge-370",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "cde6ceae443283891403eb2bc712e25579a30a87515285e47baf8d993ec60c55"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-edge",
+          "uptime_sec": 614.785412,
+          "requests_total": 935,
+          "errors_total": 0,
+          "cpu_seconds_total": 9.221781,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 153,
+          "durable_outcomes_total": 153,
+          "process_epoch": 25,
+          "signature": "855709df6f9ac34757c7743598f6904c213f3ffff5ac8f0070fb98f445b9d49a"
+        }
+      ]
+    },
+    {
+      "service": "user-wait-log",
+      "class": "none",
+      "reason": "Repeated wait-log-local snapshots retain 18 ms latency, no queue, zero errors, and low pressure; direct single-room and group requests in both modes remain 6 ms and accepted. Its empty lifecycle casebook is not used as proof, but its repeated local behavior is consistent with its contract.",
+      "observations": [
+        {
+          "kind": "metrics",
+          "service": "user-wait-log",
+          "uptime_sec": 90.047651,
+          "requests_total": 136,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.350715,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "914666a29d516a5a71b5844e501264733c4e2d3fa78b8a6e39e383400cb18c73"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 92.664532,
+          "request_id": "user-wait-log-141",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "2365be61d95aeba70590b3343c19ec8c62eeec3e25f0e62bee1ab7d3d47b06df"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 92.676715,
+          "request_id": "user-wait-log-142",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "7b223ab73503ca2db6de478f8465e38868ba489546d2b0e557fbfcb8e3438697"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 92.688671,
+          "request_id": "user-wait-log-143",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "027b1f7da350140b05be4b13324a8c1fd5a27b02846be0c601edaf70d41c9446"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 92.701131,
+          "request_id": "user-wait-log-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "48a11b9e95f8f717db87d6e856423c00fffb95f4c28d4fdaaae8f25033e0cca2"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 240.294143,
+          "request_id": "user-wait-log-368",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "63bd3146a3f870a8b21813f3452a2b4e4136c3043d8e46ac51ac8134f41a054b"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 240.306835,
+          "request_id": "user-wait-log-369",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "ea94def90d7fa62a0ebb09f5de106a0bd03a5a8ec3b070be589d711660852679"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 240.318996,
+          "request_id": "user-wait-log-370",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "1729f61bcc1b8c634db55fc69841e280a6a72a932edceda0fa53a4cd6a35efe4"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 240.331571,
+          "request_id": "user-wait-log-371",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "6a21eff0fda2581f191e4ea40ffd59ad756721942d7edc5455e6fcf366bbb598"
+        },
+        {
+          "kind": "metrics",
+          "service": "user-wait-log",
+          "uptime_sec": 614.111745,
+          "requests_total": 935,
+          "errors_total": 0,
+          "cpu_seconds_total": 9.211676,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 153,
+          "durable_outcomes_total": 153,
+          "process_epoch": 25,
+          "signature": "cd4980b74d5bf933129f405df703ce1248808909f71c5591ca25f372faea3f91"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+schema_version = "1.1"
+artifacts = [
+    "/app/verdict.txt",
+    "/app/monitor_evidence.json",
+    "/var/log/svc/synthetic-probe.log",
+    "/var/log/svc/reservation-edge.log",
+    "/var/log/svc/admission-gate.log",
+    "/var/log/svc/reservation-worker.log",
+    "/var/log/svc/availability-cache.log",
+    "/var/log/svc/inventory.log",
+    "/var/log/svc/confirmation.log",
+    "/var/log/svc/user-wait-log.log",
+]
+
+[task]
+uuid_v5 = "8aef516b-702c-5660-a8f0-da85401c9170"
+authors = [
+    "harish.gandhi@ethara.ai",
+    "bharat.patidar@ethara.ai",
+]
+name = "kanao/monitoring__reservation-admission-latency"
+description = "Determine whether a reservation platform's apparent recovery after admission control is real, identify the service whose capacity loss the closed-loop probes hide, and clear the alternatives whose behaviour matches their contracts."
+keywords = ["monitoring-forensics", "causal-diagnosis"]
+
+[metadata]
+difficulty = "expert"
+category = "monitoring"
+tags = ["monitoring-forensics", "causal-diagnosis", "coordinated-omission"]
+calibrated = false
+estimated_duration_sec = 3600.0
+expert_time_estimate_min = 30.0
+junior_time_estimate_min = 90.0
+
+[verifier]
+timeout_sec = 300.0
+environment_mode = "shared"
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+build_timeout_sec = 1800.0
+allow_internet = true
+mcp_servers = []

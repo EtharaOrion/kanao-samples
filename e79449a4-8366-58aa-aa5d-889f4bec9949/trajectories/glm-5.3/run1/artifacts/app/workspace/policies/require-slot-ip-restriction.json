@@ -1,0 +1,31 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Web/sites/slots/config"
+      },
+      {
+        "anyOf": [
+          {
+            "field": "id",
+            "like": "*/sites/func-paymesh-pagos-${environment}/slots/blue/config/web"
+          },
+          {
+            "field": "id",
+            "like": "*/sites/func-paymesh-pagos-canary-${environment}/slots/blue/config/web"
+          }
+        ]
+      },
+      {
+        "not": {
+          "field": "Microsoft.Web/sites/slots/config/ipSecurityRestrictionsDefaultAction",
+          "equals": "Deny"
+        }
+      }
+    ]
+  },
+  "then": {
+    "effect": "Deny"
+  }
+}

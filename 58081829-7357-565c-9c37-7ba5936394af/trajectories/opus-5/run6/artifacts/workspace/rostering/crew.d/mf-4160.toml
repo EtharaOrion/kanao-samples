@@ -1,0 +1,6 @@
+name = "mf-4160"
+base = "oxenholme-base"
+rank = "captain"
+category = "long-haul"
+joined = "2029-06-23"
+enabled = true

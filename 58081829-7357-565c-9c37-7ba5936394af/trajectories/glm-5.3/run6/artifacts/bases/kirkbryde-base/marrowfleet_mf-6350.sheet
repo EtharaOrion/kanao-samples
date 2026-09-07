@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-6350
+base: kirkbryde-base
+rank: captain
+category: short-haul
+period: 2041-B5
+sectors: MF412:265 MF413:230
+factor: 100
+limit: fixed
+credit: 430
+key: mfl-2041
+seal: e5cbf7ff263b2a22

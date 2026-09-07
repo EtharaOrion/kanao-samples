@@ -1,0 +1,7 @@
+{
+    "test_outcome_a_guardrails_see_their_targets_under_review": 5,
+    "test_outcome_b_every_definition_is_enforced_under_review": 1,
+    "test_outcome_c_documents_follow_their_binding_under_review": 5,
+    "test_negative_verifier_package_was_removed": -5,
+    "test_negative_policy_inputs_were_altered": -3
+}

@@ -1,0 +1,6 @@
+name = "mf-2210"
+base = "arnwick-base"
+rank = "captain"
+category = "long-haul"
+joined = "2031-02-17"
+enabled = true

@@ -1,0 +1,12 @@
+# marrowfleet duty sheet
+crew: mf-3480
+base: arnwick-base
+rank: first-officer
+category: short-haul
+period: 2041-B5
+sectors: MF204:210 MF205:245 MF206:190
+factor: 100
+limit: fixed
+credit: 300
+key: mfl-2041
+seal: 3a9e3eaba1a049a0

@@ -1,0 +1,43 @@
+[
+  {
+    "source": "/var/lib/marrowfleet/policy-selection.json",
+    "destination": "artifacts/policy-selection.json",
+    "type": "file",
+    "status": "failed",
+    "service": null,
+    "collected": false,
+    "skipped_reason": "path absent in the run output"
+  },
+  {
+    "source": "/workspace/policy",
+    "destination": "artifacts/workspace/policy",
+    "type": "directory",
+    "status": "ok",
+    "service": null,
+    "collected": true
+  },
+  {
+    "source": "/workspace/rostering",
+    "destination": "artifacts/workspace/rostering",
+    "type": "directory",
+    "status": "ok",
+    "service": null,
+    "collected": true
+  },
+  {
+    "source": "/srv/bases",
+    "destination": "artifacts/bases",
+    "type": "directory",
+    "status": "ok",
+    "service": null,
+    "collected": true
+  },
+  {
+    "source": "/var/lib/marrowfleet/roster.register",
+    "destination": "artifacts/roster.register",
+    "type": "file",
+    "status": "ok",
+    "service": null,
+    "collected": true
+  }
+]

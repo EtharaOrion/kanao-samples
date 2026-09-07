@@ -1,0 +1,64 @@
+===== short test summary info =====
+                assert result.returncode!=0,'invalid complete history accepted'
+                assert not result.stdout.strip(),'invalid request emitted a partial result'
+            else:
+                assert result.returncode==0,result.stderr
+                assert json.loads(result.stdout)==expected
+        good=request([[event(2)], [event(10,'B')]])
+        run(good,{'A':None,'B':['x']})
+        permuted=copy.deepcopy(good);permuted['transport']['pages'].reverse();permuted['transport']['commits'].reverse()
+        permuted['transport']['pages']+=permuted['transport']['pages'][:1]
+        permuted['transport']['commits']+=permuted['transport']['commits'][:1]
+        run(permuted,{'A':None,'B':['x']})
+        run(request([[event(2)],[dict(event(1,'B'),authorization='q')]]),{'A':['x'],'B':['x']})
+        # Superseded conflicts are invalid even when the latest subject is excluded.
+        run(request([[event(2,value='old'),event(2,value='conflict')],[event(10,'outside')]]),None)
+        for damage in ['missing','digest','page_replay','commit_replay','extra','uncommitted']:
+            bad=copy.deepcopy(good);transport=bad['transport']
+            if damage=='missing':transport['pages'].pop(1)
+            if damage=='digest':transport['pages'][0]['events'][0]['parameters']=['tampered']
+            if damage=='page_replay':
+                page=copy.deepcopy(transport['pages'][0]);page['events']=[];transport['pages'].append(page)
+            if damage=='commit_replay':
+                commit=dict(transport['commits'][0],sha256='0'*64);transport['commits'].append(commit)
+            if damage=='extra':transport['pages'].append(dict(batch='1',part=2,events=[]))
+            if damage=='uncommitted':transport['pages'].append(dict(batch='unknown',part=0,events=[]))
+            run(bad,None)
+        # Integrity must hold for records discarded by correction, time, or projection.
+        for changes in [dict(revision='02'),dict(operation='approve'),dict(start='2026-02-30'),dict(start='2028-01-01'),dict(parameters=[3]),dict(extra='ignored')]:
+            old=event(2,'outside');old.update(changes)
+>           run(request([[old],[event(10,'outside',operation='withdraw')]]),None)
+
+/tests/test_outputs.py:427: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+req = {'now': '2026-09-05', 'subjects': ['A', 'B'], 'transport': {'commits': [{'batch': '1', 'parts': 2, 'sha256': '6d27e32c...027-01-01', 'operation': 'withdraw', 'parameters': [...], ...}], 'part': 0}, {'batch': '2', 'events': [], 'part': 1}]}}
+expected = None
+
+    def run(req,expected):
+        result=subprocess.run(['python3','/workspace/policy/resolve.py'],input=json.dumps(req),capture_output=True,text=True,timeout=10)
+        if expected is None:
+>           assert result.returncode!=0,'invalid complete history accepted'
+E           AssertionError: invalid complete history accepted
+E           assert 0 != 0
+E            +  where 0 = CompletedProcess(args=['python3', '/workspace/policy/resolve.py'], returncode=0, stdout='{"A": null, "B": null}\n', stderr='').returncode
+
+/tests/test_outputs.py:399: AssertionError
+==================================== PASSES ====================================
+------------ generated xml file: /logs/verifier/evidence/junit.xml -------------
+=========================== short test summary info ============================
+PASSED ../tests/test_outputs.py::test_every_crew_member_states_the_period_the_sectors_register_is_current_for
+PASSED ../tests/test_outputs.py::test_every_crew_member_is_credited_what_the_sectors_and_the_limitations_give
+PASSED ../tests/test_outputs.py::test_the_roster_register_records_the_seal_the_run_stamped
+PASSED ../tests/test_outputs.py::test_policy_corrections_withdrawals_and_effective_boundaries
+FAILED ../tests/test_outputs.py::test_every_base_stands_the_drop_its_own_fragment_declares
+FAILED ../tests/test_outputs.py::test_the_published_reader_settles_every_sheet_the_run_built
+FAILED ../tests/test_outputs.py::test_a_crew_member_was_taken_out_of_the_register
+FAILED ../tests/test_outputs.py::test_a_base_was_taken_out_of_the_register - ...
+FAILED ../tests/test_outputs.py::test_the_signing_key_tree_was_opened_up - As...
+FAILED ../tests/test_outputs.py::test_policy_repair_boundaries_were_changed
+FAILED ../tests/test_outputs.py::test_committed_history_is_complete_before_any_projection
+========================= 7 failed, 4 passed in 0.54s ==========================
+# not earned: test_committed_history_is_complete_before_any_projection, test_every_base_stands_the_drop_its_own_fragment_declares, test_the_published_reader_settles_every_sheet_the_run_built
+# weighted work: 10 of 25 positive weight
+VERIFIER-REWARD 0.4000 status=ok
