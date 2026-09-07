@@ -49,7 +49,7 @@ pass_rate(task, model) = 100 × mean( overall_score over that model's 8 runs on 
 
 | Property         | Value                                                                       |
 | :--------------- | :-------------------------------------------------------------------------- |
-| Tasks            | **3**, across 3 distinct categories                                          |
+| Tasks            | **3**, across 3 distinct categories                                         |
 | Models           | `opus-5` and `glm-5.3`                                  |
 | Runs & grid      | 8 per model per task = **48 total**; full 2 × 8 grid, no gaps                |
 | Difficulty tiers | Banded on **opus-5**'s mean over 8 runs - one task per tier                  |
