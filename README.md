@@ -86,10 +86,6 @@ kanao-samples/
         └── glm-5.3/run1 … run8
 ```
 
-Task directories are named by UUID v5. `task.toml` also carries a human-readable `name`
-(`kanao/<slug>`), and this document uses the slug's first word - `marrowfleet`, `paymesh`,
-`reservation` - as shorthand for the three tasks.
-
 ## Difficulty tiers
 
 A tier is a **band on a measured rate** - the mean `overall_score` over eight runs:
