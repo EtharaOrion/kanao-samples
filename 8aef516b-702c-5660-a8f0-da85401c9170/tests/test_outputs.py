@@ -23,8 +23,22 @@ def _read_lines(path: str) -> list[str]:
     except OSError:
         return []
 
-
-SPEC = json.loads(Path("/tests/grader_spec.json").read_text())
+SPEC = {
+    "mechanism": "coordinated-omission",
+    "services": [
+        "synthetic-probe", "reservation-edge", "admission-gate", "reservation-worker",
+        "availability-cache", "inventory", "confirmation", "user-wait-log",
+    ],
+    "allowed_labels": [
+        "capacity-cliff", "probe-population-gap", "cpu-saturation", "queue-backlog",
+        "slow-query", "input-scaling", "load-shedding", "none",
+    ],
+    "expected_findings": [["reservation-worker", "capacity-cliff"]],
+    "required_ruleouts": ["availability-cache", "admission-gate"],
+    "verdict_path": "/app/verdict.txt",
+    "evidence_path": "/app/monitor_evidence.json",
+    "minimum_span_sec": 45,
+}
 _EXPECTED_SET = {tuple(item) for item in SPEC["expected_findings"]}
 _SERVICES = set(SPEC["services"])
 _LABELS = set(SPEC["allowed_labels"])

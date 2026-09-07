@@ -1,4 +1,5 @@
 {
+  "weights": {
     "test_format_and_known_vocabulary": 1,
     "test_expected_finding": 5,
     "test_causal_discriminator": 5,
@@ -10,4 +11,5 @@
     "test_no_phantom_findings": 3,
     "test_negative_phantom_finding": -3,
     "test_negative_fabricated_observation": -5
+  }
 }

@@ -15,8 +15,8 @@ artifacts = [
 [task]
 uuid_v5 = "8aef516b-702c-5660-a8f0-da85401c9170"
 authors = [
-    "harish.gandhi@ethara.ai",
-    "bharat.patidar@ethara.ai",
+    "harish.gandhi@ethara.ai" ,
+    "bharat.patidar@ethara.ai"
 ]
 name = "kanao/monitoring__reservation-admission-latency"
 description = "Determine whether a reservation platform's apparent recovery after admission control is real, identify the service whose capacity loss the closed-loop probes hide, and clear the alternatives whose behaviour matches their contracts."

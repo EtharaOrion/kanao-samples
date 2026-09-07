@@ -10,8 +10,8 @@ artifacts = [
 [task]
 uuid_v5 = "58081829-7357-565c-9c37-7ba5936394af"
 authors = [
-    "ayush.teotiaint17@ethara.ai",
-    "tejaswa.dayal@ethara.ai",
+    "ayush.teotiaint17@ethara.ai" ,
+    "tejaswa.dayal@ethara.ai"
 ]
 name = "kanao/ci_repair__marrowfleet-crew-roster"
 description = "Repair a crew-rostering release pipeline so every base closes the period with complete duty sheets, crewable ranks and correct duty credit under the operating and validation contracts."

@@ -28,8 +28,8 @@ artifacts = [
 [task]
 uuid_v5 = "e79449a4-8366-58aa-aa5d-889f4bec9949"
 authors = [
-    "jatin.sihag@ethara.ai",
-    "aditi.sharma@ethara.ai",
+    "jatin.sihag@ethara.ai" ,
+    "aditi.sharma@ethara.ai"
 ]
 name = "kanao/iac_guardrails_paymesh-policy"
 description = "Bring a payments platform's Terraform environment up to its policy-as-code standard so the custom guardrail refuses out-of-band changes at every binding the standard assesses."
