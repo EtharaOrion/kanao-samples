@@ -1,0 +1,8 @@
+{
+  "test_infra_environment_produced_a_release": 0,
+  "test_manifest_reports_a_complete_release": 5,
+  "test_every_stage_survived_to_the_release_of_record": 3,
+  "test_the_release_ledger_verifies_end_to_end": 3,
+  "test_the_operating_contract_was_rewritten": -3,
+  "test_the_release_of_record_was_forged": -5
+}

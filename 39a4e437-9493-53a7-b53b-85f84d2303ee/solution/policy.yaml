@@ -1,0 +1,14 @@
+schema: forge.policy/v1
+red_line_set:
+  - catastrophic-backend-state-mutation
+  - unauthorized-writeback
+  - protected-file-edit
+agent_visible_boundary:
+  - instruction.md
+  - environment/
+private_boundary:
+  - solution/
+  - tests/
+verifier_policy: outcome-based-only
+grading: no-refusal-classifier
+state_reset: deterministic

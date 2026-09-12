@@ -1,0 +1,21 @@
+schema: forge.grounding/v1
+task_slug: pipeline-horizon__multiphase-cicd-carry
+primary_archetype: AR1
+project_archetype: pipeline-horizon
+category: deployment
+language: typescript-javascript
+repair_surface:
+  - /workspace/bin/run-pipeline
+  - /workspace/state
+protected:
+  - /workspace/pipeline/carry.spec
+  - /usr/local/lib/cicd/engine.js
+fault:
+  location: /workspace/bin/run-pipeline
+  mechanism: package-phase isolation folds the accumulated carry to the test tip with cicd fold --keep 1 and copies the truncated carry back, collapsing lint and build out of the recorded history
+fix:
+  mechanism: thread every phase against the single accumulating carry so the package phase runs on the complete history and the engine reports a complete pipeline
+outcome:
+  records: 5
+  carried_final: 4
+  complete: true

@@ -1,0 +1,18 @@
+schema_version: forge.provenance/v1
+task_slug: pipeline-horizon__release-observe-repair
+origin: original
+source_kind: synthetic
+provenance_date: "2026-09-11"
+authored_by:
+  - tejaswa.dayal@ethara.ai
+  - ayush.teotiaint17@ethara.ai
+attestation:
+  ancestry: attestation-unavailable
+  event: attestation-unavailable
+  note: prompt-only runtime carries no signing key, ancestry and event attestation are deferred obligations
+canonical_identity:
+  namespace: c53e8f3b-526f-52c0-a04e-89e2269b237d
+  uuid5: ""
+  note: uuid5 is derived over the frozen canonical task bytes at the central freeze step, left empty until the bundle is frozen into samples
+maturity: draft
+disposition: HOLD:PILOT_REQUIRED

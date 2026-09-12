@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+STATE=/workspace/state
+LEDGER="$STATE/reconcile.json"
+STAGE="$STATE/stage.json"
+
+mkdir -p "$STATE"
+: > "$LEDGER"
+rm -f "$LEDGER.journal" "$STAGE" "$STAGE.journal"
+
+tfmock apply network --state "$LEDGER"
+tfmock apply iam --state "$LEDGER"
+tfmock apply compute --state "$LEDGER"
+
+# A drift-storm runbook moved the slow tiers onto a side ledger so the reconcile
+# could finish inside the maintenance window, then folded that side ledger back
+# over the main one. The intent was to reattach the earlier tiers afterwards.
+tfmock snapshot --state "$LEDGER" --into "$STAGE" --keep 1
+tfmock apply data --state "$STAGE"
+cp "$STAGE" "$LEDGER"
+
+tfmock apply dns --state "$LEDGER"
+
+tfmock report --state "$LEDGER" > "$STATE/report.json"

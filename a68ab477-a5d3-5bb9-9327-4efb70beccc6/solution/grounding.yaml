@@ -1,0 +1,16 @@
+schema: forge.grounding/v1
+task_slug: pipeline-horizon__iac-pipeline-state-collapse
+category: iac
+language: python
+primary_archetype: AR1
+project_archetype: pipeline-horizon
+target_band: HARD
+repair_surface:
+  - /workspace/bin/run-reconcile
+  - /workspace/state
+protected_surface:
+  - /workspace/infra/reconcile.spec
+  - /usr/local/lib/tfmock/tfmock.py
+  - /usr/local/lib/tfmock/seal.key
+fault_summary: the workspace driver snapshots the accumulating ledger down to a single record before a mid-sequence apply and folds that isolated ledger back over the reconcile ledger, so early tiers drop out of the recorded history and their drift silently reappears
+fix_summary: rewrite the driver so every tier is applied against the one accumulating ledger with no snapshot fold, leaving five sealed records carried zero through four and a complete engine report

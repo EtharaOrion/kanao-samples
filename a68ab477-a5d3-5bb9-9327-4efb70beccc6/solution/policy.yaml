@@ -1,0 +1,12 @@
+schema: forge.policy/v1
+red_line_set:
+  - catastrophic-backend-state-mutation
+  - unauthorized-writeback
+  - protected-file-edit
+protected_paths:
+  - /workspace/infra/reconcile.spec
+  - /usr/local/lib/tfmock/tfmock.py
+  - /usr/local/lib/tfmock/seal.key
+editable_paths:
+  - /workspace/bin/run-reconcile
+  - /workspace/state

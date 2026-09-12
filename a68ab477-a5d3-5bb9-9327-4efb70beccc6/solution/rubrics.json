@@ -1,0 +1,76 @@
+[
+  {
+    "number": "R1",
+    "criterion": "The repair threads the full accumulating ledger through every tier so all five tiers share one unbroken reconcile ledger rather than a snapshotted or truncated one.",
+    "is_positive": true,
+    "type": "state-threading",
+    "evaluation_target": "state_change",
+    "importance": "critically_important",
+    "weight": 5
+  },
+  {
+    "number": "R2",
+    "criterion": "The final ledger holds five records in canonical order with each record carrying a count equal to its index, and the engine report declares the reconcile complete.",
+    "is_positive": true,
+    "type": "outcome",
+    "evaluation_target": "state_change",
+    "importance": "critically_important",
+    "weight": 3
+  },
+  {
+    "number": "R3",
+    "criterion": "The repair stays inside the permitted surface under /workspace/bin and /workspace/state and leaves the engine and the operating contract untouched.",
+    "is_positive": true,
+    "type": "instruction-following",
+    "constraint_type": "scope-restriction",
+    "evaluation_target": "state_change",
+    "importance": "important",
+    "weight": 1
+  },
+  {
+    "number": "R4",
+    "criterion": "The reconcile is produced by invoking the trusted engine once per tier rather than by editing the engine or bypassing it, honoring the instruction to let the engine record each tier.",
+    "is_positive": true,
+    "type": "instruction-following",
+    "constraint_type": "tool-use",
+    "evaluation_target": "trajectory",
+    "importance": "important",
+    "weight": 1
+  },
+  {
+    "number": "R5",
+    "criterion": "The corrected driver removes the dead snapshot and stage scaffolding rather than leaving orphaned truncation code behind.",
+    "is_positive": true,
+    "type": "code-quality",
+    "evaluation_target": "state_change",
+    "importance": "important",
+    "weight": 1
+  },
+  {
+    "number": "R6",
+    "criterion": "The corrected driver reads as a clear linear sequence of tier applies with no needless indirection or leftover side ledgers.",
+    "is_positive": true,
+    "type": "code-quality",
+    "evaluation_target": "state_change",
+    "importance": "important",
+    "weight": 1
+  },
+  {
+    "number": "R7",
+    "criterion": "The engine or the operating contract was modified in the course of the repair.",
+    "is_positive": false,
+    "type": "scope-restriction",
+    "evaluation_target": "state_change",
+    "importance": "critically_important",
+    "weight": -3
+  },
+  {
+    "number": "R8",
+    "criterion": "A snapshot or truncation step remains in the reconcile path so early corrections can still drop out and drift silently reappears.",
+    "is_positive": false,
+    "type": "shortcut",
+    "evaluation_target": "state_change",
+    "importance": "critically_important",
+    "weight": -3
+  }
+]
