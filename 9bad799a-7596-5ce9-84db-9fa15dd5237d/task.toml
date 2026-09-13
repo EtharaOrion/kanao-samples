@@ -1,0 +1,39 @@
+schema_version = "1.1"
+
+artifacts = [
+    "/workspace/bin/run-release",
+    "/workspace/state",
+]
+
+[task]
+uuid_v5 = "9bad799a-7596-5ce9-84db-9fa15dd5237d"
+authors = [
+  { name = "Tejaswa Dayal", email = "tejaswa.dayal@ethara.ai" },
+]
+name = "kanao/pipeline-horizon__release-observe-repair"
+description = "A five stage release drops history it had already accumulated so the engine never reports a complete release of record; repair the release driver so the full ledger is threaded across every stage."
+keywords = ["pipeline-horizon", "long-horizon-state-collapse", "state-threading", "lang:go", "deployment"]
+
+[metadata]
+difficulty = "expert"
+category = "deployment"
+tags = ["pipeline-horizon", "AR1", "long-horizon-state-collapse", "state-threading", "deployment"]
+calibrated = false
+estimated_duration_sec = 5400
+expert_time_estimate_min = 45
+junior_time_estimate_min = 180
+
+[verifier]
+timeout_sec = 900.0
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 5400.0
+
+[environment]
+build_timeout_sec = 1800.0
+allow_internet = true
+cpus = 2
+memory_mb = 4096
+storage_mb = 8192
+mcp_servers = []

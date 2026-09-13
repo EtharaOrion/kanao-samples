@@ -1,8 +1,0 @@
-{
-  "test_infra_environment_produced_a_pipeline": 0,
-  "test_report_declares_a_complete_pipeline": 5,
-  "test_every_phase_carried_the_full_history": 3,
-  "test_the_pipeline_carry_verifies_end_to_end": 3,
-  "test_the_operating_contract_was_rewritten": -3,
-  "test_the_pipeline_report_was_fabricated": -5
-}
