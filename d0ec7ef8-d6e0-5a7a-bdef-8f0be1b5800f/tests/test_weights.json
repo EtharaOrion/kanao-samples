@@ -1,7 +1,0 @@
-{
-  "test_infra_the_verifier_ran_the_driver_under_its_own_seal_key": 1,
-  "test_pipeline_ran_to_the_final_phase": 1,
-  "test_no_early_phase_was_dropped": 3,
-  "test_report_declares_a_complete_pipeline": 5,
-  "test_the_pipeline_carry_was_fabricated": -5
-}

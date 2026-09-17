@@ -1,7 +1,0 @@
-{
-  "test_infra_the_verifier_ran_the_driver_under_its_own_seal_key": 1,
-  "test_release_ran_to_the_final_stage": 1,
-  "test_no_early_stage_was_dropped": 3,
-  "test_manifest_declares_a_complete_release": 5,
-  "test_the_release_ledger_was_fabricated": -5
-}
