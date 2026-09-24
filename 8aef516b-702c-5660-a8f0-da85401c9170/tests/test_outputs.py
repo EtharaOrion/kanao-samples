@@ -331,7 +331,7 @@ def test_format_and_known_vocabulary():
 
 
 @pytest.mark.parametrize("finding", EXPECTED, ids=lambda pair: ":".join(pair))
-def test_expected_finding(finding):
+def test_gate_expected_finding(finding):
     assert _supports(finding)
 
 
@@ -362,7 +362,7 @@ def test_evidence_matches_verdict_exactly():
     assert _evidence_complete()
 
 
-def test_no_phantom_findings():
+def test_gate_no_phantom_findings():
     assert _no_phantoms()
 
 

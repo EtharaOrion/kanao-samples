@@ -1,256 +1,258 @@
-#!/usr/bin/env python3
 """Resolve the current signed authorization snapshot.
 
-The request is either an events-only history or a committed, segmented delivery.
-Validation is deliberately complete before any projection is returned.
-"""
+Reads a reconciliation request (JSON on stdin, or via resolve(request)) and
+returns {subject: parameters | None} for every requested subject.
 
+A request carries either `events` or a segmented `transport`. A transport may
+name a `generation`, in which case the batches it commits must be exactly the
+batches that generation's release manifest lists, each at the manifest's
+digest. The complete history is validated before anything is projected; any
+invalid input raises Invalid (the CLI exits nonzero) with no partial result.
+"""
 import datetime
 import hashlib
 import json
+import os
 import re
 import sys
 
-
-_EVENT_KEYS = frozenset(
-    {"authorization", "revision", "subject", "operation", "start", "end", "parameters"}
-)
-_COMMIT_KEYS = frozenset({"batch", "parts", "sha256"})
-_PAGE_KEYS = frozenset({"batch", "part", "events"})
-_REVISION = re.compile(r"(?:0|[1-9][0-9]*)\Z")
-_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
-_SHA256 = re.compile(r"[0-9a-fA-F]{64}\Z")
+EVENT_KEYS = {"authorization", "revision", "subject", "operation", "start", "end", "parameters"}
+OPERATIONS = ("grant", "withdraw")
+REVISION_RE = re.compile(r"0|[1-9][0-9]*\Z")
+SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+DEFAULT_MANIFESTS = "/workspace/policy/manifests.json"
 
 
-class InvalidSnapshot(ValueError):
-    """The authorization request is not internally consistent."""
+class Invalid(Exception):
+    """Raised when a request, its history or its projection is invalid."""
 
 
-def _string(value, label):
-    if not isinstance(value, str):
-        raise InvalidSnapshot("%s must be a string" % label)
-    return value
+def _nonempty(value):
+    return isinstance(value, str) and value != ""
 
 
-def _identifier(value, label):
-    _string(value, label)
-    if not value:
-        raise InvalidSnapshot("%s must not be empty" % label)
-    return value
-
-
-def _date(value, label):
-    _string(value, label)
-    if not _DATE.fullmatch(value):
-        raise InvalidSnapshot("%s must be an ISO YYYY-MM-DD date" % label)
+def _date(value, where):
+    if not isinstance(value, str) or len(value) != 10 or value[4] != "-" or value[7] != "-":
+        raise Invalid("%s: date %r is not ISO YYYY-MM-DD" % (where, value))
     try:
-        return datetime.date.fromisoformat(value)
-    except ValueError as exc:
-        raise InvalidSnapshot("%s is not a valid date" % label) from exc
+        datetime.date.fromisoformat(value)
+    except ValueError:
+        raise Invalid("%s: date %r is not ISO YYYY-MM-DD" % (where, value))
+    return value
 
 
-def _subjects(value):
-    if not isinstance(value, list):
-        raise InvalidSnapshot("subjects must be a list")
-    result = []
-    for index, subject in enumerate(value):
-        _identifier(subject, "subjects[%d]" % index)
-        if subject in result:
-            raise InvalidSnapshot("subjects contains %s more than once" % subject)
-        result.append(subject)
-    return result
+def _event_digest(events):
+    payload = json.dumps(events, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def _validate_event(event):
+def _validate_event(event, where):
     if not isinstance(event, dict):
-        raise InvalidSnapshot("each event must be an object")
-    keys = frozenset(event)
-    if keys != _EVENT_KEYS:
-        missing = sorted(_EVENT_KEYS - keys)
-        extra = sorted(keys - _EVENT_KEYS)
-        raise InvalidSnapshot(
-            "event keys are invalid (missing=%s, extra=%s)" % (missing, extra)
-        )
-
-    _identifier(event["authorization"], "event.authorization")
-    _identifier(event["subject"], "event.subject")
-
+        raise Invalid("%s: event is not an object" % where)
+    keys = set(event)
+    if keys != EVENT_KEYS:
+        missing = sorted(EVENT_KEYS - keys)
+        extra = sorted(keys - EVENT_KEYS)
+        raise Invalid("%s: event keys wrong (missing %s, unexpected %s)" % (where, missing, extra))
+    for field in ("authorization", "subject"):
+        if not _nonempty(event[field]):
+            raise Invalid("%s: %s is not a nonempty string" % (where, field))
     revision = event["revision"]
-    _string(revision, "event.revision")
-    if not _REVISION.fullmatch(revision):
-        raise InvalidSnapshot("event.revision must be a canonical nonnegative integer")
-
-    if event["operation"] not in ("grant", "withdraw"):
-        raise InvalidSnapshot("event.operation must be grant or withdraw")
-
-    start = _date(event["start"], "event.start")
-    end = _date(event["end"], "event.end")
-    if start >= end:
-        raise InvalidSnapshot("event.start must be before event.end")
-
+    if not isinstance(revision, str) or not REVISION_RE.match(revision):
+        raise Invalid("%s: revision %r is not a canonical nonnegative decimal" % (where, revision))
+    if event["operation"] not in OPERATIONS:
+        raise Invalid("%s: operation %r is not grant or withdraw" % (where, event["operation"]))
     parameters = event["parameters"]
-    if not isinstance(parameters, list) or not all(
-        isinstance(parameter, str) for parameter in parameters
-    ):
-        raise InvalidSnapshot("event.parameters must be a list of strings")
-    return event
+    if not isinstance(parameters, list) or not all(isinstance(p, str) for p in parameters):
+        raise Invalid("%s: parameters is not a list of strings" % where)
+    start = _date(event["start"], where)
+    end = _date(event["end"], where)
+    if not start < end:
+        raise Invalid("%s: start %s is not strictly before end %s" % (where, start, end))
 
 
-def _events_only(request):
-    if "transport" in request:
-        raise InvalidSnapshot("request cannot carry both events and transport")
-    events = request.get("events")
-    if not isinstance(events, list):
-        raise InvalidSnapshot("events must be a list")
-    return [_validate_event(event) for event in events]
+def _load_manifests():
+    path = os.environ.get("MARROWFLEET_POLICY_MANIFESTS") or DEFAULT_MANIFESTS
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            manifest = json.load(fh)
+    except (OSError, ValueError) as exc:
+        raise Invalid("release manifests unreadable at %s: %s" % (path, exc))
+    if not isinstance(manifest, dict) or not isinstance(manifest.get("generations"), dict):
+        raise Invalid("release manifests at %s are not shaped as expected" % path)
+    return manifest["generations"]
 
 
-def _positive_integer(value, label):
-    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
-        raise InvalidSnapshot("%s must be a positive integer" % label)
-    return value
+def _assemble(request):
+    """Validate the delivery envelope and return the complete event history."""
+    transport = request.get("transport")
+    if transport is None:
+        if "events" not in request:
+            raise Invalid("request carries neither events nor a transport")
+        events = request["events"]
+        if not isinstance(events, list):
+            raise Invalid("events is not a list")
+        for index, event in enumerate(events):
+            _validate_event(event, "event %d" % index)
+        return list(events)
 
+    if not isinstance(transport, dict):
+        raise Invalid("transport is not an object")
+    if "events" in request:
+        raise Invalid("request carries both events and a transport")
 
-def _nonnegative_integer(value, label):
-    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-        raise InvalidSnapshot("%s must be a nonnegative integer" % label)
-    return value
+    commits = transport.get("commits")
+    pages = transport.get("pages")
+    if not isinstance(commits, list) or not commits:
+        raise Invalid("transport carries no commits")
+    if not isinstance(pages, list):
+        raise Invalid("transport pages is not a list")
 
-
-def _transport(transport):
-    if not isinstance(transport, dict) or "commits" not in transport or "pages" not in transport:
-        raise InvalidSnapshot("transport must carry commits and pages")
-    commits = transport["commits"]
-    pages = transport["pages"]
-    if not isinstance(commits, list) or not isinstance(pages, list):
-        raise InvalidSnapshot("transport commits and pages must be lists")
-
-    # Commits and pages may be replayed. Equal replays collapse; unequal
-    # replays of the same identity invalidate the whole delivery.
-    commit_by_batch = {}
+    committed = {}
     for index, commit in enumerate(commits):
+        where = "commit %d" % index
         if not isinstance(commit, dict):
-            raise InvalidSnapshot("commits[%d] must be an object" % index)
-        if frozenset(commit) != _COMMIT_KEYS:
-            raise InvalidSnapshot("commits[%d] has invalid keys" % index)
-        batch = _identifier(commit["batch"], "commits[%d].batch" % index)
-        _positive_integer(commit["parts"], "commits[%d].parts" % index)
-        digest = _string(commit["sha256"], "commits[%d].sha256" % index)
-        if not _SHA256.fullmatch(digest):
-            raise InvalidSnapshot("commits[%d].sha256 is not a SHA-256 digest" % index)
-        previous = commit_by_batch.get(batch)
-        if previous is not None and previous != commit:
-            raise InvalidSnapshot("conflicting replay of commit batch %s" % batch)
-        commit_by_batch[batch] = commit
+            raise Invalid("%s: not an object" % where)
+        if set(commit) != {"batch", "parts", "sha256"}:
+            raise Invalid("%s: commit keys are wrong" % where)
+        batch = commit["batch"]
+        if not _nonempty(batch):
+            raise Invalid("%s: batch is not a nonempty string" % where)
+        parts = commit["parts"]
+        if isinstance(parts, bool) or not isinstance(parts, int) or parts < 1:
+            raise Invalid("%s: parts %r is not a positive integer" % (where, parts))
+        digest = commit["sha256"]
+        if not isinstance(digest, str) or not SHA256_RE.match(digest):
+            raise Invalid("%s: sha256 is not a digest" % where)
+        previous = committed.get(batch)
+        if previous is None:
+            committed[batch] = (parts, digest)
+        elif previous != (parts, digest):
+            raise Invalid("batch %s is committed twice with conflicting commits" % batch)
 
-    page_by_identity = {}
+    seen_pages = {}
     for index, page in enumerate(pages):
+        where = "page %d" % index
         if not isinstance(page, dict):
-            raise InvalidSnapshot("pages[%d] must be an object" % index)
-        if frozenset(page) != _PAGE_KEYS:
-            raise InvalidSnapshot("pages[%d] has invalid keys" % index)
-        batch = _identifier(page["batch"], "pages[%d].batch" % index)
-        _nonnegative_integer(page["part"], "pages[%d].part" % index)
+            raise Invalid("%s: not an object" % where)
+        if set(page) != {"batch", "part", "events"}:
+            raise Invalid("%s: page keys are wrong" % where)
+        batch = page["batch"]
+        if not _nonempty(batch):
+            raise Invalid("%s: batch is not a nonempty string" % where)
+        part = page["part"]
+        if isinstance(part, bool) or not isinstance(part, int) or part < 0:
+            raise Invalid("%s: part %r is not a zero-based integer" % (where, part))
+        if batch not in committed:
+            raise Invalid("%s: its batch %s is not committed" % (where, batch))
         if not isinstance(page["events"], list):
-            raise InvalidSnapshot("pages[%d].events must be a list" % index)
-        identity = (batch, page["part"])
-        previous = page_by_identity.get(identity)
-        if previous is not None and previous != page:
-            raise InvalidSnapshot("conflicting replay of page %s part %d" % identity)
-        page_by_identity[identity] = page
-
-    for (batch, part), page in page_by_identity.items():
-        if batch not in commit_by_batch:
-            raise InvalidSnapshot("page %s is not committed" % batch)
-        if part >= commit_by_batch[batch]["parts"]:
-            raise InvalidSnapshot(
-                "batch %s has extra part %d" % (batch, part)
-            )
+            raise Invalid("%s: events is not a list" % where)
+        for position, event in enumerate(page["events"]):
+            _validate_event(event, "%s event %d" % (where, position))
+        identity = json.dumps(page["events"], sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        previous = seen_pages.get((batch, part))
+        if previous is None:
+            seen_pages[(batch, part)] = identity
+        elif previous != identity:
+            raise Invalid("batch %s part %d is replayed with conflicting events" % (batch, part))
 
     history = []
-    for batch in commit_by_batch:
-        commit = commit_by_batch[batch]
-        expected_parts = commit["parts"]
-        assembled = []
-        for part in range(expected_parts):
-            page = page_by_identity.get((batch, part))
-            if page is None:
-                raise InvalidSnapshot(
-                    "batch %s is missing part %d of %d" % (batch, part, expected_parts)
-                )
-            assembled.extend(page["events"])
-        raw = json.dumps(
-            assembled, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-        ).encode("utf-8")
-        actual = hashlib.sha256(raw).hexdigest()
-        if actual != commit["sha256"].lower():
-            raise InvalidSnapshot("batch %s does not match its SHA-256 commit" % batch)
-        history.extend(assembled)
+    digests = {}
+    for commit in commits:
+        batch = commit["batch"]
+        if batch in digests:
+            continue
+        parts = committed[batch][0]
+        by_part = {}
+        for (b, part), identity in seen_pages.items():
+            if b == batch:
+                by_part[part] = identity
+        for part in range(parts):
+            if part not in by_part:
+                raise Invalid("batch %s is missing part %d of %d" % (batch, part, parts))
+        events = [event for part in range(parts) for event in json.loads(by_part[part])]
+        digest = _event_digest(events)
+        if digest != committed[batch][1]:
+            raise Invalid("batch %s does not match its commit digest" % batch)
+        digests[batch] = digest
+        history.extend(events)
 
-    return [_validate_event(event) for event in history]
+    for (batch, part) in seen_pages:
+        if part >= committed[batch][0]:
+            raise Invalid("batch %s carries part %d beyond its declared parts" % (batch, part))
 
+    generation = transport.get("generation")
+    if generation is not None:
+        if not _nonempty(generation):
+            raise Invalid("generation is not a nonempty string")
+        generations = _load_manifests()
+        record = generations.get(generation)
+        if not isinstance(record, dict) or not isinstance(record.get("batches"), dict):
+            raise Invalid("generation %s is not named by the release manifests" % generation)
+        listed = record["batches"]
+        for batch in listed:
+            if batch not in digests:
+                raise Invalid("generation %s lists batch %s that the transport does not commit" % (generation, batch))
+            if listed[batch] != digests[batch]:
+                raise Invalid("batch %s does not match generation %s manifest digest" % (batch, generation))
+        for batch in digests:
+            if batch not in listed:
+                raise Invalid("transport commits batch %s that generation %s does not list" % (batch, generation))
 
-def _corrected_snapshot(events):
-    """Return the highest revision of each authorization."""
-    by_revision = {}
-    for event in events:
-        identity = (event["authorization"], int(event["revision"]))
-        previous = by_revision.get(identity)
-        if previous is not None and previous != event:
-            raise InvalidSnapshot(
-                "conflicting revision %s of authorization %s"
-                % (event["revision"], event["authorization"])
-            )
-        by_revision[identity] = event
-
-    authorizations = {identity[0] for identity in by_revision}
-    winners = []
-    for authorization in authorizations:
-        revisions = [
-            identity[1] for identity in by_revision if identity[0] == authorization
-        ]
-        winners.append(by_revision[(authorization, max(revisions))])
-    return winners
+    return history
 
 
 def resolve(request):
     if not isinstance(request, dict):
-        raise InvalidSnapshot("request must be an object")
-    now = _date(request.get("now"), "request.now")
-    subjects = _subjects(request.get("subjects"))
+        raise Invalid("request is not an object")
+    subjects = request.get("subjects")
+    if not isinstance(subjects, list) or not all(_nonempty(s) for s in subjects):
+        raise Invalid("request subjects are not a list of nonempty strings")
+    now = _date(request.get("now"), "request now")
 
-    if "events" in request:
-        history = _events_only(request)
-    elif "transport" in request:
-        history = _transport(request["transport"])
-    else:
-        raise InvalidSnapshot("request must carry events or transport")
+    history = _assemble(request)
 
-    winners = _corrected_snapshot(history)
+    by_authorization = {}
+    for event in history:
+        revisions = by_authorization.setdefault(event["authorization"], {})
+        revision = event["revision"]
+        previous = revisions.get(revision)
+        if previous is None:
+            revisions[revision] = event
+        elif previous != event:
+            raise Invalid("authorization %s revision %s is recorded twice with conflicting events"
+                          % (event["authorization"], revision))
+
     active = {}
-    for event in winners:
-        if event["operation"] != "grant":
+    for authorization, revisions in by_authorization.items():
+        winner = revisions[max(revisions, key=int)]
+        if winner["operation"] != "grant":
             continue
-        if not (event["start"] <= now.isoformat() < event["end"]):
+        if not (winner["start"] <= now < winner["end"]):
             continue
-        subject = event["subject"]
+        subject = winner["subject"]
         if subject in active:
-            raise InvalidSnapshot(
-                "multiple active authorizations for subject %s" % subject
-            )
-        active[subject] = event
+            raise Invalid("subject %s carries more than one active authorization (%s, %s)"
+                          % (subject, active[subject][1], authorization))
+        active[subject] = (winner["parameters"], authorization)
 
-    return {
-        subject: active[subject]["parameters"] if subject in active else None
-        for subject in subjects
-    }
+    return {subject: active[subject][0] if subject in active else None for subject in subjects}
+
+
+def main(argv):
+    try:
+        request = json.load(sys.stdin)
+    except ValueError as exc:
+        sys.stderr.write("resolve: request is not JSON: %s\n" % exc)
+        return 1
+    try:
+        result = resolve(request)
+    except Invalid as exc:
+        sys.stderr.write("resolve: %s\n" % exc)
+        return 1
+    print(json.dumps(result, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":
-    try:
-        request = json.load(sys.stdin)
-        result = resolve(request)
-    except (json.JSONDecodeError, InvalidSnapshot, TypeError, ValueError) as exc:
-        print("policy resolver: %s" % exc, file=sys.stderr)
-        raise SystemExit(1)
-    print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+    sys.exit(main(sys.argv[1:]))

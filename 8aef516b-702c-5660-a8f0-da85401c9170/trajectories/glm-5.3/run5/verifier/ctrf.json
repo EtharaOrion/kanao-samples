@@ -6,14 +6,14 @@
       "name": "pytest"
     },
     "summary": {
-      "tests": 11,
+      "tests": 12,
       "passed": 6,
-      "failed": 5,
+      "failed": 6,
       "pending": 0,
       "skipped": 0,
       "other": 0,
-      "start": 1788716383815,
-      "stop": 1788716383815
+      "start": 1790215027873,
+      "stop": 1790215027873
     },
     "tests": [
       {
@@ -23,7 +23,7 @@
         "weight": 1
       },
       {
-        "name": "test_expected_finding[reservation-worker:capacity-cliff]",
+        "name": "test_gate_expected_finding[reservation-worker:capacity-cliff]",
         "status": "failed",
         "suite": "tests",
         "weight": 5
@@ -33,6 +33,12 @@
         "status": "failed",
         "suite": "tests",
         "weight": 5
+      },
+      {
+        "name": "test_required_population_calculations[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
       },
       {
         "name": "test_evidence_window[reservation-worker:capacity-cliff]",
@@ -59,7 +65,7 @@
         "weight": 1
       },
       {
-        "name": "test_no_phantom_findings",
+        "name": "test_gate_no_phantom_findings",
         "status": "failed",
         "suite": "tests",
         "weight": 3
@@ -71,7 +77,7 @@
         "weight": -3
       },
       {
-        "name": "test_negative_phantom_finding[synthetic-probe:probe-population-gap]",
+        "name": "test_negative_phantom_finding[reservation-worker:queue-backlog]",
         "status": "passed",
         "suite": "tests",
         "weight": -3
@@ -84,12 +90,12 @@
       }
     ],
     "environment": {
-      "testEnvironment": "monitoring__reservation-admission-latency",
+      "testEnvironment": "8aef516b-702c-5660-a8f0-da85401c9170",
       "extra": {
         "model": "glm-5.3",
-        "run": "run5",
+        "run": "run_5",
         "source": "ctrf.json",
-        "reward": 0.083333
+        "reward": 0.0
       }
     }
   }

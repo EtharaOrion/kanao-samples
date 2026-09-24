@@ -1,250 +1,220 @@
-"""Resolve a signed authorization snapshot.
+"""Resolve the current signed authorization snapshot.
 
-The request is either an events-only history or a segmented transport.  The
-projection is deliberately kept separate from validation: no decision is
-returned unless the complete history is admissible.
+Implements docs/policy-reconciliation.md. The resolver validates the complete
+candidate before projecting: transport envelope (commits, pages, parts,
+digests, idempotent replays), the release manifest for a named generation,
+every event in the history (including superseded, withdrawn, out-of-window and
+unrequested-subject records), and the revision rules. Any fault raises, leaving
+no partial result.
 """
 import datetime
 import hashlib
 import json
-import re
+import os
 import sys
 
-
-_EVENT_KEYS = {
-    "authorization", "revision", "subject", "operation", "start", "end",
-    "parameters",
-}
-_COMMIT_KEYS = {"batch", "parts", "sha256"}
-_PAGE_KEYS = {"batch", "part", "events"}
-_DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
-_REVISION_RE = re.compile(r"(?:0|[1-9][0-9]*)\Z")
-_SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+EVENT_KEYS = frozenset(("authorization", "revision", "subject", "operation",
+                        "start", "end", "parameters"))
+OPERATIONS = frozenset(("grant", "withdraw"))
+HEX = frozenset("0123456789abcdef")
 
 
-class PolicyError(ValueError):
-    """The authorization request is internally inconsistent or malformed."""
+class Invalid(Exception):
+    """The candidate is not admissible; the release must not use it."""
 
 
-def _object(value, label):
-    if not isinstance(value, dict):
-        raise PolicyError("%s must be an object" % label)
-    return value
-
-
-def _keys(value, expected, label):
-    _object(value, label)
-    actual = set(value)
-    if actual != expected:
-        missing = sorted(expected - actual)
-        extra = sorted(actual - expected)
-        raise PolicyError("%s has invalid keys (missing %s, extra %s)"
-                          % (label, missing, extra))
-
-
-def _string(value, label):
-    if not isinstance(value, str) or not value:
-        raise PolicyError("%s must be a nonempty string" % label)
-    return value
-
-
-def _date(value, label):
-    if not isinstance(value, str) or not _DATE_RE.fullmatch(value):
-        raise PolicyError("%s must be an ISO YYYY-MM-DD date" % label)
+def _valid_date(value):
+    if not isinstance(value, str) or len(value) != 10 or value[4] != "-" \
+            or value[7] != "-" or not value[:4].isdigit() \
+            or not value[5:7].isdigit() or not value[8:10].isdigit():
+        return False
     try:
-        datetime.date.fromisoformat(value)
-    except ValueError as exc:
-        raise PolicyError("%s is not a valid date" % label) from exc
-    return value
+        datetime.date(int(value[:4]), int(value[5:7]), int(value[8:10]))
+    except ValueError:
+        return False
+    return True
 
 
-def _positive_integer(value, label):
-    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
-        raise PolicyError("%s must be a positive integer" % label)
-    return value
+def _canonical(events):
+    return json.dumps(events, sort_keys=True, separators=(",", ":"),
+                      ensure_ascii=False).encode("utf-8")
 
 
-def _nonnegative_integer(value, label):
-    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-        raise PolicyError("%s must be a nonnegative integer" % label)
-    return value
-
-
-def _validate_event(value, number):
-    event = _object(value, "event %d" % number)
-    _keys(event, _EVENT_KEYS, "event %d" % number)
-    _string(event["authorization"], "event %d authorization" % number)
-
+def _validate_event(event, where):
+    if not isinstance(event, dict) or set(event) != EVENT_KEYS:
+        raise Invalid("event keys are not exactly the required set (%s)" % where)
+    for field in ("authorization", "subject"):
+        if not isinstance(event[field], str) or not event[field]:
+            raise Invalid("%s is not a nonempty string (%s)" % (field, where))
     revision = event["revision"]
-    if (not isinstance(revision, str)
-            or not _REVISION_RE.fullmatch(revision)):
-        raise PolicyError("event %d has a non-canonical revision" % number)
-
-    _string(event["subject"], "event %d subject" % number)
-    if event["operation"] not in ("grant", "withdraw"):
-        raise PolicyError("event %d has an invalid operation" % number)
-
-    start = _date(event["start"], "event %d start" % number)
-    end = _date(event["end"], "event %d end" % number)
-    if start >= end:
-        raise PolicyError("event %d start is not before end" % number)
-
-    parameters = event["parameters"]
-    if (not isinstance(parameters, list)
-            or not all(isinstance(item, str) for item in parameters)):
-        raise PolicyError("event %d has invalid parameters" % number)
-    return event
+    if not isinstance(revision, str) or not revision.isdigit() \
+            or (len(revision) > 1 and revision[0] == "0"):
+        raise Invalid("revision is not a canonical decimal string (%s)" % where)
+    if event["operation"] not in OPERATIONS:
+        raise Invalid("operation is neither grant nor withdraw (%s)" % where)
+    params = event["parameters"]
+    if not isinstance(params, list) \
+            or not all(isinstance(p, str) for p in params):
+        raise Invalid("parameters is not a list of strings (%s)" % where)
+    if not _valid_date(event["start"]) or not _valid_date(event["end"]):
+        raise Invalid("dates are not ISO YYYY-MM-DD (%s)" % where)
+    if not event["start"] < event["end"]:
+        raise Invalid("start is not strictly before end (%s)" % where)
 
 
-def _transport_events(transport):
-    transport = _object(transport, "transport")
-    _keys(transport, {"commits", "pages"}, "transport")
+def _check_manifest(transport, commits):
+    """A generation's manifest says which batches its history holds."""
+    generation = transport.get("generation")
+    if generation is None:
+        return
+    if not isinstance(generation, str) or not generation:
+        raise Invalid("generation is not a nonempty string")
+    path = os.environ.get("MARROWFLEET_POLICY_MANIFESTS",
+                          "/workspace/policy/manifests.json")
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            manifest = json.load(fh)
+    except (OSError, ValueError) as exc:
+        raise Invalid("cannot read the release manifests: %s" % exc)
+    generations = manifest.get("generations") if isinstance(manifest, dict) else None
+    record = generations.get(generation) if isinstance(generations, dict) else None
+    if not isinstance(record, dict):
+        raise Invalid("generation %r is not named by the release manifests"
+                      % generation)
+    batches = record.get("batches")
+    if not isinstance(batches, dict):
+        raise Invalid("generation %r carries no batch table" % generation)
+    listed, committed = set(batches), set(commits)
+    if listed != committed:
+        raise Invalid("generation %r commits %s but its manifest lists %s"
+                      % (generation, sorted(committed), sorted(listed)))
+    for batch, digest in batches.items():
+        if not isinstance(digest, str) or commits[batch][1] != digest:
+            raise Invalid("batch %r is committed at a digest the manifest for "
+                          "generation %r does not list" % (batch, generation))
 
-    raw_commits = transport["commits"]
-    if not isinstance(raw_commits, list):
-        raise PolicyError("transport commits must be an array")
-    commits = {}
-    for number, value in enumerate(raw_commits, 1):
-        label = "commit %d" % number
-        commit = _object(value, label)
-        _keys(commit, _COMMIT_KEYS, label)
-        batch = _string(commit["batch"], "%s batch" % label)
-        _positive_integer(commit["parts"], "%s parts" % label)
-        digest = _string(commit["sha256"], "%s sha256" % label)
-        if not _SHA256_RE.fullmatch(digest):
-            raise PolicyError("%s sha256 is not a lowercase SHA-256 digest"
-                              % label)
-        prior = commits.get(batch)
-        if prior is not None and prior != commit:
-            raise PolicyError("conflicting replay of commit %r" % batch)
-        if prior is None:
-            commits[batch] = commit
 
-    raw_pages = transport["pages"]
-    if not isinstance(raw_pages, list):
-        raise PolicyError("transport pages must be an array")
-    pages = {}
-    for number, value in enumerate(raw_pages, 1):
-        label = "page %d" % number
-        page = _object(value, label)
-        _keys(page, _PAGE_KEYS, label)
-        batch = _string(page["batch"], "%s batch" % label)
-        part = _nonnegative_integer(page["part"], "%s part" % label)
-        if not isinstance(page["events"], list):
-            raise PolicyError("%s events must be an array" % label)
-        for event_number, event in enumerate(page["events"], 1):
-            _validate_event(event, event_number)
-        key = (batch, part)
-        prior = pages.get(key)
-        if prior is not None and prior != page:
-            raise PolicyError("conflicting replay of page %r part %d"
-                              % (batch, part))
-        if prior is None:
-            pages[key] = page
+def _assemble(transport):
+    """Validate a segmented delivery and return the complete event history."""
+    if not isinstance(transport, dict):
+        raise Invalid("transport is not an object")
+    commits, pages = transport.get("commits"), transport.get("pages")
+    if not isinstance(commits, list) or not commits:
+        raise Invalid("transport carries no commits")
+    if not isinstance(pages, list):
+        raise Invalid("transport pages are not a list")
 
-    uncommitted = sorted({batch for batch, _ in pages} - set(commits))
-    if uncommitted:
-        raise PolicyError("uncommitted page batch %r" % uncommitted[0])
+    declared = {}
+    for commit in commits:
+        if not isinstance(commit, dict):
+            raise Invalid("commit is not an object")
+        batch = commit.get("batch")
+        if not isinstance(batch, str) or not batch:
+            raise Invalid("commit batch is not a nonempty string")
+        if batch in declared:
+            raise Invalid("commit %r is declared twice" % batch)
+        parts = commit.get("parts")
+        if not isinstance(parts, int) or isinstance(parts, bool) or parts < 1:
+            raise Invalid("commit %r parts is not a positive integer" % batch)
+        digest = commit.get("sha256")
+        if not isinstance(digest, str) or len(digest) != 64 \
+                or not set(digest) <= HEX:
+            raise Invalid("commit %r sha256 is not a digest" % batch)
+        declared[batch] = (parts, digest)
+
+    arrived = {}
+    for page in pages:
+        if not isinstance(page, dict):
+            raise Invalid("page is not an object")
+        batch, part, events = page.get("batch"), page.get("part"), page.get("events")
+        if not isinstance(batch, str) or not batch:
+            raise Invalid("page batch is not a nonempty string")
+        if batch not in declared:
+            raise Invalid("page %r arrives for an uncommitted batch" % batch)
+        if not isinstance(part, int) or isinstance(part, bool) or part < 0:
+            raise Invalid("page %r part is not a zero-based integer" % batch)
+        if not isinstance(events, list):
+            raise Invalid("page %r part %r carries no events list" % (batch, part))
+        for event in events:
+            _validate_event(event, "batch %r part %r" % (batch, part))
+        replayed = arrived.setdefault((batch, part), events)
+        if replayed is not events and replayed != events:
+            raise Invalid("page %r part %r replays with different events"
+                          % (batch, part))
 
     history = []
-    for batch in sorted(commits):
-        commit = commits[batch]
-        expected_parts = set(range(commit["parts"]))
-        actual_parts = {part for page_batch, part in pages
-                        if page_batch == batch}
-        if actual_parts != expected_parts:
-            missing = sorted(expected_parts - actual_parts)
-            extra = sorted(actual_parts - expected_parts)
-            raise PolicyError("batch %r has missing parts %s or extra parts %s"
-                              % (batch, missing, extra))
-        events = []
-        for part in range(commit["parts"]):
-            events.extend(pages[(batch, part)]["events"])
-        encoded = json.dumps(events, sort_keys=True, separators=(",", ":"),
-                             ensure_ascii=False).encode("utf-8")
-        actual_digest = hashlib.sha256(encoded).hexdigest()
-        if actual_digest != commit["sha256"]:
-            raise PolicyError("batch %r digest mismatch" % batch)
+    for batch, (parts, digest) in declared.items():
+        for part in range(parts):
+            if (batch, part) not in arrived:
+                raise Invalid("batch %r is missing part %d" % (batch, part))
+        events = [e for part in range(parts) for e in arrived[(batch, part)]]
+        if hashlib.sha256(_canonical(events)).hexdigest() != digest:
+            raise Invalid("batch %r does not match its commit digest" % batch)
         history.extend(events)
+
+    _check_manifest(transport, declared)
     return history
 
 
-def _events_events(value):
-    if not isinstance(value, list):
-        raise PolicyError("events must be an array")
-    for number, event in enumerate(value, 1):
-        _validate_event(event, number)
-    return value
+def _project(request):
+    for field in ("now", "subjects"):
+        if field not in request:
+            raise Invalid("request carries no %s" % field)
+    now = request["now"]
+    if not _valid_date(now):
+        raise Invalid("evaluation instant is not ISO YYYY-MM-DD")
+    subjects = request["subjects"]
+    if not isinstance(subjects, list) \
+            or not all(isinstance(s, str) and s for s in subjects):
+        raise Invalid("subjects is not a list of nonempty strings")
+
+    winners = {}
+    for event in request["events"]:
+        _validate_event(event, "history")
+        authorization, revision = event["authorization"], event["revision"]
+        current = winners.get(authorization)
+        if current is None or int(revision) > int(current["revision"]):
+            winners[authorization] = event
+        elif revision == current["revision"] and event != current:
+            raise Invalid("authorization %r carries conflicting revisions %s"
+                          % (authorization, revision))
+
+    active = {}
+    for authorization, event in winners.items():
+        if event["operation"] != "grant" or not event["start"] <= now < event["end"]:
+            continue
+        subject = event["subject"]
+        if subject in active:
+            raise Invalid("subject %r carries multiple active authorizations "
+                          "(%s, %s)" % (subject, active[subject], authorization))
+        active[subject] = authorization
+
+    return {subject: winners[active[subject]]["parameters"]
+            if subject in active else None for subject in subjects}
 
 
 def resolve(request):
-    """Return the approved parameters, or null, for each requested subject."""
-    request = _object(request, "request")
-    supplied = set(request)
-    if "transport" in request:
-        if "events" in request:
-            raise PolicyError("request cannot carry both events and transport")
-        expected = {"now", "subjects", "transport"}
-    else:
-        expected = {"now", "subjects", "events"}
-    if supplied != expected:
-        raise PolicyError("request has invalid keys")
-
-    now = _date(request["now"], "now")
-    subjects = request["subjects"]
-    if not isinstance(subjects, list):
-        raise PolicyError("subjects must be an array")
-    for number, subject in enumerate(subjects, 1):
-        _string(subject, "subject %d" % number)
-
-    if "transport" in request:
-        history = _transport_events(request["transport"])
-    else:
-        history = _events_events(request["events"])
-
-    # Equal revisions are replay only when identical.  The greatest numeric
-    # revision of each authorization replaces all of its earlier revisions.
-    revisions = {}
-    for event in history:
-        key = (event["authorization"], int(event["revision"]))
-        prior = revisions.get(key)
-        if prior is not None and prior != event:
-            raise PolicyError("conflicting revision %s of authorization %r"
-                              % (event["revision"], event["authorization"]))
-        if prior is None:
-            revisions[key] = event
-
-    winners = {}
-    for (_, revision), event in revisions.items():
-        authorization = event["authorization"]
-        old = winners.get(authorization)
-        if old is None or revision > int(old["revision"]):
-            winners[authorization] = event
-
-    active = {}
-    for event in winners.values():
-        if (event["operation"] == "grant"
-                and event["start"] <= now < event["end"]):
-            subject = event["subject"]
-            if subject in active:
-                raise PolicyError("multiple active authorizations for subject %r"
-                                  % subject)
-            active[subject] = event
-
-    return {subject: active[subject]["parameters"] if subject in active else None
-            for subject in subjects}
-
-
-def _main():
-    try:
-        request = json.load(sys.stdin)
-        result = resolve(request)
-    except (json.JSONDecodeError, PolicyError, TypeError, ValueError) as exc:
-        sys.stderr.write("policy resolver: %s\n" % exc)
-        return 1
-    print(json.dumps(result, sort_keys=True))
-    return 0
+    if not isinstance(request, dict):
+        raise Invalid("request is not an object")
+    request = dict(request)
+    transport = request.pop("transport", None)
+    if transport is not None and "events" in request:
+        raise Invalid("request carries both a transport and an events list")
+    if transport is not None:
+        request["events"] = _assemble(transport)
+    if "events" not in request:
+        raise Invalid("request carries neither a transport nor an events list")
+    if not isinstance(request["events"], list):
+        raise Invalid("events is not a list")
+    return _project(request)
 
 
 if __name__ == "__main__":
-    sys.exit(_main())
+    try:
+        print(json.dumps(resolve(json.load(sys.stdin)), sort_keys=True))
+    except Invalid as exc:
+        sys.stderr.write("policy resolver: %s\n" % exc)
+        sys.exit(1)
+    except ValueError as exc:
+        sys.stderr.write("policy resolver: request is not valid JSON: %s\n" % exc)
+        sys.exit(1)

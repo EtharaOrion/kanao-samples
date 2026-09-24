@@ -1,35 +1,18 @@
-schema_version = "1.1"
+schema_version = "1.4"
 artifacts = [
-    "/app/workspace/envs/prod/policies.tf",
-    "/app/workspace/envs/prod/main.tf",
-    "/app/workspace/envs/prod/variables.tf",
-    "/app/workspace/envs/prod/versions.tf",
-    "/app/workspace/envs/prod/outputs.tf",
-    "/app/workspace/envs/prod/prod.tfvars",
-    "/app/workspace/policies/require-ip-restriction.json",
-    "/app/workspace/policies/deny-public-sql.json",
-    "/app/workspace/policies/require-tags.json",
-    "/app/workspace/modules/compute-serverless/main.tf",
-    "/app/workspace/modules/networking/main.tf",
-    "/app/workspace/modules/data-sql/main.tf",
-    "/app/workspace/modules/compute-serverless/variables.tf",
-    "/app/workspace/modules/compute-serverless/outputs.tf",
-    "/app/workspace/modules/networking/variables.tf",
-    "/app/workspace/modules/networking/outputs.tf",
-    "/app/workspace/modules/data-sql/variables.tf",
-    "/app/workspace/modules/data-sql/outputs.tf",
-    "/app/workspace/policies/require-https-only.json",
-    "/app/workspace/policies/require-tls-version.json",
-    "/app/workspace/.github/workflows/terraform-ci.yml",
-    "/app/workspace/policies/require-slot-ip-restriction.json",
-    "/app/workspace/docs/POLICY-AS-CODE-STANDARD.md",
+    "/app/workspace/envs/prod",
+    "/app/workspace/policies",
+    "/app/workspace/modules",
+    "/app/workspace/docs",
+    "/app/workspace/.github",
 ]
 
 [task]
 uuid_v5 = "e79449a4-8366-58aa-aa5d-889f4bec9949"
 authors = [
-    "jatin.sihag@ethara.ai" ,
-    "aditi.sharma@ethara.ai"
+    { name = "Tejaswa Dayal", email = "tejaswa.dayal@ethara.ai" },
+    { name = "Aditi Sharma", email = "aditi.sharma@ethara.ai" },
+    { name = "Khushi Rathore", email = "khushi.rathore@ethara.ai" },
 ]
 name = "kanao/iac_guardrails_paymesh-policy"
 description = "Bring a payments platform's Terraform environment up to its policy-as-code standard so the custom guardrail refuses out-of-band changes at every binding the standard assesses."
@@ -48,10 +31,16 @@ junior_time_estimate_min = 420.0
 timeout_sec = 900.0
 environment_mode = "separate"
 
+[verifier.environment]
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:e79449a4-iac_guardrails_paymesh-policy-verifier@sha256:76b6fb087621e46e9c18ab0ea70f7992884214511e44c2fc331266ebc84353ee"
+
 [agent]
 timeout_sec = 9900.0
 
 [environment]
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:e79449a4-iac_guardrails_paymesh-policy-env@sha256:7062d0e69bb6f8c4c23bb2a04c2f4cf72e9bc223149536d6c73d522d3d5cd4b0"
 build_timeout_sec = 1800.0
-allow_internet = true
+network_mode = "public"
+cpus = 2
+memory_mb = 4096
 mcp_servers = []

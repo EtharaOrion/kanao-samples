@@ -40,8 +40,10 @@ renderings. A change that looks right in the source and renders the wrong
 document fails review, and a change that reaches the right rendering by an
 unusual route passes it.
 
-Constraints: `docs/POLICY-AS-CODE-STANDARD.md` is the standard, and
-`policies/deny-public-sql.json` and `policies/require-tags.json` belong to
-guardrails that are not in question here; leave all three as they are. Everything is vendored into the image -
-you should not need to fetch anything, and there is no Azure subscription here,
-so `plan` and `apply` are not available to you.
+Constraints: `docs/POLICY-AS-CODE-STANDARD.md` is the standard, and the rules
+in `policies/deny-public-sql.json` and `policies/require-tags.json` are not in
+question; leave all three files byte-for-byte as they are. Their entries in
+`envs/prod/policies.tf` - how each document is loaded, the mode it runs in and
+whether it is assigned - are part of the catalogue and are reviewed like every
+other entry. Terraform and its providers are vendored into the image, and there
+is no Azure subscription here, so `plan` and `apply` are not available to you.

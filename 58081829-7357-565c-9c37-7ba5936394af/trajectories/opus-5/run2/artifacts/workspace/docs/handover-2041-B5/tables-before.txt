@@ -1,0 +1,31 @@
+--- period
+sectors 2041-B5
+mf-1130   2041-B5
+mf-2210   2041-B5
+mf-3480   2041-B5
+mf-4160   2041-B5
+mf-5720   2041-B5
+mf-6350   2041-B5
+mf-7040   2041-B5
+mf-8890   2041-B5
+mf-9270   2041-B5
+--- hold
+arnwick-base    none
+kirkbryde-base  none
+oxenholme-base  cleared 2041-05-02
+thurlby-base    none
+--- scope
+arnwick-base    captain,first-officer
+kirkbryde-base  captain,first-officer,purser
+oxenholme-base  captain,first-officer
+thurlby-base    captain,first-officer,purser
+--- limit
+mf-1130   standard
+mf-2210   standard
+mf-3480   standard
+mf-4160   standard
+mf-5720   standard
+mf-6350   fixed 430 (review 2041-B5)
+mf-7040   standard
+mf-8890   standard
+mf-9270   standard

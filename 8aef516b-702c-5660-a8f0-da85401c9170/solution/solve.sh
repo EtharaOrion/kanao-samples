@@ -56,7 +56,8 @@ for service, label in SPEC["expected_findings"]:
         entry["calculations"] = {"fraud_raw_error_fraction": raw, "fraud_weighted_error_fraction": weighted}
     if SPEC["mechanism"] == "coordinated-omission":
         books = [row for row in rows if row.get("kind") == "casebook" and row.get("intervals")]
-        intervals = books[-1]["intervals"]
+        merged = {item["interval"]: item for book in books for item in book["intervals"]}
+        intervals = [merged[key] for key in sorted(merged)]
         first, latest = intervals[0], intervals[-1]
         entry["calculations"] = {
             "selected_fraction_first": first["actual_closed_loop_sends"] / first["scheduled_open_loop"],

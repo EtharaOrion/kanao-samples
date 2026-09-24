@@ -23,18 +23,25 @@ locals {
       rule         = file("${path.module}/../../policies/require-tags.json")
     }
 
+    require_resource_group_tags = {
+      mode         = "Indexed"
+      display_name = "PayMesh - require the mandatory tags on resource groups"
+      description  = "Refuses a resource group created without the 'environment' and 'data_classification' tags. Resource groups are where the cost allocation report, the PCI DSS scoping inventory and the on-call escalation map all start: an untagged group falls out of the monthly chargeback run, is invisible to the quarterly assessment that proves the cardholder data environment is contained, and pages nobody when something inside it breaks. The tags are therefore required at creation, not added afterwards by a clean-up script, and a group that arrives without them is refused in the control plane before any resource can be placed in it."
+      rule         = file("${path.module}/../../policies/require-resource-group-tags.json")
+    }
+
     require_tls_version = {
-      mode         = "All"
+      mode         = "Indexed"
       display_name = "PayMesh - require TLS 1.2 on every site in this environment"
-      description  = "Refuses a site in this environment that will still negotiate an obsolete TLS version."
-      rule         = templatefile("${path.module}/../../policies/require-tls-version.json", { environment = var.environment })
+      description  = "Refuses a site configuration in this environment that will still negotiate an obsolete TLS version."
+      rule         = file("${path.module}/../../policies/require-tls-version.json")
     }
 
     require_https_only = {
       mode         = "Indexed"
       display_name = "PayMesh - require HTTPS on every site in this environment"
       description  = "Refuses a site in this environment that will serve plaintext HTTP."
-      rule         = templatefile("${path.module}/../../policies/require-https-only.json", { environment = var.environment })
+      rule         = file("${path.module}/../../policies/require-https-only.json")
     }
 
     # Deliberately scoped by name rather than to Microsoft.Web as a whole: the
@@ -43,10 +50,10 @@ locals {
     # would have refused their first deployment. Only the two Function Apps of
     # the payments flow carry one.
     require_ip_restriction = {
-      mode         = "All"
+      mode         = "Indexed"
       display_name = "PayMesh - require an ip restriction on the payments Function Apps"
       description  = "Refuses a write to the payments Function Apps that leaves ipSecurityRestrictionsDefaultAction at anything other than Deny."
-      rule         = templatefile("${path.module}/../../policies/require-ip-restriction.json", { environment = var.environment })
+      rule         = file("${path.module}/../../policies/require-ip-restriction.json")
     }
 
     # Deployment slots are separate Azure child resources with a separate
@@ -54,24 +61,17 @@ locals {
     # failover; protecting only the parent site leaves that path outside the
     # preventive control.
     require_slot_ip_restriction = {
-      mode         = "All"
+      mode         = "Indexed"
       display_name = "PayMesh - require an ip restriction on payments deployment slots"
       description  = "Refuses a write to either payments blue slot that leaves its default restriction action open."
-      rule         = templatefile("${path.module}/../../policies/require-slot-ip-restriction.json", { environment = var.environment })
+      rule         = file("${path.module}/../../policies/require-slot-ip-restriction.json")
     }
   }
 
   # The definitions that carry an assignment at subscription scope. A
   # definition missing from this list still exists in the subscription and
   # still evaluates nothing at all.
-  assigned_policies = [
-    "deny_public_sql",
-    "require_tags",
-    "require_tls_version",
-    "require_https_only",
-    "require_ip_restriction",
-    "require_slot_ip_restriction",
-  ]
+  assigned_policies = ["deny_public_sql", "require_tags", "require_resource_group_tags"]
 }
 
 resource "azurerm_policy_definition" "this" {

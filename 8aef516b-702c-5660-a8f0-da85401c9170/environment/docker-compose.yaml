@@ -1,95 +1,73 @@
 services:
   main:
-    build:
-      context: ${CONTEXT_DIR}
-      target: workstation
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-workstation@sha256:a0e338cd03de7383cec08ac2d24564abd0f9213d4e8be4b926c2925bc786f6a8
     entrypoint: ["bash", "-c", "sleep infinity"]
     networks:
       - estate
   synthetic-probe:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=synthetic-probe
     networks:
       - estate
   reservation-edge:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=reservation-edge
     networks:
       - estate
   admission-gate:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=admission-gate
     networks:
       - estate
   reservation-worker:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=reservation-worker
     networks:
       - estate
   availability-cache:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=availability-cache
     networks:
       - estate
   inventory:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=inventory
     networks:
       - estate
   confirmation:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=confirmation
     networks:
       - estate
   user-wait-log:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/start.sh"]
     environment:
       - SERVICE_NAME=user-wait-log
     networks:
       - estate
   workload:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["/opt/svc/workload.sh"]
     restart: on-failure
     networks:
       - estate
   recorder:
-    build:
-      context: ${CONTEXT_DIR}
-      target: runtime
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-runtime@sha256:41d7b0aa1df0a56c0541dcf1dca3ccdd8d1f51d55dd6b7d87897d30811cd7ae8
     entrypoint: ["python3", "/opt/svc/recorder/record.py"]
     volumes:
       - ${KANAO_EVIDENCE_DIR:-/tmp/opus5-extreme/${COMPOSE_PROJECT_NAME}}:/evidence

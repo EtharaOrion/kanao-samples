@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""verify-period - check a closed period against the bureau's contracts.
+
+Reads the register the run expands (rostering/), the flown sectors, the
+crediting schedule, the duty limitations and the signed authorization feed, and
+settles every sheet standing in every base drop the way a base's crewing system
+does.  Exits 0 only when the period is complete and correct.
+
+Usage:  tools/verify-period [fingerprint]
+"""
+import os
+import re
+import subprocess
+import sys
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+REGISTER = os.path.join(ROOT, "rostering", "rostering.yaml")
+SECTORS = os.path.join(ROOT, "rostering", "sectors.csv")
+CREW_DIR = os.path.join(ROOT, "rostering", "crew.d")
+BASE_DIR = os.path.join(ROOT, "rostering", "bases.d")
+READER = os.path.join(ROOT, "tools", "rostercheck", "rostercheck.py")
+LIMITS = os.path.join(ROOT, "docs", "duty-limitations.log")
+FEED = os.path.join(ROOT, "policy", "authorizations.json")
+FACTORS = {"long-haul": 85, "short-haul": 100, "standby": 60}
+
+
+def read_fragments(directory):
+    out = {}
+    for name in sorted(os.listdir(directory)):
+        if not name.endswith(".toml"):
+            continue
+        fragment = {}
+        for line in open(os.path.join(directory, name)):
+            match = re.match(r'^(\w+)\s*=\s*"?([^"]*)"?\s*$', line.strip())
+            if match and match.group(2) != "":
+                fragment[match.group(1)] = match.group(2)
+        out[fragment.get("name", name)] = fragment
+    return out
+
+
+def current_period():
+    periods = set()
+    for row in open(SECTORS):
+        row = row.strip()
+        if row and row != "period,crew,sector,block":
+            periods.add(row.split(",")[0])
+    return max(periods)
+
+
+def flown(period):
+    flown_by_crew = {}
+    for row in open(SECTORS):
+        row = row.strip()
+        if not row or row == "period,crew,sector,block":
+            continue
+        p, crew, sector, block = row.split(",")
+        if p != period:
+            continue
+        flown_by_crew.setdefault(crew, []).append((sector, int(block)))
+    return flown_by_crew
+
+
+def schedule_credit(crew, category, sectors):
+    factor = FACTORS[category]
+    return sum(block * factor // 100 for _, block in sectors)
+
+
+def fixed_limits(period):
+    """The latest signed limitation standing for a crew member at `period`.
+
+    A limitation stands until the period it is reviewed at; a later entry that
+    carries it on stands in its place.
+    """
+    standing = {}
+    for line in open(LIMITS):
+        match = re.match(r'^(\S+)\s+(DRL-\S+)\s+(\S+)\s+(\d+)\s+(.*);\s+review\s+(\S+)\s*$', line.strip())
+        if not match:
+            continue
+        crew, figure, review = match.group(3), int(match.group(4)), match.group(6)
+        if review > period:
+            standing[crew] = figure
+        else:
+            standing.pop(crew, None)
+    return standing
+
+
+def sheet_fields(path):
+    fields = {}
+    for line in open(path):
+        if line.startswith("seal:"):
+            break
+        key, _, value = line.partition(":")
+        if not line.startswith("#") and value:
+            fields[key.strip()] = value.strip()
+    return fields
+
+
+def settle(path, fingerprint):
+    return subprocess.run([sys.executable, READER, path, fingerprint], capture_output=True, text=True)
+
+
+def main(argv):
+    fingerprint = argv[1] if len(argv) > 1 else None
+    if fingerprint is None:
+        for line in open(REGISTER):
+            if line.startswith("key_fingerprint"):
+                fingerprint = line.split(":", 1)[1].strip()
+    period = current_period()
+    crew = read_fragments(CREW_DIR)
+    bases = read_fragments(BASE_DIR)
+    flown_by_crew = flown(period)
+    limits = fixed_limits(period)
+    base_root = None
+    for line in open(REGISTER):
+        if line.startswith("base_root"):
+            base_root = line.split(":", 1)[1].strip()
+
+    failures = []
+    print("period %s over %s" % (period, base_root))
+
+    rostered = {name: [] for name in bases}
+    for name, fragment in sorted(crew.items()):
+        base = fragment["base"]
+        if fragment.get("enabled") != "true":
+            continue
+        rostered.setdefault(base, []).append(name)
+
+    for base, fragment in sorted(bases.items()):
+        drop = os.path.join(base_root, base)
+        ranks = fragment["ranks"].split(",")
+        sheets = {}
+        for name in sorted(os.listdir(drop)) if os.path.isdir(drop) else []:
+            if not name.endswith(".sheet"):
+                continue
+            fields = sheet_fields(os.path.join(drop, name))
+            sheets[fields["crew"]] = fields
+        held_ranks = {fields["rank"] for fields in sheets.values()}
+
+        for crew_name in sorted(rostered.get(base, [])):
+            if crew_name not in flown_by_crew:
+                print("  note: %s carries no %s sector record, so the run builds no sheet" % (base, crew_name))
+                continue
+            if crew_name not in sheets:
+                failures.append("%s holds no sheet for %s" % (base, crew_name))
+                continue
+            fields = sheets[crew_name]
+            want = schedule_credit(crew_name, crew[crew_name]["category"], flown_by_crew[crew_name])
+            if crew_name in limits:
+                if fields.get("limit") != "fixed" or int(fields["credit"]) != limits[crew_name]:
+                    failures.append("%s/%s: credit %s is not the fixed %d the limitations log carries"
+                                    % (base, crew_name, fields.get("credit"), limits[crew_name]))
+            else:
+                if fields.get("limit") != "standard" or int(fields["credit"]) != want:
+                    failures.append("%s/%s: credit %s is not the %d the schedule gives"
+                                    % (base, crew_name, fields.get("credit"), want))
+            if fields.get("period") != period:
+                failures.append("%s/%s: sheet carries period %s, not %s"
+                                % (base, crew_name, fields.get("period"), period))
+            if fields.get("category") != crew[crew_name]["category"]:
+                failures.append("%s/%s: sheet carries category %s, not %s"
+                                % (base, crew_name, fields.get("category"), crew[crew_name]["category"]))
+            if fields.get("factor") != str(FACTORS[crew[crew_name]["category"]]):
+                failures.append("%s/%s: sheet carries factor %s, not the %s its category is credited at"
+                                % (base, crew_name, fields.get("factor"), FACTORS[crew[crew_name]["category"]]))
+            result = settle(os.path.join(drop, "marrowfleet_%s.sheet" % crew_name), fingerprint)
+            if result.returncode != 0:
+                failures.append("%s/%s: the reader rejects the sheet: %s"
+                                % (base, crew_name, result.stderr.strip()))
+
+        for rank in ranks:
+            established = [c for c in rostered.get(base, []) if crew[c]["rank"] == rank]
+            if rank not in held_ranks:
+                if not established:
+                    detail = "no crew member established at this base"
+                elif not [c for c in established if c in flown_by_crew]:
+                    detail = "no sector recorded this period for %s" % ", ".join(established)
+                else:
+                    detail = "no sheet in the drop"
+                failures.append("%s declares rank %s and holds no sheet for it (%s)" % (base, rank, detail))
+
+    if failures:
+        for failure in failures:
+            print("  FAULT: %s" % failure)
+        print("the period does not close clean: %d fault(s)" % len(failures))
+        return 1
+    print("every base holds a settling sheet for every crew member it rosters")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

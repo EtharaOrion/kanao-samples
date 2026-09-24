@@ -1,64 +1,105 @@
 {
   "model": "glm-5.3",
   "runs": 8,
+  "runs_with_rubric": 8,
   "runs_passed": 0,
-  "average_reward": 0.274,
+  "average_overall_score": 0.2474,
   "per_run": [
     {
       "run_index": 1,
+      "tests_total": 9,
+      "tests_passed": 0,
+      "tests_failed": 9,
+      "criteria_total": 20,
+      "criteria_passed": 11,
       "tests_score": 0.0,
-      "rubric_score": 0.5957,
+      "rubric_score": 0.42,
       "verdict": "FAILED",
-      "reward": 0.2979
+      "overall_score": 0.21
     },
     {
       "run_index": 2,
+      "tests_total": 9,
+      "tests_passed": 0,
+      "tests_failed": 9,
+      "criteria_total": 20,
+      "criteria_passed": 8,
       "tests_score": 0.0,
-      "rubric_score": 0.2979,
+      "rubric_score": 0.32,
       "verdict": "FAILED",
-      "reward": 0.1489
+      "overall_score": 0.16
     },
     {
       "run_index": 3,
+      "tests_total": 9,
+      "tests_passed": 0,
+      "tests_failed": 9,
+      "criteria_total": 20,
+      "criteria_passed": 5,
       "tests_score": 0.0,
-      "rubric_score": 0.5319,
+      "rubric_score": 0.06,
       "verdict": "FAILED",
-      "reward": 0.266
+      "overall_score": 0.03
     },
     {
       "run_index": 4,
+      "tests_total": 9,
+      "tests_passed": 0,
+      "tests_failed": 9,
+      "criteria_total": 20,
+      "criteria_passed": 5,
       "tests_score": 0.0,
-      "rubric_score": 0.5319,
+      "rubric_score": 0.06,
       "verdict": "FAILED",
-      "reward": 0.266
+      "overall_score": 0.03
     },
     {
       "run_index": 5,
+      "tests_total": 9,
+      "tests_passed": 0,
+      "tests_failed": 9,
+      "criteria_total": 20,
+      "criteria_passed": 10,
       "tests_score": 0.0,
-      "rubric_score": 0.9787,
+      "rubric_score": 0.36,
       "verdict": "FAILED",
-      "reward": 0.4894
+      "overall_score": 0.18
     },
     {
       "run_index": 6,
-      "tests_score": 0.0,
-      "rubric_score": 0.3191,
+      "tests_total": 9,
+      "tests_passed": 4,
+      "tests_failed": 5,
+      "criteria_total": 20,
+      "criteria_passed": 15,
+      "tests_score": 0.666667,
+      "rubric_score": 0.74,
       "verdict": "FAILED",
-      "reward": 0.1596
+      "overall_score": 0.7033
     },
     {
       "run_index": 7,
-      "tests_score": 0.0,
-      "rubric_score": 0.5957,
+      "tests_total": 9,
+      "tests_passed": 3,
+      "tests_failed": 6,
+      "criteria_total": 20,
+      "criteria_passed": 12,
+      "tests_score": 0.611111,
+      "rubric_score": 0.56,
       "verdict": "FAILED",
-      "reward": 0.2979
+      "overall_score": 0.5856
     },
     {
       "run_index": 8,
+      "tests_total": 9,
+      "tests_passed": 0,
+      "tests_failed": 9,
+      "criteria_total": 20,
+      "criteria_passed": 6,
       "tests_score": 0.0,
-      "rubric_score": 0.5319,
+      "rubric_score": 0.16,
       "verdict": "FAILED",
-      "reward": 0.266
+      "overall_score": 0.08
     }
   ]
 }

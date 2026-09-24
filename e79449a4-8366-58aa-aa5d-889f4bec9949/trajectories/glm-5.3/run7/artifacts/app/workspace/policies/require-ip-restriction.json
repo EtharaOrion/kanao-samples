@@ -1,27 +1,47 @@
 {
   "if": {
-    "allOf": [
+    "anyOf": [
       {
-        "field": "type",
-        "equals": "Microsoft.Web/sites/config"
-      },
-      {
-        "anyOf": [
+        "allOf": [
           {
-            "field": "id",
-            "like": "*/sites/func-paymesh-pagos-${environment}/config/web"
+            "field": "type",
+            "equals": "Microsoft.Web/sites"
           },
           {
-            "field": "id",
-            "like": "*/sites/func-paymesh-pagos-canary-${environment}/config/web"
+            "field": "name",
+            "in": [
+              "func-paymesh-pagos-${environment}",
+              "func-paymesh-pagos-canary-${environment}"
+            ]
+          },
+          {
+            "not": {
+              "field": "Microsoft.Web/sites/siteConfig.ipSecurityRestrictionsDefaultAction",
+              "equals": "Deny"
+            }
           }
         ]
       },
       {
-        "not": {
-          "field": "Microsoft.Web/sites/config/web.ipSecurityRestrictionsDefaultAction",
-          "equals": "Deny"
-        }
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "field": "fullName",
+            "in": [
+              "func-paymesh-pagos-${environment}/web",
+              "func-paymesh-pagos-canary-${environment}/web"
+            ]
+          },
+          {
+            "not": {
+              "field": "Microsoft.Web/sites/config/ipSecurityRestrictionsDefaultAction",
+              "equals": "Deny"
+            }
+          }
+        ]
       }
     ]
   },

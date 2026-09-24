@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+import json,subprocess,sys
+from pathlib import Path
+source=Path('/workspace/policy/authorizations.json')
+feed=json.loads(source.read_text())
+selected=None
+for candidate in feed['candidates']:
+    request=candidate['request']
+    r=subprocess.run(['python3','/workspace/policy/resolve.py'],input=json.dumps(request),text=True,capture_output=True)
+    if r.returncode:
+        print('policy candidate '+candidate['id']+' rejected',file=sys.stderr)
+        continue
+    result=json.loads(r.stdout)
+    if set(result)!=set(feed['subjects']):raise ValueError('incomplete policy decision')
+    if any(value is not None and (not isinstance(value,list) or not all(isinstance(x,str) for x in value)) for value in result.values()):raise ValueError('invalid policy parameters')
+    selected=candidate['id']
+    break
+if selected is None:raise ValueError('no admissible policy candidate')
+for subject,value in result.items():
+    if value is None:
+        command=['marrowfleet', 'limit', 'lift']+[subject]
+    else:
+        if not isinstance(value,list) or not all(isinstance(x,str) for x in value):raise ValueError('invalid policy parameters')
+        command=['marrowfleet', 'limit', 'fix']+[subject]+value
+    subprocess.run(command,check=True,stdout=subprocess.DEVNULL)
+
+Path('/var/lib/marrowfleet/policy-selection.json').write_text(json.dumps(dict(selected=selected,decisions=result),sort_keys=True))

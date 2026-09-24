@@ -1,171 +1,240 @@
 """Resolve the current signed authorization snapshot.
 
-Validates the complete authorization history before projecting any decision.
-Invalid history raises; callers surface a nonzero exit with no partial result.
+Contract: docs/policy-reconciliation.md. A request carries either an ``events``
+list or a segmented ``transport`` delivery. The complete history is validated
+before anything is projected; an invalid history raises and yields no result.
 """
 import hashlib
 import json
+import os
 import re
 import sys
 
-EVENT_KEYS = {"authorization", "revision", "subject", "operation", "start",
-              "end", "parameters"}
-REVISION = re.compile(r"\A(0|[1-9][0-9]*)\Z")
-DATE = re.compile(r"\A[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
+EVENT_KEYS = {'authorization', 'revision', 'subject', 'operation', 'start',
+              'end', 'parameters'}
+REVISION = re.compile(r'\A(?:0|[1-9][0-9]*)\Z')
+DATE = re.compile(r'\A([0-9]{4})-([0-9]{2})-([0-9]{2})\Z')
+DEFAULT_MANIFESTS = '/workspace/policy/manifests.json'
+MONTH_LENGTHS = (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
 
 class PolicyError(Exception):
-    pass
+    """The delivery, or the authorization history it carries, is not admissible."""
 
 
-def _canonical(events):
-    return json.dumps(events, sort_keys=True, separators=(",", ":"),
-                      ensure_ascii=False).encode("utf-8")
+def _text(value, what):
+    if not isinstance(value, str) or not value:
+        raise PolicyError('%s must be a nonempty string' % what)
+    return value
 
 
-def _nonempty(value):
-    return isinstance(value, str) and value != ""
+def _date(value, what):
+    match = DATE.match(value) if isinstance(value, str) else None
+    if match is None:
+        raise PolicyError('%s must be an ISO YYYY-MM-DD date' % what)
+    year, month, day = (int(part) for part in match.groups())
+    if not 1 <= month <= 12 or not 1 <= day <= MONTH_LENGTHS[month - 1]:
+        raise PolicyError('%s is not a calendar date' % what)
+    if month == 2 and day == 29 and not (
+            year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)):
+        raise PolicyError('%s is not a calendar date' % what)
+    return value
 
 
-def _check_event(event):
-    if not isinstance(event, dict) or set(event) != EVENT_KEYS:
-        raise PolicyError("event keys are not exactly the required set")
-    if not _nonempty(event["authorization"]) or not _nonempty(event["subject"]):
-        raise PolicyError("identifiers must be nonempty strings")
-    if not _nonempty(event["revision"]) or not REVISION.match(event["revision"]):
-        raise PolicyError("revision must be a canonical nonnegative decimal")
-    if event["operation"] not in ("grant", "withdraw"):
-        raise PolicyError("operation must be grant or withdraw")
-    params = event["parameters"]
-    if not isinstance(params, list) or not all(isinstance(p, str) for p in params):
-        raise PolicyError("parameters must be a list of strings")
-    for field in ("start", "end"):
-        if not _nonempty(event[field]) or not DATE.match(event[field]):
-            raise PolicyError("dates must be ISO YYYY-MM-DD")
-    if not event["start"] < event["end"]:
-        raise PolicyError("start must be strictly before end")
+def _digest(events):
+    body = json.dumps(events, sort_keys=True, separators=(',', ':'),
+                      ensure_ascii=False)
+    return hashlib.sha256(body.encode('utf-8')).hexdigest()
+
+
+def _manifests():
+    path = os.environ.get('MARROWFLEET_POLICY_MANIFESTS') or DEFAULT_MANIFESTS
+    try:
+        with open(path, 'r', encoding='utf-8') as handle:
+            document = json.load(handle)
+    except (OSError, ValueError) as exc:
+        raise PolicyError('release manifests are unreadable: %s' % exc)
+    generations = document.get('generations') if isinstance(document, dict) else None
+    if not isinstance(generations, dict):
+        raise PolicyError('release manifests carry no generations')
+    return generations
+
+
+def _commits(transport):
+    raw = transport.get('commits')
+    if not isinstance(raw, list):
+        raise PolicyError('transport carries no commits')
+    commits = {}
+    for commit in raw:
+        if not isinstance(commit, dict) or set(commit) != {'batch', 'parts', 'sha256'}:
+            raise PolicyError('a commit carries exactly batch, parts and sha256')
+        batch = _text(commit.get('batch'), 'commit batch')
+        parts = commit.get('parts')
+        if not isinstance(parts, int) or isinstance(parts, bool) or parts <= 0:
+            raise PolicyError('commit %s: parts must be a positive integer' % batch)
+        sha256 = _text(commit.get('sha256'), 'commit sha256')
+        held = commits.get(batch)
+        if held is not None and held != (parts, sha256):
+            raise PolicyError('commit %s replayed with conflicting terms' % batch)
+        commits[batch] = (parts, sha256)
+    if not commits:
+        raise PolicyError('transport commits no batch')
+    return commits
+
+
+def _pages(transport, commits):
+    raw = transport.get('pages')
+    if not isinstance(raw, list):
+        raise PolicyError('transport carries no pages')
+    pages = {}
+    for page in raw:
+        if not isinstance(page, dict) or set(page) != {'batch', 'part', 'events'}:
+            raise PolicyError('a page carries exactly batch, part and events')
+        batch = _text(page.get('batch'), 'page batch')
+        part = page.get('part')
+        if not isinstance(part, int) or isinstance(part, bool) or part < 0:
+            raise PolicyError('page %s: part must be a zero-based integer' % batch)
+        events = page.get('events')
+        if not isinstance(events, list):
+            raise PolicyError('page %s/%d carries no event list' % (batch, part))
+        if batch not in commits:
+            raise PolicyError('page %s/%d belongs to an uncommitted batch'
+                              % (batch, part))
+        if part >= commits[batch][0]:
+            raise PolicyError('page %s/%d lies beyond the committed part count'
+                              % (batch, part))
+        held = pages.get((batch, part))
+        if held is not None and held != events:
+            raise PolicyError('page %s/%d replayed with conflicting events'
+                              % (batch, part))
+        pages[(batch, part)] = events
+    return pages
+
+
+def _generation(transport, commits):
+    generation = transport.get('generation')
+    if generation is None:
+        return
+    generation = _text(generation, 'transport generation')
+    generations = _manifests()
+    if generation not in generations:
+        raise PolicyError('generation %s is not a released generation' % generation)
+    listed = generations[generation]
+    listed = listed.get('batches') if isinstance(listed, dict) else None
+    if not isinstance(listed, dict):
+        raise PolicyError('generation %s lists no batches' % generation)
+    committed = {batch: sha256 for batch, (_, sha256) in commits.items()}
+    if committed != listed:
+        raise PolicyError('generation %s must commit exactly the batches its '
+                          'manifest lists, at the digests it lists' % generation)
 
 
 def _assemble(transport):
-    if not isinstance(transport, dict):
-        raise PolicyError("transport must be an object")
-    commits = transport.get("commits")
-    pages = transport.get("pages")
-    if not isinstance(commits, list) or not isinstance(pages, list):
-        raise PolicyError("transport requires commits and pages lists")
-
-    declared = {}
-    for commit in commits:
-        if not isinstance(commit, dict):
-            raise PolicyError("commit must be an object")
-        batch, parts, digest = commit.get("batch"), commit.get("parts"), commit.get("sha256")
-        if not _nonempty(batch):
-            raise PolicyError("commit batch must be a nonempty string")
-        if not isinstance(parts, int) or isinstance(parts, bool) or parts <= 0:
-            raise PolicyError("commit parts must be a positive integer")
-        if not _nonempty(digest):
-            raise PolicyError("commit sha256 must be a nonempty string")
-        if batch in declared:
-            if declared[batch] != (parts, digest):
-                raise PolicyError("conflicting commit replay for a batch")
-        else:
-            declared[batch] = (parts, digest)
-
-    seen = {}
-    for page in pages:
-        if not isinstance(page, dict):
-            raise PolicyError("page must be an object")
-        batch, part, events = page.get("batch"), page.get("part"), page.get("events")
-        if not _nonempty(batch):
-            raise PolicyError("page batch must be a nonempty string")
-        if not isinstance(part, int) or isinstance(part, bool) or part < 0:
-            raise PolicyError("page part must be a zero-based integer")
-        if not isinstance(events, list):
-            raise PolicyError("page events must be a list")
-        if batch not in declared:
-            raise PolicyError("page for an uncommitted batch")
-        if part >= declared[batch][0]:
-            raise PolicyError("page part outside declared parts")
-        key = (batch, part)
-        if key in seen:
-            if _canonical(seen[key]) != _canonical(events):
-                raise PolicyError("conflicting page replay")
-        else:
-            seen[key] = events
-
+    commits = _commits(transport)
+    pages = _pages(transport, commits)
+    _generation(transport, commits)
     history = []
-    for batch in sorted(declared):
-        parts, digest = declared[batch]
-        assembled = []
+    for batch in sorted(commits):
+        parts, sha256 = commits[batch]
+        events = []
         for part in range(parts):
-            if (batch, part) not in seen:
-                raise PolicyError("missing part for a committed batch")
-            assembled.extend(seen[(batch, part)])
-        if hashlib.sha256(_canonical(assembled)).hexdigest() != digest:
-            raise PolicyError("digest mismatch for a committed batch")
-        history.extend(assembled)
+            if (batch, part) not in pages:
+                raise PolicyError('batch %s is missing part %d' % (batch, part))
+            events.extend(pages[(batch, part)])
+        if _digest(events) != sha256.lower():
+            raise PolicyError('batch %s does not match its committed digest' % batch)
+        history.extend(events)
     return history
+
+
+def _history(request):
+    if 'transport' in request:
+        if 'events' in request:
+            raise PolicyError('a request carries a transport or events, not both')
+        transport = request['transport']
+        if not isinstance(transport, dict):
+            raise PolicyError('transport must be an object')
+        return _assemble(transport)
+    events = request.get('events')
+    if not isinstance(events, list):
+        raise PolicyError('a request must carry events or a transport')
+    return events
+
+
+def _check(event):
+    if not isinstance(event, dict) or set(event) != EVENT_KEYS:
+        raise PolicyError('an event carries exactly %s'
+                          % ', '.join(sorted(EVENT_KEYS)))
+    _text(event['authorization'], 'authorization')
+    _text(event['subject'], 'subject')
+    revision = event['revision']
+    if not isinstance(revision, str) or not REVISION.match(revision):
+        raise PolicyError('revision must be a canonical nonnegative decimal string')
+    if event['operation'] not in ('grant', 'withdraw'):
+        raise PolicyError('operation must be grant or withdraw')
+    parameters = event['parameters']
+    if not isinstance(parameters, list) or not all(
+            isinstance(item, str) for item in parameters):
+        raise PolicyError('parameters must be a list of strings')
+    if not _date(event['start'], 'start') < _date(event['end'], 'end'):
+        raise PolicyError('start must fall strictly before end')
+
+
+def _snapshot(history):
+    """One winning revision per authorization, subject and interval included."""
+    revisions = {}
+    for event in history:
+        name = event['authorization']
+        revision = int(event['revision'])
+        held = revisions.get((name, revision))
+        if held is not None and held != event:
+            raise PolicyError('authorization %s carries conflicting revision %s'
+                              % (name, event['revision']))
+        revisions[(name, revision)] = event
+    winners = {}
+    for (name, revision), event in revisions.items():
+        if name not in winners or revision > winners[name][0]:
+            winners[name] = (revision, event)
+    return [event for _, event in winners.values()]
 
 
 def resolve(request):
     if not isinstance(request, dict):
-        raise PolicyError("request must be an object")
-    subjects = request.get("subjects")
-    now = request.get("now")
-    if not isinstance(subjects, list) or not all(_nonempty(s) for s in subjects):
-        raise PolicyError("subjects must be a list of nonempty strings")
-    if not _nonempty(now) or not DATE.match(now):
-        raise PolicyError("now must be an ISO date")
+        raise PolicyError('a request must be an object')
+    now = _date(request.get('now'), 'now')
+    subjects = request.get('subjects')
+    if not isinstance(subjects, list) or not all(
+            isinstance(item, str) and item for item in subjects):
+        raise PolicyError('subjects must be a list of nonempty strings')
 
-    if "transport" in request:
-        events = _assemble(request["transport"])
-    else:
-        events = request.get("events")
-        if not isinstance(events, list):
-            raise PolicyError("events must be a list")
+    history = _history(request)
+    for event in history:
+        _check(event)
 
-    for event in events:
-        _check_event(event)
-
-    grouped = {}
-    for event in events:
-        key = (event["authorization"], int(event["revision"]))
-        canonical = _canonical([event])
-        if key in grouped:
-            if grouped[key] != canonical:
-                raise PolicyError("conflicting equal revisions for an authorization")
-        else:
-            grouped[key] = canonical
-
-    winners = {}
-    for event in events:
-        auth = event["authorization"]
-        rev = int(event["revision"])
-        current = winners.get(auth)
-        if current is None or rev > current[0]:
-            winners[auth] = (rev, event)
-
+    requested = set(subjects)
     active = {}
-    for rev, event in winners.values():
-        if event["operation"] != "grant":
+    for event in _snapshot(history):
+        subject = event['subject']
+        if subject not in requested or event['operation'] == 'withdraw':
             continue
-        if not (event["start"] <= now < event["end"]):
+        if not event['start'] <= now < event['end']:
             continue
-        subject = event["subject"]
         if subject in active:
-            raise PolicyError("multiple active authorizations for a subject")
-        active[subject] = event["parameters"]
+            raise PolicyError('subject %s carries more than one active '
+                              'authorization' % subject)
+        active[subject] = event
 
-    return {subject: active.get(subject) for subject in subjects}
+    return {subject: active[subject]['parameters'] if subject in active else None
+            for subject in subjects}
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     try:
-        result = resolve(json.load(sys.stdin))
-    except PolicyError as exc:
-        sys.stderr.write("resolve: %s\n" % exc)
+        decision = resolve(json.load(sys.stdin))
+    except PolicyError as error:
+        sys.stderr.write('resolve: %s\n' % error)
         sys.exit(1)
-    except Exception as exc:
-        sys.stderr.write("resolve: invalid request: %s\n" % exc)
+    except ValueError as error:
+        sys.stderr.write('resolve: the request is not JSON: %s\n' % error)
         sys.exit(1)
-    print(json.dumps(result, sort_keys=True))
+    print(json.dumps(decision, sort_keys=True))

@@ -1,0 +1,25 @@
+Duty credit for 2041-B5, recomputed from the register and
+docs/crediting-schedule.md: a sector is credited at the block minutes
+it was flown for taken on its category factor, and the duty credit on
+the sheet is those sector credits added together.
+
+mf-1130  thurlby-base   short-haul  no sector this period, so no sheet is built
+mf-2210  arnwick-base   long-haul   480*85/100=408 + 505*85/100=429 = 837
+mf-3480  arnwick-base   short-haul  210*100/100=210 + 245*100/100=245 + 190*100/100=190 = 645
+mf-4160  oxenholme-base long-haul   500*85/100=425 + 540*85/100=459 = 884
+mf-5720  oxenholme-base standby     400*60/100=240 + 380*60/100=228 = 468
+mf-6350  kirkbryde-base short-haul  265*100/100=265 + 230*100/100=230 = 495
+mf-7040  kirkbryde-base long-haul   460*85/100=391 + 520*85/100=442 = 833
+mf-8890  kirkbryde-base short-haul  275*100/100=275 + 240*100/100=240 = 515
+mf-9270  thurlby-base   long-haul   495*85/100=420 + 470*85/100=399 = 819
+
+Two of those credits are settled by a duty limitation instead of the
+sectors, and both are subjects of the signed authorization feed:
+
+  mf-3480  DRL-0101 is reviewed at 2041-B5, and a limitation stands
+           only until the period it is reviewed at, so it no longer
+           stands. The selected history withdraws it. The credit is the
+           sectors: 645.
+  mf-6350  DRL-0103 carries the certificate limitation on to review
+           2042-B2, so it still stands at 2041-B5. The credit is the
+           fixed figure 430 and the sectors do not come into it.

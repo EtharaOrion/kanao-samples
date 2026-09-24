@@ -1,7 +1,9 @@
+import json
 import os
 import re
 import subprocess
 import tempfile
+
 
 
 EV = "/logs/verifier/evidence"
@@ -9,10 +11,15 @@ REGISTER = "/workspace/rostering"
 SCHEDULE = "/workspace/docs/crediting-schedule.md"
 LIMITATIONS = "/workspace/docs/duty-limitations.log"
 READER = "/workspace/tools/rostercheck/rostercheck.py"
+RESOLVER = "/workspace/policy/resolve.py"
+WITHDRAWN_SUBJECT = "mf-3480"
+ADMISSIBLE_CANDIDATE = "close-17"
+TRANSPORT_DAMAGE = ("missing", "digest", "page_replay", "commit_replay", "extra", "uncommitted")
+MISSING, DIGEST, PAGE_REPLAY, COMMIT_REPLAY, EXTRA, UNCOMMITTED = TRANSPORT_DAMAGE
 CREW = {"mf-1130", "mf-2210", "mf-3480", "mf-4160", "mf-5720",
         "mf-6350", "mf-7040", "mf-8890", "mf-9270"}
 BASES = ["arnwick-base", "kirkbryde-base", "oxenholme-base", "thurlby-base"]
-KEYS_MODE = "750"
+KEYS_MODE = "640"
 FACTORS = {"long-haul": 85, "short-haul": 100, "standby": 60}
 CREDIT_BASE = 100
 PLAIN = "standard"
@@ -70,7 +77,11 @@ def _sectors():
             c = [x.strip() for x in line.split(",")]
             if len(c) < 4:
                 continue
-            rows.setdefault((c[1], c[0]), []).append((c[2], int(c[3])))
+            try:
+                block = int(c[3])
+            except ValueError:      # header or comment line, as the service does
+                continue
+            rows.setdefault((c[1], c[0]), []).append((c[2], block))
     return {k: sorted(v) for k, v in rows.items()}
 
 
@@ -218,6 +229,24 @@ def test_every_base_stands_the_drop_its_own_fragment_declares():
     assert not wrong, "the bases: " + "; ".join(wrong[:8])
 
 
+def _sheet_text(fingerprint, category, sectors, factor, credit, limit=PLAIN):
+    body = ("# marrowfleet duty sheet\n"
+            "crew: mf-0001\nbase: arnwick-base\nrank: captain\n"
+            "category: %s\nperiod: %s\nsectors: %s\nfactor: %d\n"
+            "limit: %s\ncredit: %d\nkey: %s\n"
+            % (category, _current_period(), sectors, factor, limit, credit,
+               _register().get("signing_key", "")))
+    return body + "seal: %016x\n" % _seal((fingerprint + body).encode("utf-8"))
+
+
+def _settles(text, fingerprint):
+    holder = tempfile.mkdtemp()
+    probe = os.path.join(holder, "probe.sheet")
+    with open(probe, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    return _run_reader(probe, fingerprint).returncode == 0
+
+
 def test_the_published_reader_settles_every_sheet_the_run_built():
     fingerprint = _register()["key_fingerprint"]
     staged = _staged()
@@ -228,44 +257,43 @@ def test_the_published_reader_settles_every_sheet_the_run_built():
         if done.returncode != 0:
             faults.append("%s: %s" % (
                 who, done.stderr.decode("utf-8", "replace").strip()))
-    plain = [w for w in sorted(staged)
-             if _fields(staged[w][1]).get("limit") == PLAIN]
-    borrowed = [w for w in plain if _fields(staged[w][1]).get("factor") != "85"]
-    if not plain or not borrowed:
+    if not staged:
         faults.append("nothing was built")
-    else:
-        pick = staged[plain[0]][1].decode("utf-8")
-        head = _fields(staged[plain[0]][1])
-        louder = _stem(pick).replace(
-            "credit: " + head.get("credit", ""),
-            "credit: %d" % (int(head.get("credit", "0")) + 7))
-        louder += "seal: %016x\n" % _seal(
-            fingerprint.encode("utf-8") + louder.encode("utf-8"))
-        lent = staged[borrowed[0]][1].decode("utf-8")
-        worn = _fields(staged[borrowed[0]][1])
-        swapped = _stem(lent)
-        swapped = swapped.replace("factor: " + worn.get("factor", ""),
-                                  "factor: 85")
-        swapped = swapped.replace(
-            "credit: " + worn.get("credit", ""),
-            "credit: %d" % _credited(_legs(worn.get("sectors", "")), 85))
-        swapped += "seal: %016x\n" % _seal(
-            fingerprint.encode("utf-8") + swapped.encode("utf-8"))
-        holder = tempfile.mkdtemp()
-        trials = [
-            ("one sealed by another key", pick, "0000000000000000"),
-            ("one whose body was altered",
-             pick.replace("period: ", "period: 1"), fingerprint),
-            ("one crediting a wider duty", louder, fingerprint),
-            ("one carrying a borrowed factor", swapped, fingerprint),
-        ]
-        for index, (label, text, fp) in enumerate(trials):
-            probe = os.path.join(holder, "trial-%d.sheet" % index)
-            with open(probe, "w", encoding="utf-8") as fh:
-                fh.write(text)
-            if _run_reader(probe, fp).returncode == 0:
-                faults.append("the reader settles %s" % label)
     assert not faults, "; ".join(faults[:8])
+
+
+def test_the_published_reader_refuses_a_sheet_the_schedule_does_not_describe():
+    fingerprint = _register()["key_fingerprint"]
+    legs = "MF1:495 MF2:470"
+    right = _sheet_text(fingerprint, "long-haul", legs, 85, 819)
+    trials = [
+        ("one sealed by another key", right, "0000000000000000"),
+        ("one whose body was altered", right.replace("rank: captain", "rank: purser"), fingerprint),
+        ("one crediting a wider duty", _sheet_text(fingerprint, "long-haul", legs, 85, 826), fingerprint),
+        ("one carrying a borrowed factor", _sheet_text(fingerprint, "short-haul", legs, 85, 819), fingerprint),
+        ("one carrying a factor no category holds", _sheet_text(fingerprint, "standby", "MF1:500", 61, 305), fingerprint),
+    ]
+    faults = ["the reader settles %s" % label for label, text, fp in trials if _settles(text, fp)]
+    assert not faults, "; ".join(faults)
+
+
+def test_the_published_reader_credits_each_sector_on_its_own():
+    fingerprint = _register()["key_fingerprint"]
+    faults = []
+    accepted = [
+        ("a short-haul sheet", _sheet_text(fingerprint, "short-haul", "MF1:125 MF2:130", 100, 255)),
+        ("two long-haul sectors credited one by one", _sheet_text(fingerprint, "long-haul", "MF1:495 MF2:470", 85, 819)),
+        ("one long-haul sector", _sheet_text(fingerprint, "long-haul", "MF1:965", 85, 820)),
+        ("a fixed sheet", _sheet_text(fingerprint, "long-haul", "MF1:495 MF2:470", 85, 430, limit=FIXED)),
+    ]
+    for label, text in accepted:
+        if not _settles(text, fingerprint):
+            faults.append("the reader refuses %s" % label)
+    if _settles(_sheet_text(fingerprint, "long-haul", "MF1:495 MF2:470", 85, 820), fingerprint):
+        faults.append("two sectors credited on total settled")
+    if _settles(_sheet_text(fingerprint, "standby", "MF1:101 MF2:101 MF3:101", 60, 181), fingerprint):
+        faults.append("three standby sectors credited on total settled")
+    assert not faults, "; ".join(faults)
 
 
 def test_every_crew_member_is_credited_what_the_sectors_and_the_limitations_give():
@@ -380,8 +408,13 @@ def test_policy_repair_boundaries_were_changed():
 def test_committed_history_is_complete_before_any_projection():
     import copy,hashlib,json,subprocess
     from pathlib import Path
-    selected=json.loads(Path('/var/lib/marrowfleet/policy-selection.json').read_text())
-    assert selected['selected']=='close-17', 'release accepted an inadmissible candidate history' 
+    selected=json.loads(Path(EV,'policy-selection.json').read_text())
+    assert selected['selected']==ADMISSIBLE_CANDIDATE, 'release accepted an inadmissible candidate history'
+    replayed=Path(EV,'replay','second','policy-selection.json')
+    assert replayed.exists() and json.loads(replayed.read_text())==selected, 'the next release selected another history'
+    assert Path(EV,'replay','build.exit').read_text().strip()=='0', 'the next release stopped'
+    standing=[line.split() for line in Path(EV,'replay','second','limit.txt').read_text().splitlines()]
+    assert [WITHDRAWN_SUBJECT,PLAIN] in [row[:2] for row in standing], 'a withdrawn limitation came back on the next release'
     def event(revision,subject='A',**kwargs):
         return dict(authorization='p',revision=str(revision),subject=subject,operation=kwargs.get('operation','grant'),start='2026-01-01',end='2027-01-01',parameters=[kwargs.get('value','x')])
     def request(groups):
@@ -408,17 +441,85 @@ def test_committed_history_is_complete_before_any_projection():
     run(permuted,{'A':None,'B':['x']})
     run(request([[event(2)],[dict(event(1,'B'),authorization='q')]]),{'A':['x'],'B':['x']})
     run(request([[event(2,value='old'),event(2,value='conflict')],[event(10,'outside')]]),None)
-    for damage in ['missing','digest','page_replay','commit_replay','extra','uncommitted']:
+    for damage in TRANSPORT_DAMAGE:
         bad=copy.deepcopy(good);transport=bad['transport']
-        if damage=='missing':transport['pages'].pop(1)
-        if damage=='digest':transport['pages'][0]['events'][0]['parameters']=['tampered']
-        if damage=='page_replay':
+        if damage==MISSING:transport['pages'].pop(1)
+        if damage==DIGEST:transport['pages'][0]['events'][0]['parameters']=['tampered']
+        if damage==PAGE_REPLAY:
             page=copy.deepcopy(transport['pages'][0]);page['events']=[];transport['pages'].append(page)
-        if damage=='commit_replay':
+        if damage==COMMIT_REPLAY:
             commit=dict(transport['commits'][0],sha256='0'*64);transport['commits'].append(commit)
-        if damage=='extra':transport['pages'].append(dict(batch='1',part=2,events=[]))
-        if damage=='uncommitted':transport['pages'].append(dict(batch='unknown',part=0,events=[]))
+        if damage==EXTRA:transport['pages'].append(dict(batch='1',part=2,events=[]))
+        if damage==UNCOMMITTED:transport['pages'].append(dict(batch='unknown',part=0,events=[]))
         run(bad,None)
     for changes in [dict(revision='02'),dict(operation='approve'),dict(start='2026-02-30'),dict(start='2028-01-01'),dict(parameters=[3]),dict(extra='ignored')]:
         old=event(2,'outside');old.update(changes)
         run(request([[old],[event(10,'outside',operation='withdraw')]]),None)
+
+
+def _generation_request(groups, generation, manifest_batches=None):
+    import hashlib
+    commits, pages = [], []
+    digests = {}
+    for i, rows in enumerate(groups):
+        batch = str(i + 1)
+        digest = hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+        digests[batch] = digest
+        commits.append(dict(batch=batch, parts=1, sha256=digest))
+        pages.append(dict(batch=batch, part=0, events=rows))
+    transport = dict(commits=commits, pages=pages)
+    if generation is not None:
+        transport["generation"] = generation
+    return dict(now="2026-09-05", subjects=["A", "B"], transport=transport), digests
+
+
+def _resolve_with(request, manifests):
+    holder = tempfile.mkdtemp()
+    path = os.path.join(holder, "manifests.json")
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(dict(generations=manifests), fh)
+    env = dict(os.environ, MARROWFLEET_POLICY_MANIFESTS=path)
+    return subprocess.run(["python3", RESOLVER], input=json.dumps(request), capture_output=True,
+                          text=True, timeout=10, env=env)
+
+
+def test_a_released_history_holds_every_batch_its_manifest_lists():
+    def event(revision, subject="A", operation="grant", key="p", value="x"):
+        return dict(authorization=key, revision=str(revision), subject=subject, operation=operation,
+                    start="2026-01-01", end="2027-01-01", parameters=[value])
+    groups = [[event(2)], [event(10, operation="withdraw")], [event(1, "B", key="q")]]
+    faults = []
+    full, digests = _generation_request(groups, "g2")
+    whole = {"g2": {"batches": dict(digests)}}
+    done = _resolve_with(full, whole)
+    if done.returncode != 0 or json.loads(done.stdout or "null") != {"A": None, "B": ["x"]}:
+        faults.append("whole history refused")
+    permuted = json.loads(json.dumps(full))
+    permuted["transport"]["pages"].reverse()
+    permuted["transport"]["commits"].reverse()
+    permuted["transport"]["pages"] += permuted["transport"]["pages"][:1]
+    done = _resolve_with(permuted, whole)
+    if done.returncode != 0 or json.loads(done.stdout or "null") != {"A": None, "B": ["x"]}:
+        faults.append("reordered whole history refused")
+    short = json.loads(json.dumps(full))
+    short["transport"]["commits"] = [c for c in short["transport"]["commits"] if c["batch"] != "2"]
+    short["transport"]["pages"] = [q for q in short["transport"]["pages"] if q["batch"] != "2"]
+    bad = [
+        ("a history missing its withdrawal batch", short, whole),
+        ("an unknown generation", full, {"g1": {"batches": dict(digests)}}),
+        ("another generation's manifest", full,
+         {"g2": {"batches": {k: v for k, v in digests.items() if k != "3"}}, "g3": {"batches": dict(digests)}}),
+        ("a differing manifest digest", full,
+         {"g2": {"batches": dict(digests, **{"3": "0" * 64})}}),
+    ]
+    extra, extra_digests = _generation_request(groups + [[event(1, "B", key="r")]], "g2")
+    bad.append(("an unlisted batch", extra, whole))
+    conflicted, conflicted_digests = _generation_request(
+        [[event(2, value="x"), event(2, value="y")], [event(10, operation="withdraw")]], "g4")
+    bad.append(("a whole history with conflicting superseded events", conflicted,
+                {"g4": {"batches": dict(conflicted_digests)}}))
+    for label, request, manifests in bad:
+        done = _resolve_with(request, manifests)
+        if done.returncode == 0 or done.stdout.strip():
+            faults.append("the resolver accepts %s" % label)
+    assert not faults, "; ".join(faults)

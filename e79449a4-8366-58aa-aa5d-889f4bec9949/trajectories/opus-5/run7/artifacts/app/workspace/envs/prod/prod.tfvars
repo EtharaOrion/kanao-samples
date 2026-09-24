@@ -1,6 +1,10 @@
-environment = "prod"
-location    = "eastus2"
-tenant_id   = "0f9c1b6e-2b1a-4f2e-9c1b-6e2b1a4f2e9c"
+# environment is not pinned here on purpose. It defaults to "prod" in
+# variables.tf, so this file still renders the prod catalogue on its own, and a
+# binding the review job passes with -var reaches the documents whichever order
+# the flags are given in - pinned here it would override that binding and both
+# renderings would come out identical.
+location  = "eastus2"
+tenant_id = "0f9c1b6e-2b1a-4f2e-9c1b-6e2b1a4f2e9c"
 
 vnet_cidr = "10.40.0.0/16"
 

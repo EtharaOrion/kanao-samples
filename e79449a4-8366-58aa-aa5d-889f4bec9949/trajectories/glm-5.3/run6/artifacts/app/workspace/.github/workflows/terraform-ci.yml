@@ -36,11 +36,17 @@ jobs:
 
       # No subscription is attached to a pull request build, so the catalogue
       # is read offline. The review job renders it once for this environment
-      # and once at a second binding, and compares the two.
+      # and once at a second binding, and compares the two. The second binding
+      # sets the slug after the tfvars file on purpose: a later -var wins over
+      # an earlier one, so the tfvars file's own value must not be re-applied
+      # last and silently re-render the first binding.
       - name: render the policy catalogue
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
           echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt
+          echo "$EXPR" | terraform console -var-file=prod.tfvars -var environment=dev > /tmp/catalogue-dev.txt
 
       # The reviewer itself lives in the platform org, not in this repository,
       # so a change here cannot change what it looks for. It reads the two

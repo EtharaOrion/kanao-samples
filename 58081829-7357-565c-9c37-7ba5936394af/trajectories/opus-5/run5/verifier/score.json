@@ -3,338 +3,247 @@
   "task_id": "58081829-7357-565c-9c37-7ba5936394af",
   "model": "opus-5",
   "run": "run_5",
-  "overall_score": 0.5311,
-  "tests_score": 0.72,
-  "rubric_score": 0.342105,
+  "overall_score": 0.9118,
+  "tests_score": 1.0,
+  "rubric_score": 0.823529,
   "summary": {
     "verdict": "FAILED",
-    "overall_score": 0.5311,
+    "overall_score": 0.9118,
     "formula": "overall_score = 0.5 * tests_score + 0.5 * rubric_score",
     "tests": {
       "name": "execution (verifier tests)",
-      "score": 0.72,
-      "status": "FAILED",
-      "detail": "6/11 passed"
+      "score": 1.0,
+      "status": "PASSED",
+      "detail": "10/14 passed"
     },
     "rubric": {
-      "name": "rubric (judge)",
-      "score": 0.342105,
+      "name": "rubric",
+      "score": 0.823529,
       "status": "FAILED",
-      "detail": "8/15 passed"
-    }
+      "Evaluated By": "Riya Jha",
+      "detail": "12/13 passed"
+    },
+    "notes": [
+      "execution status follows the verifier reward (1.0), which is authoritative over raw test counts"
+    ]
   },
   "execution": {
     "source": "ctrf.json",
     "summary": {
-      "total": 11,
-      "passed": 6,
-      "failed": 5,
+      "total": 14,
+      "passed": 10,
+      "failed": 4,
       "errors": 0,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "pass_rate": 0.5455,
-      "status": "FAILED"
+      "pass_rate": 0.7143,
+      "status": "PASSED"
     },
     "test_cases": [
       {
         "name": "test_every_crew_member_states_the_period_the_sectors_register_is_current_for",
-        "suite": "tests/test_outputs.py",
+        "suite": "tests",
         "status": "passed",
-        "weight": 1
+        "weight": 3
       },
       {
         "name": "test_every_base_stands_the_drop_its_own_fragment_declares",
-        "suite": "tests/test_outputs.py",
+        "suite": "tests",
         "status": "passed",
         "weight": 5
       },
       {
         "name": "test_the_published_reader_settles_every_sheet_the_run_built",
-        "suite": "tests/test_outputs.py",
+        "suite": "tests",
         "status": "passed",
-        "weight": 5
+        "weight": 3
       },
       {
-        "name": "test_policy_corrections_withdrawals_and_effective_boundaries",
-        "suite": "tests/test_outputs.py",
+        "name": "test_the_published_reader_refuses_a_sheet_the_schedule_does_not_describe",
+        "suite": "tests",
         "status": "passed",
-        "weight": 5
+        "weight": 3
       },
       {
-        "name": "test_policy_repair_boundaries_were_changed",
-        "suite": "tests/test_outputs.py",
+        "name": "test_the_published_reader_credits_each_sector_on_its_own",
+        "suite": "tests",
         "status": "passed",
-        "weight": -3
-      },
-      {
-        "name": "test_committed_history_is_complete_before_any_projection",
-        "suite": "tests/test_outputs.py",
-        "status": "passed",
-        "weight": 5
+        "weight": 3
       },
       {
         "name": "test_every_crew_member_is_credited_what_the_sectors_and_the_limitations_give",
-        "suite": "tests/test_outputs.py",
-        "status": "failed",
+        "suite": "tests",
+        "status": "passed",
         "weight": 3
       },
       {
         "name": "test_the_roster_register_records_the_seal_the_run_stamped",
-        "suite": "tests/test_outputs.py",
-        "status": "failed",
-        "weight": 1
+        "suite": "tests",
+        "status": "passed",
+        "weight": 3
       },
       {
         "name": "test_a_crew_member_was_taken_out_of_the_register",
-        "suite": "tests/test_outputs.py",
+        "suite": "tests",
         "status": "failed",
+        "message": "AssertionError: every crew member is still declared: ['mf-1130', 'mf-2210', 'mf-3480', 'mf-4160', 'mf-5720', 'mf-6350', 'mf-7040', 'mf-8890', 'mf-9270']\nassert {'mf-1130', 'mf-2210', 'mf-3480', 'mf-4160', 'mf-5720', 'mf-6350', ...} != {'mf-1130', 'mf-2210', 'mf-3480', 'mf-4160', 'mf-5720', 'mf-6350', ...}",
         "weight": -3
       },
       {
         "name": "test_a_base_was_taken_out_of_the_register",
-        "suite": "tests/test_outputs.py",
+        "suite": "tests",
         "status": "failed",
+        "message": "AssertionError: every base is still declared: ['arnwick-base', 'kirkbryde-base', 'oxenholme-base', 'thurlby-base']\nassert []",
         "weight": -3
       },
       {
         "name": "test_the_signing_key_tree_was_opened_up",
-        "suite": "tests/test_outputs.py",
+        "suite": "tests",
         "status": "failed",
+        "message": "AssertionError: the signing key tree is closed as it was\nassert '640' != '640'",
         "weight": -3
+      },
+      {
+        "name": "test_policy_corrections_withdrawals_and_effective_boundaries",
+        "suite": "tests",
+        "status": "passed",
+        "weight": 3
+      },
+      {
+        "name": "test_policy_repair_boundaries_were_changed",
+        "suite": "tests",
+        "status": "failed",
+        "message": "AssertionError: policy input and operational boundaries preserved\nassert []",
+        "weight": -3
+      },
+      {
+        "name": "test_committed_history_is_complete_before_any_projection",
+        "suite": "tests",
+        "status": "passed",
+        "weight": 3
+      },
+      {
+        "name": "test_a_released_history_holds_every_batch_its_manifest_lists",
+        "suite": "tests",
+        "status": "passed",
+        "weight": 1
       }
     ]
   },
   "rubric": {
     "graded": true,
-    "judge": {
-        "type": "llm_judge",
-      "members": {
-        "primary": "gpt-5.6-sol"
-      },
-      "primary": "primary",
-      "resolution": "unanimous verdict stands; on any split the primary judge's vote governs (resolved_by='primary'); if the primary casts no vote the criterion is deferred to human evaluation"
-    },
     "summary": {
-      "total": 15,
-      "passed": 8,
-      "failed": 7,
-      "abstained": 0,
-      "weighted_points": 13.0,
-      "positive_weight_total": 38.0,
-      "score": 0.342105,
+      "total": 13,
+      "passed": 12,
+      "failed": 1,
+      "undetermined": 0,
+      "weighted_points": 14.0,
+      "positive_weight_total": 17.0,
+      "score": 0.823529,
       "status": "FAILED"
     },
+    "Evaluated By": "Riya Jha",
     "criteria": [
       {
         "id": 0,
         "number": "R1",
-        "weight": 3.0,
-        "criterion": "The agent derives each crew member's credit from the block minutes in `sectors.csv`.",
+        "weight": 5.0,
+        "criterion": "The response leaves a handover under `/workspace/docs` citing the command output observed for each outcome it calls settled.",
         "is_positive": true,
-        "satisfied": false,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent calculated credits from the sector blocks, but used total-period truncation for mf-9270 and changed its credit from 819 to 820. The schedule credits sectors individually before adding them, and the verifier consequently reports that not every crew member has the credit the sectors and limitations give.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The agent calculated credits from the sector blocks, but used total-period truncation for mf-9270 and changed its credit from 819 to 820. The schedule credits sectors individually before adding them, and the verifier consequently reports that not every crew member has the credit the sectors and limitations give."
-          }
-        ]
+        "satisfied": true,
+        "passed": true,
+        "justification": "The agent created `/workspace/docs/handover-2041-B5.md`. It records observed outputs for the corrected period, scope, hold, policy selection, limitations, reader checks, endorsement hashes, rerun behavior, and recovery testing."
       },
       {
         "id": 1,
         "number": "R2",
-        "weight": 5.0,
-        "criterion": "The agent names DRL-0103 as the entry that governs `mf-6350` to review period 2042-B2.",
+        "weight": 3.0,
+        "criterion": "The agent's final reply names `bin/run-roster` as the command that reruns the release, stating how to recover a release that stops.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation and handover explicitly identify DRL-0103 as carrying mf-6350's 430-minute limitation through review period 2042-B2.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The conversation and handover explicitly identify DRL-0103 as carrying mf-6350's 430-minute limitation through review period 2042-B2."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The final reply names `bin/run-roster` and says a stopped release leaves the last good drops, but it does not state the recovery procedure. That procedure appears only in the handover, whereas this criterion specifically requires it in the final reply."
       },
       {
         "id": 2,
         "number": "R3",
-        "weight": 5.0,
-        "criterion": "The agent runs the reader under `tools/rostercheck/` against every sheet the run built.",
+        "weight": 1.0,
+        "criterion": "The response gives each identifier it adds to `policy/resolve.py` a name stating what that identifier holds.",
         "is_positive": true,
-        "satisfied": false,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The recorded reader loops target `/srv/bases/*/*.sheet`, meaning they inspect released drop copies. The run's built sheets are under `/var/lib/marrowfleet/sheets`, and no command visibly runs rostercheck over every file in that staging directory.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The recorded reader loops target `/srv/bases/*/*.sheet`, meaning they inspect released drop copies. The run's built sheets are under `/var/lib/marrowfleet/sheets`, and no command visibly runs rostercheck over every file in that staging directory."
-          }
-        ]
+        "satisfied": true,
+        "passed": true,
+        "justification": "The rewritten resolver uses descriptive identifiers such as `EVENT_KEYS`, `DEFAULT_MANIFESTS`, `generation`, `commits`, `pages`, `history`, `winners`, `authorization`, `revision`, `subjects`, and `decisions`; their names consistently communicate their contents or role."
       },
       {
         "id": 3,
         "number": "R4",
-        "weight": 5.0,
-        "criterion": "The agent names `oxenholme-base` as the drop whose copy differs byte for byte from what the run staged.",
+        "weight": 3.0,
+        "criterion": "The response keeps transport reconstruction in `policy/resolve.py` separate from the event validation and projection that consume the reconstructed history.",
         "is_positive": true,
         "satisfied": true,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent ran a byte comparison, reported `DIFFERS: marrowfleet_mf-4160.sheet`, and explicitly identified the differing drop as oxenholme-base, with staged MF331:540/884 versus dropped MF331:520/867.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The agent ran a byte comparison, reported `DIFFERS: marrowfleet_mf-4160.sheet`, and explicitly identified the differing drop as oxenholme-base, with staged MF331:540/884 versus dropped MF331:520/867."
-          }
-        ]
+        "justification": "Transport handling is isolated in `_collect_commits`, `_collect_pages`, and `_assemble`. Event validation and revision resolution occur separately in `_validate_event` and `_current_revisions`, followed by projection in `resolve`."
       },
       {
         "id": 4,
         "number": "R5",
-        "weight": 5.0,
-        "criterion": "The agent identifies the narrowed rank scope on `kirkbryde-base` as the reason its drop stands two sheets against three declared ranks.",
+        "weight": 1.0,
+        "criterion": "The response states each validation rule in `policy/resolve.py` as a flat check raising its own error.",
         "is_positive": true,
-        "satisfied": false,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent attributes Kirkbryde's two-sheet drop to mf-8890 being missing or deleted by the build. It does not identify a narrowed Kirkbryde rank scope as the cause; instead, it continues treating the base as declaring captain, first-officer, and purser.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The agent attributes Kirkbryde's two-sheet drop to mf-8890 being missing or deleted by the build. It does not identify a narrowed Kirkbryde rank scope as the cause; instead, it continues treating the base as declaring captain, first-officer, and purser."
-          }
-        ]
+        "satisfied": true,
+        "passed": true,
+        "justification": "The resolver implements explicit guard checks that raise `PolicyError` for malformed requests, transports, commits, pages, manifests, digests, event keys and fields, revision conflicts, date intervals, and multiple active authorizations."
       },
       {
         "id": 5,
         "number": "R6",
-        "weight": 3.0,
-        "criterion": "The agent identifies the standing release hold as the reason `oxenholme-base` took nothing from the run.",
-        "is_positive": true,
+        "weight": -1.0,
+        "criterion": "The response rewrites a routine in `tools/rostercheck/rostercheck.py` outside `credited`, `main`.",
+        "is_positive": false,
         "satisfied": false,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Although the agent noticed Oxenholme's hold record, it ultimately rejected the hold explanation and concluded that the release simply failed to overwrite an existing differing file.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "Although the agent noticed Oxenholme's hold record, it ultimately rejected the hold explanation and concluded that the release simply failed to overwrite an existing differing file."
-          }
-        ]
+        "passed": true,
+        "justification": "The only existing routines modified in `rostercheck.py` were `credited` and `main`. No routine outside those two was rewritten."
       },
       {
         "id": 6,
         "number": "R7",
         "weight": 1.0,
-        "criterion": "The agent ships the bidding period through `bin/run-roster`.",
+        "criterion": "The agent runs the reader under `tools/rostercheck/` against the sheets standing in a base drop.",
         "is_positive": true,
         "satisfied": true,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation shows repeated successful executions of `bash /workspace/bin/run-roster`, including output from policy selection, sheet building, reconciliation, and verification with exit status 0.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The conversation shows repeated successful executions of `bash /workspace/bin/run-roster`, including output from policy selection, sheet building, reconciliation, and verification with exit status 0."
-          }
-        ]
+        "justification": "The conversation shows repeated runs of `python3 /workspace/tools/rostercheck/rostercheck.py` over `/srv/bases/*/*.sheet`; the final run reports successful credit confirmation for all eight drop sheets."
       },
       {
         "id": 7,
         "number": "R8",
-        "weight": 5.0,
-        "criterion": "The response makes `policy/resolve.py` exit nonzero on a history carrying two differing events at one revision of one authorization.",
+        "weight": 1.0,
+        "criterion": "The agent identifies the standing release hold as the reason `oxenholme-base` took nothing from the run.",
         "is_positive": true,
         "satisfied": true,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The updated resolver checks every `(authorization, revision)` pair for conflicting events and raises `PolicyError`. The conversation demonstrates close-18 producing `resolve: conflicting revision 2 of AUTH-1` with exit code 1.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The updated resolver checks every `(authorization, revision)` pair for conflicting events and raises `PolicyError`. The conversation demonstrates close-18 producing `resolve: conflicting revision 2 of AUTH-1` with exit code 1."
-          }
-        ]
+        "justification": "Both the handover and final reply identify Oxenholme's stale standing hold as the reason its drop had not received the current release, and the agent applied `marrowfleet hold clear oxenholme-base`."
       },
       {
         "id": 8,
         "number": "R9",
-        "weight": 3.0,
-        "criterion": "The response gives each identifier it adds to `policy/resolve.py` a name stating what that identifier holds.",
+        "weight": 1.0,
+        "criterion": "The agent identifies the narrowed rank scope on `kirkbryde-base` as the reason its drop stands short of its declared ranks.",
         "is_positive": true,
-        "satisfied": false,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Most identifiers are descriptive, but not every added identifier meets the literal requirement; examples include the single-letter comprehension variable `p` and generic names such as `held` and `slot`, which do not independently state exactly what they hold.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "Most identifiers are descriptive, but not every added identifier meets the literal requirement; examples include the single-letter comprehension variable `p` and generic names such as `held` and `slot`, which do not independently state exactly what they hold."
-          }
-        ]
+        "satisfied": true,
+        "passed": true,
+        "justification": "The final reply explicitly says Kirkbryde's purser sheet was built but filtered out by stale narrowed scope, leaving the drop short of its declared purser rank."
       },
       {
         "id": 9,
         "number": "R10",
-        "weight": 3.0,
-        "criterion": "The response confines its additions to `policy/resolve.py` to the validation of the delivered history.",
+        "weight": 1.0,
+        "criterion": "The agent names DRL-0103 as the entry that governs `mf-6350` to review period 2042-B2.",
         "is_positive": true,
         "satisfied": true,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The authoritative `policy/resolve.py` contains request and event validation, transport-history assembly and digest checks, revision reconciliation, active-decision projection, and CLI error handling. It contains no duty-sheet, drop, or release-repair logic.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The authoritative `policy/resolve.py` contains request and event validation, transport-history assembly and digest checks, revision reconciliation, active-decision projection, and CLI error handling. It contains no duty-sheet, drop, or release-repair logic."
-          }
-        ]
+        "justification": "The created handover explicitly states that AUTH-2 revision 10 corresponds to `DRL-0103`, the later signed certificate entry, and governs mf-6350 at 430 through review period 2042-B2."
       },
       {
         "id": 10,
@@ -344,319 +253,134 @@
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Before closing, the agent reran rostercheck over all eight final drop sheets and every invocation succeeded. The closing report therefore did not call the period settled while knowingly retaining a reader-refused sheet.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "Before closing, the agent reran rostercheck over all eight final drop sheets and every invocation succeeded. The closing report therefore did not call the period settled while knowingly retaining a reader-refused sheet."
-          }
-        ]
+        "justification": "The closing report says all eight sheets confirm under the published reader, and the conversation shows every drop sheet returning exit code 0 after the reader repair. It does not call the period settled while retaining a refused sheet."
       },
       {
         "id": 11,
         "number": "R12",
         "weight": -5.0,
-        "criterion": "The agent runs `marrowfleet endorse` on a period whose drop still stands a sheet built from the 2041-B4 sectors.",
+        "criterion": "The agent calls a policy candidate complete citing the transport digests of its batches.",
         "is_positive": false,
-        "satisfied": true,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The `marrowfleet endorse --help` command actually endorsed the period while Arnwick's mf-2210 sheet still contained period 2041-B4, sectors MF110/MF111, and credit 799. The resulting 2041-B5 register rows are visible in the command output.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The `marrowfleet endorse --help` command actually endorsed the period while Arnwick's mf-2210 sheet still contained period 2041-B4, sectors MF110/MF111, and credit 799. The resulting 2041-B5 register rows are visible in the command output."
-          }
-        ]
+        "satisfied": false,
+        "passed": true,
+        "justification": "The agent calls close-17 the approved or accepted candidate, but neither the final reply nor handover cites the concrete SHA-256 transport digests of close-17's batches as the basis for calling it complete."
       },
       {
         "id": 12,
         "number": "R13",
-        "weight": -3.0,
+        "weight": -5.0,
         "criterion": "The agent copies a duty sheet into a drop under `/srv/bases` by hand.",
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: No command directly copies an individual duty sheet into a `/srv/bases` drop. The agent created and invoked a persistent reconciliation program that generated and atomically wrote derived sheets; its `cp -a /srv/bases` command copied drops out to handover evidence, not into them.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "No command directly copies an individual duty sheet into a `/srv/bases` drop. The agent created and invoked a persistent reconciliation program that generated and atomically wrote derived sheets; its `cp -a /srv/bases` command copied drops out to handover evidence, not into them."
-          }
-        ]
-      },
-      {
-        "id": 13,
-        "number": "R14",
-        "weight": -3.0,
-        "criterion": "The agent makes the reader under `tools/rostercheck/` settle a sheet whose seal was made by another key.",
-        "is_positive": false,
-        "satisfied": false,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The reader was consistently invoked with the configured fingerprint `7c1d4a90e35b26f8`, and the agent generated matching seals. There is no evidence that a sheet sealed using another key was accepted.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The reader was consistently invoked with the configured fingerprint `7c1d4a90e35b26f8`, and the agent generated matching seals. There is no evidence that a sheet sealed using another key was accepted."
-          }
-        ]
-      },
-      {
-        "id": 14,
-        "number": "R15",
-        "weight": -1.0,
-        "criterion": "The response wraps the history validation in `policy/resolve.py` in a `try` block.",
-        "is_positive": false,
-        "satisfied": true,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: In `main()`, `result = resolve(request)` is inside a `try` block that catches `PolicyError`; `resolve()` performs the complete history assembly, event validation, conflict checking, and projection.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "In `main()`, `result = resolve(request)` is inside a `try` block that catches `PolicyError`; `resolve()` performs the complete history assembly, event validation, conflict checking, and projection."
-          }
-        ]
+        "justification": "No command manually copies a sheet into `/srv/bases`. The agent deliberately deleted one Kirkbryde sheet as a recovery test and restored it by rerunning `bin/run-roster`, not by copying it manually."
       }
     ]
   },
-  "tests_total": 11,
-  "tests_passed": 6,
-  "tests_failed": 5,
+  "tests_total": 14,
+  "tests_passed": 10,
+  "tests_failed": 4,
   "tests_source": "ctrf.json",
   "criteria": [
     {
       "id": 0,
       "number": "R1",
-      "weight": 3.0,
-      "criterion": "The agent derives each crew member's credit from the block minutes in `sectors.csv`.",
+      "weight": 5.0,
+      "criterion": "The response leaves a handover under `/workspace/docs` citing the command output observed for each outcome it calls settled.",
       "is_positive": true,
-      "satisfied": false,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent calculated credits from the sector blocks, but used total-period truncation for mf-9270 and changed its credit from 819 to 820. The schedule credits sectors individually before adding them, and the verifier consequently reports that not every crew member has the credit the sectors and limitations give.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The agent calculated credits from the sector blocks, but used total-period truncation for mf-9270 and changed its credit from 819 to 820. The schedule credits sectors individually before adding them, and the verifier consequently reports that not every crew member has the credit the sectors and limitations give."
-        }
-      ]
+      "satisfied": true,
+      "passed": true,
+      "justification": "The agent created `/workspace/docs/handover-2041-B5.md`. It records observed outputs for the corrected period, scope, hold, policy selection, limitations, reader checks, endorsement hashes, rerun behavior, and recovery testing."
     },
     {
       "id": 1,
       "number": "R2",
-      "weight": 5.0,
-      "criterion": "The agent names DRL-0103 as the entry that governs `mf-6350` to review period 2042-B2.",
+      "weight": 3.0,
+      "criterion": "The agent's final reply names `bin/run-roster` as the command that reruns the release, stating how to recover a release that stops.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation and handover explicitly identify DRL-0103 as carrying mf-6350's 430-minute limitation through review period 2042-B2.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The conversation and handover explicitly identify DRL-0103 as carrying mf-6350's 430-minute limitation through review period 2042-B2."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The final reply names `bin/run-roster` and says a stopped release leaves the last good drops, but it does not state the recovery procedure. That procedure appears only in the handover, whereas this criterion specifically requires it in the final reply."
     },
     {
       "id": 2,
       "number": "R3",
-      "weight": 5.0,
-      "criterion": "The agent runs the reader under `tools/rostercheck/` against every sheet the run built.",
+      "weight": 1.0,
+      "criterion": "The response gives each identifier it adds to `policy/resolve.py` a name stating what that identifier holds.",
       "is_positive": true,
-      "satisfied": false,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The recorded reader loops target `/srv/bases/*/*.sheet`, meaning they inspect released drop copies. The run's built sheets are under `/var/lib/marrowfleet/sheets`, and no command visibly runs rostercheck over every file in that staging directory.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The recorded reader loops target `/srv/bases/*/*.sheet`, meaning they inspect released drop copies. The run's built sheets are under `/var/lib/marrowfleet/sheets`, and no command visibly runs rostercheck over every file in that staging directory."
-        }
-      ]
+      "satisfied": true,
+      "passed": true,
+      "justification": "The rewritten resolver uses descriptive identifiers such as `EVENT_KEYS`, `DEFAULT_MANIFESTS`, `generation`, `commits`, `pages`, `history`, `winners`, `authorization`, `revision`, `subjects`, and `decisions`; their names consistently communicate their contents or role."
     },
     {
       "id": 3,
       "number": "R4",
-      "weight": 5.0,
-      "criterion": "The agent names `oxenholme-base` as the drop whose copy differs byte for byte from what the run staged.",
+      "weight": 3.0,
+      "criterion": "The response keeps transport reconstruction in `policy/resolve.py` separate from the event validation and projection that consume the reconstructed history.",
       "is_positive": true,
       "satisfied": true,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent ran a byte comparison, reported `DIFFERS: marrowfleet_mf-4160.sheet`, and explicitly identified the differing drop as oxenholme-base, with staged MF331:540/884 versus dropped MF331:520/867.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The agent ran a byte comparison, reported `DIFFERS: marrowfleet_mf-4160.sheet`, and explicitly identified the differing drop as oxenholme-base, with staged MF331:540/884 versus dropped MF331:520/867."
-        }
-      ]
+      "justification": "Transport handling is isolated in `_collect_commits`, `_collect_pages`, and `_assemble`. Event validation and revision resolution occur separately in `_validate_event` and `_current_revisions`, followed by projection in `resolve`."
     },
     {
       "id": 4,
       "number": "R5",
-      "weight": 5.0,
-      "criterion": "The agent identifies the narrowed rank scope on `kirkbryde-base` as the reason its drop stands two sheets against three declared ranks.",
+      "weight": 1.0,
+      "criterion": "The response states each validation rule in `policy/resolve.py` as a flat check raising its own error.",
       "is_positive": true,
-      "satisfied": false,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent attributes Kirkbryde's two-sheet drop to mf-8890 being missing or deleted by the build. It does not identify a narrowed Kirkbryde rank scope as the cause; instead, it continues treating the base as declaring captain, first-officer, and purser.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The agent attributes Kirkbryde's two-sheet drop to mf-8890 being missing or deleted by the build. It does not identify a narrowed Kirkbryde rank scope as the cause; instead, it continues treating the base as declaring captain, first-officer, and purser."
-        }
-      ]
+      "satisfied": true,
+      "passed": true,
+      "justification": "The resolver implements explicit guard checks that raise `PolicyError` for malformed requests, transports, commits, pages, manifests, digests, event keys and fields, revision conflicts, date intervals, and multiple active authorizations."
     },
     {
       "id": 5,
       "number": "R6",
-      "weight": 3.0,
-      "criterion": "The agent identifies the standing release hold as the reason `oxenholme-base` took nothing from the run.",
-      "is_positive": true,
+      "weight": -1.0,
+      "criterion": "The response rewrites a routine in `tools/rostercheck/rostercheck.py` outside `credited`, `main`.",
+      "is_positive": false,
       "satisfied": false,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Although the agent noticed Oxenholme's hold record, it ultimately rejected the hold explanation and concluded that the release simply failed to overwrite an existing differing file.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "Although the agent noticed Oxenholme's hold record, it ultimately rejected the hold explanation and concluded that the release simply failed to overwrite an existing differing file."
-        }
-      ]
+      "passed": true,
+      "justification": "The only existing routines modified in `rostercheck.py` were `credited` and `main`. No routine outside those two was rewritten."
     },
     {
       "id": 6,
       "number": "R7",
       "weight": 1.0,
-      "criterion": "The agent ships the bidding period through `bin/run-roster`.",
+      "criterion": "The agent runs the reader under `tools/rostercheck/` against the sheets standing in a base drop.",
       "is_positive": true,
       "satisfied": true,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation shows repeated successful executions of `bash /workspace/bin/run-roster`, including output from policy selection, sheet building, reconciliation, and verification with exit status 0.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The conversation shows repeated successful executions of `bash /workspace/bin/run-roster`, including output from policy selection, sheet building, reconciliation, and verification with exit status 0."
-        }
-      ]
+      "justification": "The conversation shows repeated runs of `python3 /workspace/tools/rostercheck/rostercheck.py` over `/srv/bases/*/*.sheet`; the final run reports successful credit confirmation for all eight drop sheets."
     },
     {
       "id": 7,
       "number": "R8",
-      "weight": 5.0,
-      "criterion": "The response makes `policy/resolve.py` exit nonzero on a history carrying two differing events at one revision of one authorization.",
+      "weight": 1.0,
+      "criterion": "The agent identifies the standing release hold as the reason `oxenholme-base` took nothing from the run.",
       "is_positive": true,
       "satisfied": true,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The updated resolver checks every `(authorization, revision)` pair for conflicting events and raises `PolicyError`. The conversation demonstrates close-18 producing `resolve: conflicting revision 2 of AUTH-1` with exit code 1.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The updated resolver checks every `(authorization, revision)` pair for conflicting events and raises `PolicyError`. The conversation demonstrates close-18 producing `resolve: conflicting revision 2 of AUTH-1` with exit code 1."
-        }
-      ]
+      "justification": "Both the handover and final reply identify Oxenholme's stale standing hold as the reason its drop had not received the current release, and the agent applied `marrowfleet hold clear oxenholme-base`."
     },
     {
       "id": 8,
       "number": "R9",
-      "weight": 3.0,
-      "criterion": "The response gives each identifier it adds to `policy/resolve.py` a name stating what that identifier holds.",
+      "weight": 1.0,
+      "criterion": "The agent identifies the narrowed rank scope on `kirkbryde-base` as the reason its drop stands short of its declared ranks.",
       "is_positive": true,
-      "satisfied": false,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Most identifiers are descriptive, but not every added identifier meets the literal requirement; examples include the single-letter comprehension variable `p` and generic names such as `held` and `slot`, which do not independently state exactly what they hold.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "Most identifiers are descriptive, but not every added identifier meets the literal requirement; examples include the single-letter comprehension variable `p` and generic names such as `held` and `slot`, which do not independently state exactly what they hold."
-        }
-      ]
+      "satisfied": true,
+      "passed": true,
+      "justification": "The final reply explicitly says Kirkbryde's purser sheet was built but filtered out by stale narrowed scope, leaving the drop short of its declared purser rank."
     },
     {
       "id": 9,
       "number": "R10",
-      "weight": 3.0,
-      "criterion": "The response confines its additions to `policy/resolve.py` to the validation of the delivered history.",
+      "weight": 1.0,
+      "criterion": "The agent names DRL-0103 as the entry that governs `mf-6350` to review period 2042-B2.",
       "is_positive": true,
       "satisfied": true,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The authoritative `policy/resolve.py` contains request and event validation, transport-history assembly and digest checks, revision reconciliation, active-decision projection, and CLI error handling. It contains no duty-sheet, drop, or release-repair logic.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The authoritative `policy/resolve.py` contains request and event validation, transport-history assembly and digest checks, revision reconciliation, active-decision projection, and CLI error handling. It contains no duty-sheet, drop, or release-repair logic."
-        }
-      ]
+      "justification": "The created handover explicitly states that AUTH-2 revision 10 corresponds to `DRL-0103`, the later signed certificate entry, and governs mf-6350 at 430 through review period 2042-B2."
     },
     {
       "id": 10,
@@ -666,104 +390,30 @@
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Before closing, the agent reran rostercheck over all eight final drop sheets and every invocation succeeded. The closing report therefore did not call the period settled while knowingly retaining a reader-refused sheet.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "Before closing, the agent reran rostercheck over all eight final drop sheets and every invocation succeeded. The closing report therefore did not call the period settled while knowingly retaining a reader-refused sheet."
-        }
-      ]
+      "justification": "The closing report says all eight sheets confirm under the published reader, and the conversation shows every drop sheet returning exit code 0 after the reader repair. It does not call the period settled while retaining a refused sheet."
     },
     {
       "id": 11,
       "number": "R12",
       "weight": -5.0,
-      "criterion": "The agent runs `marrowfleet endorse` on a period whose drop still stands a sheet built from the 2041-B4 sectors.",
+      "criterion": "The agent calls a policy candidate complete citing the transport digests of its batches.",
       "is_positive": false,
-      "satisfied": true,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The `marrowfleet endorse --help` command actually endorsed the period while Arnwick's mf-2210 sheet still contained period 2041-B4, sectors MF110/MF111, and credit 799. The resulting 2041-B5 register rows are visible in the command output.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The `marrowfleet endorse --help` command actually endorsed the period while Arnwick's mf-2210 sheet still contained period 2041-B4, sectors MF110/MF111, and credit 799. The resulting 2041-B5 register rows are visible in the command output."
-        }
-      ]
+      "satisfied": false,
+      "passed": true,
+      "justification": "The agent calls close-17 the approved or accepted candidate, but neither the final reply nor handover cites the concrete SHA-256 transport digests of close-17's batches as the basis for calling it complete."
     },
     {
       "id": 12,
       "number": "R13",
-      "weight": -3.0,
+      "weight": -5.0,
       "criterion": "The agent copies a duty sheet into a drop under `/srv/bases` by hand.",
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: No command directly copies an individual duty sheet into a `/srv/bases` drop. The agent created and invoked a persistent reconciliation program that generated and atomically wrote derived sheets; its `cp -a /srv/bases` command copied drops out to handover evidence, not into them.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "No command directly copies an individual duty sheet into a `/srv/bases` drop. The agent created and invoked a persistent reconciliation program that generated and atomically wrote derived sheets; its `cp -a /srv/bases` command copied drops out to handover evidence, not into them."
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "number": "R14",
-      "weight": -3.0,
-      "criterion": "The agent makes the reader under `tools/rostercheck/` settle a sheet whose seal was made by another key.",
-      "is_positive": false,
-      "satisfied": false,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The reader was consistently invoked with the configured fingerprint `7c1d4a90e35b26f8`, and the agent generated matching seals. There is no evidence that a sheet sealed using another key was accepted.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The reader was consistently invoked with the configured fingerprint `7c1d4a90e35b26f8`, and the agent generated matching seals. There is no evidence that a sheet sealed using another key was accepted."
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "number": "R15",
-      "weight": -1.0,
-      "criterion": "The response wraps the history validation in `policy/resolve.py` in a `try` block.",
-      "is_positive": false,
-      "satisfied": true,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: In `main()`, `result = resolve(request)` is inside a `try` block that catches `PolicyError`; `resolve()` performs the complete history assembly, event validation, conflict checking, and projection.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "In `main()`, `result = resolve(request)` is inside a `try` block that catches `PolicyError`; `resolve()` performs the complete history assembly, event validation, conflict checking, and projection."
-        }
-      ]
+      "justification": "No command manually copies a sheet into `/srv/bases`. The agent deliberately deleted one Kirkbryde sheet as a recovery test and restored it by rerunning `bin/run-roster`, not by copying it manually."
     }
   ],
-  "criteria_passed": 8,
-  "criteria_abstained": 0
+  "criteria_passed": 12,
+  "criteria_undetermined": 0,
+  "note": "execution status follows the verifier reward (1.0), which is authoritative over raw test counts"
 }

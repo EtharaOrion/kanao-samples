@@ -3,15 +3,15 @@
     "allOf": [
       {
         "field": "type",
-        "equals": "Microsoft.Web/sites/config"
+        "equals": "Microsoft.Web/sites"
       },
       {
-        "field": "id",
-        "like": "*-${environment}/config/web"
+        "field": "name",
+        "like": "*-${environment}"
       },
       {
         "not": {
-          "field": "Microsoft.Web/sites/config/web.minTlsVersion",
+          "field": "Microsoft.Web/sites/siteConfig.minTlsVersion",
           "equals": "1.2"
         }
       }

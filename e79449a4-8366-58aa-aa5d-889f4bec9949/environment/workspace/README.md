@@ -31,6 +31,14 @@ That restriction is written by Terraform and held in place by Azure Policy, so
 that removing it from the portal is refused in the control plane rather than
 noticed on the next plan.
 
+Each payments app also keeps a `blue` deployment slot for regional failover.
+The release pipeline creates the slots, so they are not declared under
+`modules/`, but the slot configuration is covered by its own guardrail.
+
+The same resource group holds two workloads outside the payments flow,
+`func-paymesh-workers-<env>` and `app-paymesh-api-<env>`. Their teams deploy
+them from their own repositories, and neither carries an ip restriction.
+
 ## Working on this repository
 
 ```
@@ -49,7 +57,6 @@ echo 'local.assigned_policies'  | terraform console -var-file=prod.tfvars
 ```
 
 `terraform console` renders the same documents the pipeline sends to the
-control plane, and it takes `-var` overrides, so a document that is supposed to
-follow the environment can be read at more than one binding.
+control plane.
 
 Changes are reviewed against `docs/POLICY-AS-CODE-STANDARD.md`.

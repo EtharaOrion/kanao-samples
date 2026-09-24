@@ -6,54 +6,78 @@
       "name": "pytest"
     },
     "summary": {
-      "tests": 5,
+      "tests": 9,
       "passed": 2,
-      "failed": 3,
+      "failed": 7,
       "pending": 0,
       "skipped": 0,
       "other": 0,
-      "start": 1788697446601,
-      "stop": 1788698049427
+      "start": 1790211016713,
+      "stop": 1790211016713
     },
     "tests": [
       {
-        "name": "test_outcome_a_guardrails_see_their_targets_under_review",
-        "status": "failed",
-        "suite": "tests",
-        "weight": 5
-      },
-      {
-        "name": "test_outcome_b_every_definition_is_enforced_under_review",
-        "status": "failed",
+        "name": "test_guardrails_see_their_targets_under_review",
+        "status": "passed",
         "suite": "tests",
         "weight": 1
       },
       {
-        "name": "test_outcome_c_documents_follow_their_binding_under_review",
+        "name": "test_catalogue_is_enforced_and_rendered_under_review",
+        "status": "passed",
+        "suite": "tests",
+        "weight": 1
+      },
+      {
+        "name": "test_payments_guardrail_reads_the_published_setting_under_review",
         "status": "failed",
         "suite": "tests",
         "weight": 5
       },
       {
-        "name": "test_negative_verifier_package_was_removed",
-        "status": "passed",
+        "name": "test_slot_guardrail_reads_the_published_setting_under_review",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 5
+      },
+      {
+        "name": "test_tls_guardrail_refuses_only_obsolete_versions_under_review",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
+        "name": "test_pipeline_renders_both_bindings_under_setup_terraform",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
+        "name": "test_negative_policy_inputs_were_altered",
+        "status": "failed",
         "suite": "tests",
         "weight": -5
       },
       {
-        "name": "test_negative_policy_inputs_were_altered",
-        "status": "passed",
+        "name": "test_negative_per_environment_copy_was_added",
+        "status": "failed",
+        "suite": "tests",
+        "weight": -1
+      },
+      {
+        "name": "test_negative_managed_resources_were_removed",
+        "status": "failed",
         "suite": "tests",
         "weight": -3
       }
     ],
     "environment": {
-      "testEnvironment": "iac_guardrails_paymesh-policy",
+      "testEnvironment": "e79449a4-8366-58aa-aa5d-889f4bec9949",
       "extra": {
         "model": "opus-5",
         "run": "run_3",
         "source": "ctrf.json",
-        "reward": 0.0
+        "reward": 0.111111
       }
     }
   }

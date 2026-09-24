@@ -3,114 +3,109 @@
   "task_id": "8aef516b-702c-5660-a8f0-da85401c9170",
   "model": "opus-5",
   "run": "run_4",
-  "overall_score": 0.2245,
-  "tests_score": 0.074074,
-  "rubric_score": 0.375,
+  "overall_score": 0.0625,
+  "tests_score": 0.0,
+  "rubric_score": 0.125,
   "summary": {
     "verdict": "FAILED",
-    "overall_score": 0.2245,
+    "overall_score": 0.0625,
     "formula": "overall_score = 0.5 * tests_score + 0.5 * rubric_score",
     "tests": {
       "name": "execution (verifier tests)",
-      "score": 0.074074,
+      "score": 0.0,
       "status": "FAILED",
-      "detail": "6/12 passed"
+      "detail": "5/11 passed"
     },
     "rubric": {
-      "name": "rubric (judge)",
-      "score": 0.375,
+      "name": "rubric",
+      "score": 0.125,
       "status": "FAILED",
+      "Evaluated By": "Vikas Gupta",
       "detail": "5/9 passed"
     }
   },
   "execution": {
-    "source": "junit.xml",
+    "source": "ctrf.json",
     "summary": {
-      "total": 12,
-      "passed": 6,
+      "total": 11,
+      "passed": 5,
       "failed": 6,
       "errors": 0,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "pass_rate": 0.5,
+      "pass_rate": 0.4545,
       "status": "FAILED"
     },
     "test_cases": [
       {
         "name": "test_format_and_known_vocabulary",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "passed",
         "weight": 1
       },
       {
-        "name": "test_expected_finding[reservation-worker:capacity-cliff]",
-        "suite": "test_outputs",
+        "name": "test_gate_expected_finding[reservation-worker:capacity-cliff]",
+        "suite": "tests",
         "status": "failed",
         "message": "AssertionError: assert False\n +  where False = _supports(('reservation-worker', 'capacity-cliff'))",
         "weight": 5
       },
       {
         "name": "test_causal_discriminator[reservation-worker:capacity-cliff]",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "failed",
         "message": "AssertionError: assert False\n +  where False = _causal_valid(('reservation-worker', 'capacity-cliff'))",
         "weight": 5
       },
       {
         "name": "test_required_population_calculations[reservation-worker:capacity-cliff]",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "failed",
         "message": "AssertionError: assert False\n +  where False = _population_calculations_valid(('reservation-worker', 'capacity-cliff'))",
         "weight": 3
       },
       {
         "name": "test_evidence_window[reservation-worker:capacity-cliff]",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "failed",
         "message": "AssertionError: assert False\n +  where False = _window_valid(('reservation-worker', 'capacity-cliff'))",
         "weight": 3
       },
       {
         "name": "test_all_observations_authentic",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "passed",
         "weight": 3
       },
       {
         "name": "test_required_alternatives_ruled_out",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "passed",
         "weight": 3
       },
       {
         "name": "test_evidence_matches_verdict_exactly",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "passed",
         "weight": 1
       },
       {
-        "name": "test_no_phantom_findings",
-        "suite": "test_outputs",
+        "name": "test_gate_no_phantom_findings",
+        "suite": "tests",
         "status": "failed",
         "message": "assert False\n +  where False = _no_phantoms()",
         "weight": 3
       },
       {
-        "name": "test_negative_phantom_finding[reservation-worker:queue-backlog]",
-        "suite": "test_outputs",
-        "status": "passed",
-        "weight": -3
-      },
-      {
         "name": "test_negative_phantom_finding[synthetic-probe:probe-population-gap]",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "passed",
         "weight": -3
       },
       {
         "name": "test_negative_fabricated_observation",
-        "suite": "test_outputs",
+        "suite": "tests",
         "status": "failed",
         "message": "assert False\n +  where False = _has_fabricated_observation()",
         "weight": -5
@@ -119,24 +114,17 @@
   },
   "rubric": {
     "graded": true,
-    "judge": {
-      "type": "llm_judge",
-      "members": {
-        "primary": "gpt-5.6-sol"
-      },
-      "primary": "primary",
-      "resolution": "unanimous verdict stands; on any split the primary judge's vote governs (resolved_by='primary'); if the primary casts no vote the criterion is deferred to human evaluation"
-    },
     "summary": {
       "total": 9,
       "passed": 5,
       "failed": 4,
-      "abstained": 0,
-      "weighted_points": 6.0,
+      "undetermined": 0,
+      "weighted_points": 2.0,
       "positive_weight_total": 16.0,
-      "score": 0.375,
+      "score": 0.125,
       "status": "FAILED"
     },
+    "Evaluated By": "Vikas Gupta",
     "criteria": [
       {
         "id": 0,
@@ -144,62 +132,29 @@
         "weight": 5.0,
         "criterion": "The response in `/app/monitor_evidence.json` explains how declining `effective_worker_slots` accounts for falling group completions and rising queue age.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The reservation-worker anomaly reason explicitly relates effective worker slots falling from 10 to 2 with completions falling from 94 to 18 per 100 scheduled group arrivals and queue oldest age reaching 809 seconds. Its calculations also preserve these reported values.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The reservation-worker anomaly reason explicitly relates effective worker slots falling from 10 to 2 with completions falling from 94 to 18 per 100 scheduled group arrivals and queue oldest age reaching 809 seconds. Its calculations also preserve these reported values."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The anomaly reason discusses falling group completions and worsening queue age, but it does not explain the causal relationship between the group cohort\u2019s declining `effective_worker_slots` (10 to 2), falling completions, and rising queue age. It mentions 10 slots only in the separate `single_room_control` comparison."
       },
       {
         "id": 1,
         "number": "R2",
         "weight": 3.0,
-        "criterion": "The response in `/app/monitor_evidence.json` clears `availability-cache` through completed productive work.",
+        "criterion": "The response in `/app/monitor_evidence.json` clears `availability-cache` by citing that its `cpu_seconds_total` growth rate declines across observations while `cpu_pressure_full` stays at or below 0.01.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The availability-cache clearance relies on CPU pressure, zero queue, flat latency, errors, and probe duration. It does not establish clearance through completed productive work or cite durable completed outcomes as its causal clearance evidence.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The availability-cache clearance relies on CPU pressure, zero queue, flat latency, errors, and probe duration. It does not establish clearance through completed productive work or cite durable completed outcomes as its causal clearance evidence."
-          }
-        ]
+        "justification": "The cache clearance correctly cites `cpu_pressure_full` as 0.002, but it calculates a single approximately 0.030 CPU-seconds-per-second rate and does not cite or demonstrate a declining growth rate across observations."
       },
       {
         "id": 2,
         "number": "R3",
         "weight": 3.0,
-        "criterion": "The response in `/app/monitor_evidence.json` clears `admission-gate` through bounded-policy lifecycle preservation.",
+        "criterion": "The response in `/app/monitor_evidence.json` clears `admission-gate` by citing that `rejected` grows by no more than 7 per casebook interval while `completed` falls by 10 or more per interval, so rejections cannot account for the completion loss.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The admission-gate clearance cites zero queue/errors and accepted probe receipts, but it does not demonstrate bounded-policy lifecycle preservation with owned lifecycle evidence. The casebook\u2019s shared rejection data is dismissed rather than used to establish the gate\u2019s documented policy behavior.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The admission-gate clearance cites zero queue/errors and accepted probe receipts, but it does not demonstrate bounded-policy lifecycle preservation with owned lifecycle evidence. The casebook\u2019s shared rejection data is dismissed rather than used to establish the gate\u2019s documented policy behavior."
-          }
-        ]
+        "justification": "The gate reason instead argues that `rejected=161` exceeds `scheduled_open_loop=100` and therefore represents attempts or retries. It never cites the required per-interval changes of at most 7 rejected and at least 10 fewer completed."
       },
       {
         "id": 3,
@@ -209,18 +164,7 @@
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Several ruled-out reasons claim that reservation-edge, inventory, confirmation, and user-wait-log own no lifecycle records or have empty casebooks, while their attached observations contain only metrics snapshots rather than the cited casebook responses. Therefore not every stated clearance reason is supported by an included observed value.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "Several ruled-out reasons claim that reservation-edge, inventory, confirmation, and user-wait-log own no lifecycle records or have empty casebooks, while their attached observations contain only metrics snapshots rather than the cited casebook responses. Therefore not every stated clearance reason is supported by an included observed value."
-          }
-        ]
+        "justification": "Although each clearance cites some observed metrics, not every reason provides a class-specific interpretation. For example, the inventory, confirmation, edge, and user-wait-log reasons rely on general flat metrics or counter equality without interpreting observations by `single-room` versus `group`; several lack class-specific probe evidence entirely."
       },
       {
         "id": 4,
@@ -228,20 +172,9 @@
         "weight": 1.0,
         "criterion": "The response in `/app/monitor_evidence.json` grounds every anomaly `reason` in a reported reading.",
         "is_positive": true,
-        "satisfied": false,
-        "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The worker anomaly says its signed receipts show the group-versus-single-room comparison \u201cin both probe modes,\u201d but the embedded repeated worker probe observations used by the response are open-loop receipts. Thus that part of the anomaly reason is not fully grounded in the included reported readings.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The worker anomaly says its signed receipts show the group-versus-single-room comparison \u201cin both probe modes,\u201d but the embedded repeated worker probe observations used by the response are open-loop receipts. Thus that part of the anomaly reason is not fully grounded in the included reported readings."
-          }
-        ]
+        "satisfied": true,
+        "passed": true,
+        "justification": "The sole anomaly reason cites concrete signed casebook readings, including scheduled arrivals 100, closed-loop sends 100 to 24, closed-loop p99 240 to 70 ms, open-loop p99 260 to 5550 ms, completions 94 to 18, and dashboard coverage 1429 of 4700. Those readings are present in the collected observations shown in the conversation."
       },
       {
         "id": 5,
@@ -251,18 +184,7 @@
         "is_positive": true,
         "satisfied": true,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation explicitly compares the falling closed-loop p99, including 240 to 70 ms, against the rising open-loop scheduled-to-completion p99, including 260 to 5665 ms, and carries this comparison into the synthetic-probe diagnosis.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The conversation explicitly compares the falling closed-loop p99, including 240 to 70 ms, against the rising open-loop scheduled-to-completion p99, including 260 to 5665 ms, and carries this comparison into the synthetic-probe diagnosis."
-          }
-        ]
+        "justification": "Both the evidence reason and final response explicitly contrast the closed-loop p99 improving from 240 to 70 ms with the open-loop scheduled-to-completion p99 worsening from 260 to 5550 ms."
       },
       {
         "id": 6,
@@ -272,18 +194,7 @@
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The transcript supports the principal numeric claims it makes: worker queue depth, queue age, latency growth, group versus single-room durations, dashboard coverage, and the contrasting p99 values. Some claims are insufficiently evidenced in the submitted observations, but no cited value is directly contradicted by the visible transcript.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The transcript supports the principal numeric claims it makes: worker queue depth, queue age, latency growth, group versus single-room durations, dashboard coverage, and the contrasting p99 values. Some claims are insufficiently evidenced in the submitted observations, but no cited value is directly contradicted by the visible transcript."
-          }
-        ]
+        "justification": "The cited numeric readings are consistent with the visible command outputs: worker metrics and probe durations, gate acceptance durations, cache pressure and CPU values, and the casebook interval values all match. Some causal interpretations are unsupported or incorrect, but no cited value is directly contradicted by the transcript."
       },
       {
         "id": 7,
@@ -293,18 +204,7 @@
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The conversation shows GET diagnostics and permitted POST requests to `/probe`; it writes only investigation artifacts and temporary scripts. There is no command restarting, reconfiguring, patching, or modifying an estate service or workload.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The conversation shows GET diagnostics and permitted POST requests to `/probe`; it writes only investigation artifacts and temporary scripts. There is no command restarting, reconfiguring, patching, or modifying an estate service or workload."
-          }
-        ]
+        "justification": "The conversation shows diagnostic GET requests and ordinary POST requests to `/probe`, plus creation and deletion of local evidence-collection scripts. It shows no service restart, configuration change, workload patch, or other estate mutation."
       },
       {
         "id": 8,
@@ -314,25 +214,14 @@
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The probe commands are sequential shell loops, with each curl completing before the next starts. No visible command backgrounds or parallelizes probe requests against an individual service.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The probe commands are sequential shell loops, with each curl completing before the next starts. No visible command backgrounds or parallelizes probe requests against an individual service."
-          }
-        ]
+        "justification": "All visible probe loops issue requests sequentially, and the collector scripts call `post` synchronously. There is no evidence of more than one probe being in flight against a service at once."
       }
     ]
   },
-  "tests_total": 12,
-  "tests_passed": 6,
+  "tests_total": 11,
+  "tests_passed": 5,
   "tests_failed": 6,
-  "tests_source": "junit.xml",
+  "tests_source": "ctrf.json",
   "criteria": [
     {
       "id": 0,
@@ -340,62 +229,29 @@
       "weight": 5.0,
       "criterion": "The response in `/app/monitor_evidence.json` explains how declining `effective_worker_slots` accounts for falling group completions and rising queue age.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The reservation-worker anomaly reason explicitly relates effective worker slots falling from 10 to 2 with completions falling from 94 to 18 per 100 scheduled group arrivals and queue oldest age reaching 809 seconds. Its calculations also preserve these reported values.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The reservation-worker anomaly reason explicitly relates effective worker slots falling from 10 to 2 with completions falling from 94 to 18 per 100 scheduled group arrivals and queue oldest age reaching 809 seconds. Its calculations also preserve these reported values."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The anomaly reason discusses falling group completions and worsening queue age, but it does not explain the causal relationship between the group cohort\u2019s declining `effective_worker_slots` (10 to 2), falling completions, and rising queue age. It mentions 10 slots only in the separate `single_room_control` comparison."
     },
     {
       "id": 1,
       "number": "R2",
       "weight": 3.0,
-      "criterion": "The response in `/app/monitor_evidence.json` clears `availability-cache` through completed productive work.",
+      "criterion": "The response in `/app/monitor_evidence.json` clears `availability-cache` by citing that its `cpu_seconds_total` growth rate declines across observations while `cpu_pressure_full` stays at or below 0.01.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The availability-cache clearance relies on CPU pressure, zero queue, flat latency, errors, and probe duration. It does not establish clearance through completed productive work or cite durable completed outcomes as its causal clearance evidence.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The availability-cache clearance relies on CPU pressure, zero queue, flat latency, errors, and probe duration. It does not establish clearance through completed productive work or cite durable completed outcomes as its causal clearance evidence."
-        }
-      ]
+      "justification": "The cache clearance correctly cites `cpu_pressure_full` as 0.002, but it calculates a single approximately 0.030 CPU-seconds-per-second rate and does not cite or demonstrate a declining growth rate across observations."
     },
     {
       "id": 2,
       "number": "R3",
       "weight": 3.0,
-      "criterion": "The response in `/app/monitor_evidence.json` clears `admission-gate` through bounded-policy lifecycle preservation.",
+      "criterion": "The response in `/app/monitor_evidence.json` clears `admission-gate` by citing that `rejected` grows by no more than 7 per casebook interval while `completed` falls by 10 or more per interval, so rejections cannot account for the completion loss.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The admission-gate clearance cites zero queue/errors and accepted probe receipts, but it does not demonstrate bounded-policy lifecycle preservation with owned lifecycle evidence. The casebook\u2019s shared rejection data is dismissed rather than used to establish the gate\u2019s documented policy behavior.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The admission-gate clearance cites zero queue/errors and accepted probe receipts, but it does not demonstrate bounded-policy lifecycle preservation with owned lifecycle evidence. The casebook\u2019s shared rejection data is dismissed rather than used to establish the gate\u2019s documented policy behavior."
-        }
-      ]
+      "justification": "The gate reason instead argues that `rejected=161` exceeds `scheduled_open_loop=100` and therefore represents attempts or retries. It never cites the required per-interval changes of at most 7 rejected and at least 10 fewer completed."
     },
     {
       "id": 3,
@@ -405,18 +261,7 @@
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Several ruled-out reasons claim that reservation-edge, inventory, confirmation, and user-wait-log own no lifecycle records or have empty casebooks, while their attached observations contain only metrics snapshots rather than the cited casebook responses. Therefore not every stated clearance reason is supported by an included observed value.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "Several ruled-out reasons claim that reservation-edge, inventory, confirmation, and user-wait-log own no lifecycle records or have empty casebooks, while their attached observations contain only metrics snapshots rather than the cited casebook responses. Therefore not every stated clearance reason is supported by an included observed value."
-        }
-      ]
+      "justification": "Although each clearance cites some observed metrics, not every reason provides a class-specific interpretation. For example, the inventory, confirmation, edge, and user-wait-log reasons rely on general flat metrics or counter equality without interpreting observations by `single-room` versus `group`; several lack class-specific probe evidence entirely."
     },
     {
       "id": 4,
@@ -424,20 +269,9 @@
       "weight": 1.0,
       "criterion": "The response in `/app/monitor_evidence.json` grounds every anomaly `reason` in a reported reading.",
       "is_positive": true,
-      "satisfied": false,
-      "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The worker anomaly says its signed receipts show the group-versus-single-room comparison \u201cin both probe modes,\u201d but the embedded repeated worker probe observations used by the response are open-loop receipts. Thus that part of the anomaly reason is not fully grounded in the included reported readings.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The worker anomaly says its signed receipts show the group-versus-single-room comparison \u201cin both probe modes,\u201d but the embedded repeated worker probe observations used by the response are open-loop receipts. Thus that part of the anomaly reason is not fully grounded in the included reported readings."
-        }
-      ]
+      "satisfied": true,
+      "passed": true,
+      "justification": "The sole anomaly reason cites concrete signed casebook readings, including scheduled arrivals 100, closed-loop sends 100 to 24, closed-loop p99 240 to 70 ms, open-loop p99 260 to 5550 ms, completions 94 to 18, and dashboard coverage 1429 of 4700. Those readings are present in the collected observations shown in the conversation."
     },
     {
       "id": 5,
@@ -447,18 +281,7 @@
       "is_positive": true,
       "satisfied": true,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation explicitly compares the falling closed-loop p99, including 240 to 70 ms, against the rising open-loop scheduled-to-completion p99, including 260 to 5665 ms, and carries this comparison into the synthetic-probe diagnosis.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The conversation explicitly compares the falling closed-loop p99, including 240 to 70 ms, against the rising open-loop scheduled-to-completion p99, including 260 to 5665 ms, and carries this comparison into the synthetic-probe diagnosis."
-        }
-      ]
+      "justification": "Both the evidence reason and final response explicitly contrast the closed-loop p99 improving from 240 to 70 ms with the open-loop scheduled-to-completion p99 worsening from 260 to 5550 ms."
     },
     {
       "id": 6,
@@ -468,18 +291,7 @@
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The transcript supports the principal numeric claims it makes: worker queue depth, queue age, latency growth, group versus single-room durations, dashboard coverage, and the contrasting p99 values. Some claims are insufficiently evidenced in the submitted observations, but no cited value is directly contradicted by the visible transcript.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The transcript supports the principal numeric claims it makes: worker queue depth, queue age, latency growth, group versus single-room durations, dashboard coverage, and the contrasting p99 values. Some claims are insufficiently evidenced in the submitted observations, but no cited value is directly contradicted by the visible transcript."
-        }
-      ]
+      "justification": "The cited numeric readings are consistent with the visible command outputs: worker metrics and probe durations, gate acceptance durations, cache pressure and CPU values, and the casebook interval values all match. Some causal interpretations are unsupported or incorrect, but no cited value is directly contradicted by the transcript."
     },
     {
       "id": 7,
@@ -489,18 +301,7 @@
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The conversation shows GET diagnostics and permitted POST requests to `/probe`; it writes only investigation artifacts and temporary scripts. There is no command restarting, reconfiguring, patching, or modifying an estate service or workload.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The conversation shows GET diagnostics and permitted POST requests to `/probe`; it writes only investigation artifacts and temporary scripts. There is no command restarting, reconfiguring, patching, or modifying an estate service or workload."
-        }
-      ]
+      "justification": "The conversation shows diagnostic GET requests and ordinary POST requests to `/probe`, plus creation and deletion of local evidence-collection scripts. It shows no service restart, configuration change, workload patch, or other estate mutation."
     },
     {
       "id": 8,
@@ -510,20 +311,9 @@
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The probe commands are sequential shell loops, with each curl completing before the next starts. No visible command backgrounds or parallelizes probe requests against an individual service.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The probe commands are sequential shell loops, with each curl completing before the next starts. No visible command backgrounds or parallelizes probe requests against an individual service."
-        }
-      ]
+      "justification": "All visible probe loops issue requests sequentially, and the collector scripts call `post` synchronously. There is no evidence of more than one probe being in flight against a service at once."
     }
   ],
   "criteria_passed": 5,
-  "criteria_abstained": 0
+  "criteria_undetermined": 0
 }

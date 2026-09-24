@@ -1,7 +1,11 @@
 {
-    "test_outcome_a_guardrails_see_their_targets_under_review": 5,
-    "test_outcome_b_every_definition_is_enforced_under_review": 1,
-    "test_outcome_c_documents_follow_their_binding_under_review": 5,
-    "test_negative_verifier_package_was_removed": -5,
-    "test_negative_policy_inputs_were_altered": -3
+    "test_guardrails_see_their_targets_under_review": 1,
+    "test_catalogue_is_enforced_and_rendered_under_review": 1,
+    "test_payments_guardrail_reads_the_published_setting_under_review": 5,
+    "test_slot_guardrail_reads_the_published_setting_under_review": 5,
+    "test_tls_guardrail_refuses_only_obsolete_versions_under_review": 3,
+    "test_pipeline_renders_both_bindings_under_setup_terraform": 3,
+    "test_negative_policy_inputs_were_altered": -5,
+    "test_negative_managed_resources_were_removed": -3,
+    "test_negative_per_environment_copy_was_added": -1
 }

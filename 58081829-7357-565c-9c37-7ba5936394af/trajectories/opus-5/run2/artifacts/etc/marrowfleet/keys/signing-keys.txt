@@ -1,0 +1,2 @@
+Bureau signing keys. The mode on this directory is in the operator's
+security schedule.

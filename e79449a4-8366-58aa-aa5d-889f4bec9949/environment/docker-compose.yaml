@@ -1,0 +1,8 @@
+# Pre-built image, pinned in task.toml [environment].docker_image and here
+# for compose. This file also keeps Harbor from uploading environment/ into
+# the container, which it does for a docker_image task with no Dockerfile
+# and no compose file. The recipe is Dockerfile.build; rebuild and re-pin
+# with scripts/build_push_pin.py.
+services:
+  main:
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:e79449a4-iac_guardrails_paymesh-policy-env@sha256:7062d0e69bb6f8c4c23bb2a04c2f4cf72e9bc223149536d6c73d522d3d5cd4b0

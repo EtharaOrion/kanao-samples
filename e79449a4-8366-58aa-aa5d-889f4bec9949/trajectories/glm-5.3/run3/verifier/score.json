@@ -3,857 +3,528 @@
   "task_id": "e79449a4-8366-58aa-aa5d-889f4bec9949",
   "model": "glm-5.3",
   "run": "run_3",
-  "overall_score": 0.266,
+  "overall_score": 0.03,
   "tests_score": 0.0,
-  "rubric_score": 0.531915,
+  "rubric_score": 0.06,
   "summary": {
     "verdict": "FAILED",
-    "overall_score": 0.266,
+    "overall_score": 0.03,
     "formula": "overall_score = 0.5 * tests_score + 0.5 * rubric_score",
     "tests": {
       "name": "execution (verifier tests)",
       "score": 0.0,
       "status": "FAILED",
-      "detail": "2/5 passed"
+      "detail": "0/9 passed"
     },
     "rubric": {
-      "name": "rubric (judge)",
-      "score": 0.531915,
+      "name": "rubric",
+      "score": 0.06,
       "status": "FAILED",
-      "detail": "12/18 passed"
+      "Evaluated By": "Khushi Rathore",
+      "detail": "5/20 passed"
     }
   },
   "execution": {
     "source": "ctrf.json",
     "summary": {
-      "total": 5,
-      "passed": 2,
-      "failed": 3,
+      "total": 9,
+      "passed": 0,
+      "failed": 9,
       "errors": 0,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "pass_rate": 0.4,
+      "pass_rate": 0.0,
       "status": "FAILED"
     },
     "test_cases": [
       {
-        "name": "test_outcome_a_guardrails_see_their_targets_under_review",
+        "name": "test_guardrails_see_their_targets_under_review",
         "suite": "tests",
         "status": "failed",
+        "message": "AssertionError: the guardrail scope rule is not met, at: dev:require_ip_restriction:payments_apps_covered, dev:require_ip_restriction:wildcards_per_pattern, dev:require_slot_ip_restriction:payments_apps_covered, dev:require_tls_version:misses_an_outdated_site_configuration, prod:require_ip_restriction:payments_apps_covered, prod:require_ip_restriction:wildcards_per_pattern, prod:require_slot_ip_restriction:payments_apps_covered, prod:require_tls_version:misses_an_outdated_site_configuration\nassert not ['prod:require_ip_restriction:payments_apps_covered', 'prod:require_ip_restriction:payments_apps_covered', 'dev:requir...prod:require_slot_ip_restriction:payments_apps_covered', 'prod:require_slot_ip_restriction:payments_apps_covered', ...]",
+        "weight": 1
+      },
+      {
+        "name": "test_catalogue_is_enforced_and_rendered_under_review",
+        "suite": "tests",
+        "status": "failed",
+        "message": "AssertionError: the enforced catalogue rule is not met, at: dev:assignment_count, dev:definition_without_assignment, dev:evaluation_mode:require_resource_group_tags, dev:evaluation_mode:require_slot_ip_restriction, dev:evaluation_mode:require_tags, dev:evaluation_mode:require_tls_version, pipeline_second_render_is_not_a_second_binding, prod:assignment_count, prod:definition_without_assignment, prod:evaluation_mode:require_resource_group_tags, prod:evaluation_mode:require_slot_ip_restriction, prod:evaluation_mode:require_tags, prod:evaluation_mode:require_tls_version, require_https_only:document_does_not_follow_environment, require_https_only:placeholder_left_in_document, require_ip_restriction:document_does_not_follow_environment, require_ip_restriction:document_only_records, require_slot_ip_restriction:document_does_not_follow_environment, require_slot_ip_restriction:document_only_records, require_tls_version:document_does_not_follow_environment, require_tls_version:placeholder_left_in_document\nassert not ['prod:definition_without_assignment', 'prod:assignment_count', 'prod:evaluation_mode:require_resource_group_tags', 'p...ode:require_slot_ip_restriction', 'prod:evaluation_mode:require_tags', 'prod:evaluation_mode:require_tls_version', ...]",
+        "weight": 1
+      },
+      {
+        "name": "test_payments_guardrail_reads_the_published_setting_under_review",
+        "suite": "tests",
+        "status": "failed",
+        "message": "AssertionError: the payments setting rule is not met, at: dev:require_ip_restriction:payments_apps_covered, dev:require_ip_restriction:unpublished_alias, prod:require_ip_restriction:payments_apps_covered, prod:require_ip_restriction:unpublished_alias\nassert not ['prod:require_ip_restriction:payments_apps_covered', 'prod:require_ip_restriction:payments_apps_covered', 'dev:requir...ayments_apps_covered', 'prod:require_ip_restriction:unpublished_alias', 'dev:require_ip_restriction:unpublished_alias']",
         "weight": 5
       },
       {
-        "name": "test_outcome_b_every_definition_is_enforced_under_review",
+        "name": "test_slot_guardrail_reads_the_published_setting_under_review",
         "suite": "tests",
         "status": "failed",
+        "message": "AssertionError: the slot setting rule is not met, at: dev:require_slot_ip_restriction:payments_apps_covered, dev:require_slot_ip_restriction:unpublished_alias, prod:require_slot_ip_restriction:payments_apps_covered, prod:require_slot_ip_restriction:unpublished_alias\nassert not ['prod:require_slot_ip_restriction:payments_apps_covered', 'prod:require_slot_ip_restriction:payments_apps_covered', '...ps_covered', 'prod:require_slot_ip_restriction:unpublished_alias', 'dev:require_slot_ip_restriction:unpublished_alias']",
         "weight": 5
       },
       {
-        "name": "test_outcome_c_documents_follow_their_binding_under_review",
+        "name": "test_tls_guardrail_refuses_only_obsolete_versions_under_review",
         "suite": "tests",
         "status": "failed",
-        "weight": 5
+        "message": "AssertionError: the TLS version rule is not met, at: dev:require_tls_version:misses_an_outdated_site_configuration, prod:require_tls_version:misses_an_outdated_site_configuration\nassert not ['prod:require_tls_version:misses_an_outdated_site_configuration', 'prod:require_tls_version:misses_an_outdated_site_c..._version:misses_an_outdated_site_configuration', 'prod:require_tls_version:misses_an_outdated_site_configuration', ...]",
+        "weight": 3
       },
       {
-        "name": "test_negative_verifier_package_was_removed",
+        "name": "test_pipeline_renders_both_bindings_under_setup_terraform",
         "suite": "tests",
-        "status": "passed",
-        "weight": -5
+        "status": "failed",
+        "message": "AssertionError: the CI render rule is not met, at: pipeline_catalogue_is_not_the_home_render, pipeline_second_render_is_not_a_second_binding\nassert not ['pipeline_catalogue_is_not_the_home_render', 'pipeline_second_render_is_not_a_second_binding']",
+        "weight": 3
       },
       {
         "name": "test_negative_policy_inputs_were_altered",
         "suite": "tests",
-        "status": "passed",
+        "status": "failed",
+        "message": "AssertionError: every pinned input is byte-identical to the seed\nassert []",
+        "weight": -5
+      },
+      {
+        "name": "test_negative_per_environment_copy_was_added",
+        "suite": "tests",
+        "status": "failed",
+        "message": "AssertionError: no per-environment copy sits beside the single copies\nassert []",
+        "weight": -1
+      },
+      {
+        "name": "test_negative_managed_resources_were_removed",
+        "suite": "tests",
+        "status": "failed",
+        "message": "AssertionError: the tree still declares every managed resource\nassert []",
         "weight": -3
       }
     ]
   },
   "rubric": {
     "graded": true,
-    "judge": {
-        "type": "llm_judge",
-      "members": {
-        "primary": "gpt-5.6-sol"
-      },
-      "primary": "primary",
-      "resolution": "unanimous verdict stands; on any split the primary judge's vote governs (resolved_by='primary'); if the primary casts no vote the criterion is deferred to human evaluation"
-    },
     "summary": {
-      "total": 18,
-      "passed": 12,
-      "failed": 6,
-      "abstained": 0,
-      "weighted_points": 25.0,
-      "positive_weight_total": 47.0,
-      "score": 0.531915,
+      "total": 20,
+      "passed": 5,
+      "failed": 15,
+      "undetermined": 0,
+      "weighted_points": 3.0,
+      "positive_weight_total": 50.0,
+      "score": 0.06,
       "status": "FAILED"
     },
+    "Evaluated By": "Khushi Rathore",
     "criteria": [
       {
         "id": 0,
         "number": "R1",
         "weight": 5.0,
-        "criterion": "The agent derives the `deny_public_sql` mode fault from its rule naming only `Microsoft.Sql/servers`",
+        "criterion": "The agent identifies that `Microsoft.Web/sites/config/web.ipSecurityRestrictionsDefaultAction` is absent from the published aliases of `Microsoft.Web/sites/config`.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent inspected the rule targeting `Microsoft.Sql/servers`, changed the definition from `All` to `Indexed`, and later characterized SQL as a top-level indexed resource. This connects the mode correction to the rule\u2019s target type.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The agent inspected the rule targeting `Microsoft.Sql/servers`, changed the definition from `All` to `Indexed`, and later characterized SQL as a top-level indexed resource. This connects the mode correction to the rule\u2019s target type."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The agent displayed the policy containing this alias but never stated that it is unpublished or absent from the published aliases."
       },
       {
         "id": 1,
         "number": "R2",
         "weight": 5.0,
-        "criterion": "The agent derives the `require_tags` mode `Indexed` requirement from its rule holding only `exists` tests on tag keys",
+        "criterion": "The agent identifies that the `name` field of a `Microsoft.Web/sites/config` resource evaluates to `web`.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Although the agent changed `require_tags` to `Indexed`, it never explained that this follows specifically from the rule containing only `exists` tests on tag keys.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "Although the agent changed `require_tags` to `Indexed`, it never explained that this follows specifically from the rule containing only `exists` tests on tag keys."
-          }
-        ]
+        "justification": "Neither the conversation nor the final message identifies that the configuration child resource's `name` evaluates to `web`."
       },
       {
         "id": 2,
         "number": "R3",
         "weight": 3.0,
-        "criterion": "The agent separates a definition's `mode` in `policies.tf` from the protected document under `policies/`.",
+        "criterion": "The agent derives mode `All` for `require_resource_group_tags` from its rule targeting `Microsoft.Resources/subscriptions/resourceGroups`.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation shows mode changes made in `envs/prod/policies.tf` while the protected policy documents remained separate and unchanged.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The conversation shows mode changes made in `envs/prod/policies.tf` while the protected policy documents remained separate and unchanged."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The agent displayed the rule and its existing `Indexed` mode but did not derive or apply the required `All` mode."
       },
       {
         "id": 3,
         "number": "R4",
         "weight": 3.0,
-        "criterion": "The agent derives `require_https_only` mode `Indexed` from its rule targeting `Microsoft.Web/sites` itself.",
+        "criterion": "The agent derives mode `Indexed` for `require_tags` from its rule reading only tag keys.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent inspected the HTTPS rule targeting `Microsoft.Web/sites`, retained/set its mode to `Indexed`, and described it as a top-level indexed resource.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The agent inspected the HTTPS rule targeting `Microsoft.Web/sites`, retained/set its mode to `Indexed`, and described it as a top-level indexed resource."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The agent rendered `require_tags` in its existing `All` mode and did not derive that it should use `Indexed`."
       },
       {
         "id": 4,
         "number": "R5",
         "weight": 5.0,
-        "criterion": "The agent's catalogue check asserts each rendered `mode` value against the resource type its own rule targets.",
+        "criterion": "The agent identifies that `-var-file=prod.tfvars` placed last overrides `-var environment=dev` in the seeded second render.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The final assertion script compares modes to a hard-coded `expected_modes` map. It checks target resource types only for the two payment policies, not for every rendered definition, so it does not assert every mode against its own rule target.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The final assertion script compares modes to a hard-coded `expected_modes` map. It checks target resource types only for the two payment policies, not for every rendered definition, so it does not assert every mode against its own rule target."
-          }
-        ]
+        "justification": "Although the workflow command was displayed, the agent never explained the command-line precedence problem. Its own harness instead placed `-var environment=dev` after the variable file."
       },
       {
         "id": 5,
         "number": "R6",
-        "weight": 1.0,
-        "criterion": "The agent checks the rendered `like` pattern against a resource id for an app the standard excludes from the guardrail",
+        "weight": 3.0,
+        "criterion": "The agent evaluates its rendered payments selector against the bystander app `app-paymesh-api`.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: No command evaluates a rendered `like` expression against the App Service or workers Function App resource ID excluded by the standard.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "No command evaluates a rendered `like` expression against the App Service or workers Function App resource ID excluded by the standard."
-          }
-        ]
+        "justification": "The agent rendered the selector but performed no evaluation against `app-paymesh-api` and reported no match result."
       },
       {
         "id": 6,
         "number": "R7",
-        "weight": 5.0,
-        "criterion": "The agent attributes the recorded `400` to a `like` pattern carrying more than one wildcard.",
+        "weight": 3.0,
+        "criterion": "The agent executes the render commands of `.github/workflows/terraform-ci.yml` to inspect the files they write.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent mentioned a questionable wildcard and possible operator constraint, but never clearly attributed the recorded `400` to a `like` pattern containing multiple wildcards.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The agent mentioned a questionable wildcard and possible operator constraint, but never clearly attributed the recorded `400` to a `like` pattern containing multiple wildcards."
-          }
-        ]
+        "justification": "The agent did not execute the workflow's two base64-render commands that write `/tmp/catalogue-prod.txt` and `/tmp/catalogue-dev.txt`. It used a separate Python harness and inspected its stdout instead."
       },
       {
         "id": 7,
         "number": "R8",
-        "weight": 3.0,
-        "criterion": "The agent states the narrow mode covers only resource types carrying tags, a location of their own.",
+        "weight": 1.0,
+        "criterion": "The agent's catalogue check compares each rendered `mode` value against the resource type its own rule targets.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: This wording appeared in the standard the agent read, but the agent\u2019s own analysis and final message did not state that the narrow mode is limited to resource types carrying tags and their own location.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "This wording appeared in the standard the agent read, but the agent\u2019s own analysis and final message did not state that the narrow mode is limited to resource types carrying tags and their own location."
-          }
-        ]
+        "justification": "The harness printed each mode and rule but contained no logic comparing modes with targeted resource types."
       },
       {
         "id": 8,
         "number": "R9",
-        "weight": 3.0,
-        "criterion": "The agent reports `require_tls_version` reaching the control plane with its `${environment}` placeholder unrendered.",
+        "weight": 1.0,
+        "criterion": "The agent attributes the recorded `400` to the unpublished alias in `policies/require-ip-restriction.json`.",
         "is_positive": true,
         "satisfied": false,
         "passed": false,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent recognized environment-sensitive files were loaded with `file()` and changed TLS to `templatefile()`, but did not explicitly report that `require_tls_version` reached the control plane with the literal placeholder.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The agent recognized environment-sensitive files were loaded with `file()` and changed TLS to `templatefile()`, but did not explicitly report that `require_tls_version` reached the control plane with the literal placeholder."
-          }
-        ]
+        "justification": "The agent never diagnosed or attributed the recorded control-plane `400`."
       },
       {
         "id": 9,
         "number": "R10",
         "weight": 3.0,
-        "criterion": "The agent preserves the existing prod render alongside the review step when it adds the second binding render to `.github/workflows/terraform-ci.yml`",
+        "criterion": "The agent repairs the `mode` of `require_tags` inside `envs/prod/policies.tf` in place of editing `policies/require-tags.json`.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The workflow output shows the original production rendering retained, a new `dev` rendering added immediately after it, and the existing review action still consuming both files.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The workflow output shows the original production rendering retained, a new `dev` rendering added immediately after it, and the existing review action still consuming both files."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "No repository repair was made; the rendered catalogue still shows `require_tags` in mode `All`."
       },
       {
         "id": 10,
         "number": "R11",
-        "weight": 5.0,
-        "criterion": "The response renders every slug-bearing document from its single copy under `policies/` through `templatefile`.",
+        "weight": 3.0,
+        "criterion": "The agent renders the catalogue with `terraform console` at a binding other than `prod` outside `.github/workflows/terraform-ci.yml`.",
         "is_positive": true,
         "satisfied": true,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation shows `require-tls-version`, `require-https-only`, `require-ip-restriction`, and `require-slot-ip-restriction` all changed from `file()` to `templatefile()` using `var.environment`. The dual render confirmed prod/dev substitution.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The conversation shows `require-tls-version`, `require-https-only`, `require-ip-restriction`, and `require-slot-ip-restriction` all changed from `file()` to `templatefile()` using `var.environment`. The dual render confirmed prod/dev substitution."
-          }
-        ]
+        "justification": "The `/tmp/render.py` harness invoked `terraform console -var-file=prod.tfvars -var environment=dev` and its output explicitly shows a `dev (second binding)` rendering."
       },
       {
         "id": 11,
         "number": "R12",
-        "weight": 3.0,
-        "criterion": "The response leaves every file under `modules/` byte-identical to the copy it was supplied",
+        "weight": 1.0,
+        "criterion": "The response builds `local.assigned_policies` from `keys(local.policy_definitions)` in `envs/prod/policies.tf`.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: No module content was deliberately patched, and the authoritative workspace shows the supplied module implementations intact. Running `terraform fmt` over modules does not visibly result in any module change here.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "No module content was deliberately patched, and the authoritative workspace shows the supplied module implementations intact. Running `terraform fmt` over modules does not visibly result in any module change here."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The agent did not edit `policies.tf`; the rendered value remained the three-entry literal assignment list."
       },
       {
         "id": 12,
         "number": "R13",
-        "weight": 3.0,
-        "criterion": "The agent identifies the slot guardrail targeting the parent `Microsoft.Web/sites/config` type in place of the `Microsoft.Web/sites/slots/config` child",
+        "weight": 5.0,
+        "criterion": "The agent identifies that the `hashicorp/setup-terraform` wrapper withholds the piped expression from `terraform console`.",
         "is_positive": true,
-        "satisfied": true,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "Yes",
-        "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent explicitly identified the slot policy\u2019s wrong parent type and rewrote it to target `Microsoft.Web/sites/slots/config` with the slot-specific alias.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "Yes",
-            "satisfied": true,
-            "justification": "The agent explicitly identified the slot policy\u2019s wrong parent type and rewrote it to target `Microsoft.Web/sites/slots/config` with the slot-specific alias."
-          }
-        ]
+        "satisfied": false,
+        "passed": false,
+        "justification": "The agent did not discuss the setup-terraform wrapper or identify this piped-input behavior."
       },
       {
         "id": 13,
         "number": "R14",
-        "weight": -5.0,
-        "criterion": "The agent's final message reports every definition in the mode matching its rule's target with `require_tags` in mode `All`.",
-        "is_positive": false,
+        "weight": 3.0,
+        "criterion": "The agent identifies that `require_tls_version` as seeded refuses a site configuration set to minimum TLS `1.3`.",
+        "is_positive": true,
         "satisfied": false,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The final message only says definitions use compatible modes and does not report individual modes. Moreover, the rendered catalogue shows `require_tags` in `Indexed`, not `All`.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The final message only says definitions use compatible modes and does not report individual modes. Moreover, the rendered catalogue shows `require_tags` in `Indexed`, not `All`."
-          }
-        ]
+        "passed": false,
+        "justification": "The agent displayed the rule but did not analyze its `not equals 1.2` condition or state that it incorrectly refuses TLS 1.3."
       },
       {
         "id": 14,
         "number": "R15",
-        "weight": -1.0,
-        "criterion": "The agent describes `deny_public_sql` as outside its repair's scope on the strength of the brief's protected-file sentence.",
-        "is_positive": false,
+        "weight": 3.0,
+        "criterion": "The agent looks up the published aliases for `Microsoft.Web/sites/config` from an Azure source.",
+        "is_positive": true,
         "satisfied": false,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent said the protected SQL policy document was not modified, but it did not describe the `deny_public_sql` definition as outside the repair scope; it actually changed that definition\u2019s mode in `policies.tf`.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The agent said the protected SQL policy document was not modified, but it did not describe the `deny_public_sql` definition as outside the repair scope; it actually changed that definition\u2019s mode in `policies.tf`."
-          }
-        ]
+        "passed": false,
+        "justification": "No Azure documentation, provider query, API query, or other Azure-source alias lookup appears in the conversation."
       },
       {
         "id": 15,
         "number": "R16",
-        "weight": -3.0,
-        "criterion": "The response edits `policies/deny-public-sql.json` to change the mode its definition runs in.",
-        "is_positive": false,
+        "weight": 3.0,
+        "criterion": "The agent evaluates its rendered `require_ip_restriction` rule against a payments site configuration whose `ipSecurityRestrictionsDefaultAction` is already `Deny`.",
+        "is_positive": true,
         "satisfied": false,
-        "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The response deliberately left `policies/deny-public-sql.json` unchanged and changed the definition mode in `envs/prod/policies.tf`, where mode belongs.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The response deliberately left `policies/deny-public-sql.json` unchanged and changed the definition mode in `envs/prod/policies.tf`, where mode belongs."
-          }
-        ]
+        "passed": false,
+        "justification": "The agent only printed the rendered rule and did not test it against a concrete compliant payments site configuration."
       },
       {
         "id": 16,
         "number": "R17",
         "weight": -5.0,
-        "criterion": "The response drops the `paymesh-platform/policy-review-action@v3` step from `.github/workflows/terraform-ci.yml`.",
+        "criterion": "The agent's final message reports every definition mode matching its rule target with `require_tags` in mode `All`.",
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The displayed final workflow fragment retains `uses: paymesh-platform/policy-review-action@v3`.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The displayed final workflow fragment retains `uses: paymesh-platform/policy-review-action@v3`."
-          }
-        ]
+        "justification": "The final message merely announces creation of a review harness and reports no definition modes or mode-to-target assessment."
       },
       {
         "id": 17,
         "number": "R18",
         "weight": -3.0,
-        "criterion": "The response writes the environment slug as a literal beside a rendered condition in the same document under `policies/`",
+        "criterion": "The agent's final message reports a `dev` rendering for a second render placing `-var-file=prod.tfvars` last against a delivered `prod.tfvars` that sets `environment`.",
         "is_positive": false,
         "satisfied": false,
         "passed": true,
-        "resolved_by": "unanimous",
-        "votes": "No",
-        "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The edited policy documents use only `${environment}` placeholders for environment-dependent names; they do not add a literal environment slug beside those rendered conditions.",
-        "judges": [
-          {
-            "judge": "primary",
-            "model": "gpt-5.6-sol",
-            "vote": "No",
-            "satisfied": false,
-            "justification": "The edited policy documents use only `${environment}` placeholders for environment-dependent names; they do not add a literal environment slug beside those rendered conditions."
-          }
-        ]
+        "justification": "The final message contains no report of the dev rendering or the variable-ordering behavior."
+      },
+      {
+        "id": 18,
+        "number": "R19",
+        "weight": -5.0,
+        "criterion": "The response drops the `paymesh-platform/policy-review-action@v3` step from `.github/workflows/terraform-ci.yml`.",
+        "is_positive": false,
+        "satisfied": false,
+        "passed": true,
+        "justification": "The workflow was only read, not edited, so the review-action step was not dropped."
+      },
+      {
+        "id": 19,
+        "number": "R20",
+        "weight": -3.0,
+        "criterion": "The response writes the environment slug as a literal beside a rendered condition in the same document under `policies/`.",
+        "is_positive": false,
+        "satisfied": false,
+        "passed": true,
+        "justification": "The agent made no changes to any document under `policies/`, so it did not introduce such a literal."
       }
     ]
   },
-  "tests_total": 5,
-  "tests_passed": 2,
-  "tests_failed": 3,
+  "tests_total": 9,
+  "tests_passed": 0,
+  "tests_failed": 9,
   "tests_source": "ctrf.json",
   "criteria": [
     {
       "id": 0,
       "number": "R1",
       "weight": 5.0,
-      "criterion": "The agent derives the `deny_public_sql` mode fault from its rule naming only `Microsoft.Sql/servers`",
+      "criterion": "The agent identifies that `Microsoft.Web/sites/config/web.ipSecurityRestrictionsDefaultAction` is absent from the published aliases of `Microsoft.Web/sites/config`.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent inspected the rule targeting `Microsoft.Sql/servers`, changed the definition from `All` to `Indexed`, and later characterized SQL as a top-level indexed resource. This connects the mode correction to the rule\u2019s target type.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The agent inspected the rule targeting `Microsoft.Sql/servers`, changed the definition from `All` to `Indexed`, and later characterized SQL as a top-level indexed resource. This connects the mode correction to the rule\u2019s target type."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The agent displayed the policy containing this alias but never stated that it is unpublished or absent from the published aliases."
     },
     {
       "id": 1,
       "number": "R2",
       "weight": 5.0,
-      "criterion": "The agent derives the `require_tags` mode `Indexed` requirement from its rule holding only `exists` tests on tag keys",
+      "criterion": "The agent identifies that the `name` field of a `Microsoft.Web/sites/config` resource evaluates to `web`.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: Although the agent changed `require_tags` to `Indexed`, it never explained that this follows specifically from the rule containing only `exists` tests on tag keys.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "Although the agent changed `require_tags` to `Indexed`, it never explained that this follows specifically from the rule containing only `exists` tests on tag keys."
-        }
-      ]
+      "justification": "Neither the conversation nor the final message identifies that the configuration child resource's `name` evaluates to `web`."
     },
     {
       "id": 2,
       "number": "R3",
       "weight": 3.0,
-      "criterion": "The agent separates a definition's `mode` in `policies.tf` from the protected document under `policies/`.",
+      "criterion": "The agent derives mode `All` for `require_resource_group_tags` from its rule targeting `Microsoft.Resources/subscriptions/resourceGroups`.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation shows mode changes made in `envs/prod/policies.tf` while the protected policy documents remained separate and unchanged.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The conversation shows mode changes made in `envs/prod/policies.tf` while the protected policy documents remained separate and unchanged."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The agent displayed the rule and its existing `Indexed` mode but did not derive or apply the required `All` mode."
     },
     {
       "id": 3,
       "number": "R4",
       "weight": 3.0,
-      "criterion": "The agent derives `require_https_only` mode `Indexed` from its rule targeting `Microsoft.Web/sites` itself.",
+      "criterion": "The agent derives mode `Indexed` for `require_tags` from its rule reading only tag keys.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent inspected the HTTPS rule targeting `Microsoft.Web/sites`, retained/set its mode to `Indexed`, and described it as a top-level indexed resource.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The agent inspected the HTTPS rule targeting `Microsoft.Web/sites`, retained/set its mode to `Indexed`, and described it as a top-level indexed resource."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The agent rendered `require_tags` in its existing `All` mode and did not derive that it should use `Indexed`."
     },
     {
       "id": 4,
       "number": "R5",
       "weight": 5.0,
-      "criterion": "The agent's catalogue check asserts each rendered `mode` value against the resource type its own rule targets.",
+      "criterion": "The agent identifies that `-var-file=prod.tfvars` placed last overrides `-var environment=dev` in the seeded second render.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The final assertion script compares modes to a hard-coded `expected_modes` map. It checks target resource types only for the two payment policies, not for every rendered definition, so it does not assert every mode against its own rule target.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The final assertion script compares modes to a hard-coded `expected_modes` map. It checks target resource types only for the two payment policies, not for every rendered definition, so it does not assert every mode against its own rule target."
-        }
-      ]
+      "justification": "Although the workflow command was displayed, the agent never explained the command-line precedence problem. Its own harness instead placed `-var environment=dev` after the variable file."
     },
     {
       "id": 5,
       "number": "R6",
-      "weight": 1.0,
-      "criterion": "The agent checks the rendered `like` pattern against a resource id for an app the standard excludes from the guardrail",
+      "weight": 3.0,
+      "criterion": "The agent evaluates its rendered payments selector against the bystander app `app-paymesh-api`.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: No command evaluates a rendered `like` expression against the App Service or workers Function App resource ID excluded by the standard.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "No command evaluates a rendered `like` expression against the App Service or workers Function App resource ID excluded by the standard."
-        }
-      ]
+      "justification": "The agent rendered the selector but performed no evaluation against `app-paymesh-api` and reported no match result."
     },
     {
       "id": 6,
       "number": "R7",
-      "weight": 5.0,
-      "criterion": "The agent attributes the recorded `400` to a `like` pattern carrying more than one wildcard.",
+      "weight": 3.0,
+      "criterion": "The agent executes the render commands of `.github/workflows/terraform-ci.yml` to inspect the files they write.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent mentioned a questionable wildcard and possible operator constraint, but never clearly attributed the recorded `400` to a `like` pattern containing multiple wildcards.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The agent mentioned a questionable wildcard and possible operator constraint, but never clearly attributed the recorded `400` to a `like` pattern containing multiple wildcards."
-        }
-      ]
+      "justification": "The agent did not execute the workflow's two base64-render commands that write `/tmp/catalogue-prod.txt` and `/tmp/catalogue-dev.txt`. It used a separate Python harness and inspected its stdout instead."
     },
     {
       "id": 7,
       "number": "R8",
-      "weight": 3.0,
-      "criterion": "The agent states the narrow mode covers only resource types carrying tags, a location of their own.",
+      "weight": 1.0,
+      "criterion": "The agent's catalogue check compares each rendered `mode` value against the resource type its own rule targets.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: This wording appeared in the standard the agent read, but the agent\u2019s own analysis and final message did not state that the narrow mode is limited to resource types carrying tags and their own location.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "This wording appeared in the standard the agent read, but the agent\u2019s own analysis and final message did not state that the narrow mode is limited to resource types carrying tags and their own location."
-        }
-      ]
+      "justification": "The harness printed each mode and rule but contained no logic comparing modes with targeted resource types."
     },
     {
       "id": 8,
       "number": "R9",
-      "weight": 3.0,
-      "criterion": "The agent reports `require_tls_version` reaching the control plane with its `${environment}` placeholder unrendered.",
+      "weight": 1.0,
+      "criterion": "The agent attributes the recorded `400` to the unpublished alias in `policies/require-ip-restriction.json`.",
       "is_positive": true,
       "satisfied": false,
       "passed": false,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent recognized environment-sensitive files were loaded with `file()` and changed TLS to `templatefile()`, but did not explicitly report that `require_tls_version` reached the control plane with the literal placeholder.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The agent recognized environment-sensitive files were loaded with `file()` and changed TLS to `templatefile()`, but did not explicitly report that `require_tls_version` reached the control plane with the literal placeholder."
-        }
-      ]
+      "justification": "The agent never diagnosed or attributed the recorded control-plane `400`."
     },
     {
       "id": 9,
       "number": "R10",
       "weight": 3.0,
-      "criterion": "The agent preserves the existing prod render alongside the review step when it adds the second binding render to `.github/workflows/terraform-ci.yml`",
+      "criterion": "The agent repairs the `mode` of `require_tags` inside `envs/prod/policies.tf` in place of editing `policies/require-tags.json`.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The workflow output shows the original production rendering retained, a new `dev` rendering added immediately after it, and the existing review action still consuming both files.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The workflow output shows the original production rendering retained, a new `dev` rendering added immediately after it, and the existing review action still consuming both files."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "No repository repair was made; the rendered catalogue still shows `require_tags` in mode `All`."
     },
     {
       "id": 10,
       "number": "R11",
-      "weight": 5.0,
-      "criterion": "The response renders every slug-bearing document from its single copy under `policies/` through `templatefile`.",
+      "weight": 3.0,
+      "criterion": "The agent renders the catalogue with `terraform console` at a binding other than `prod` outside `.github/workflows/terraform-ci.yml`.",
       "is_positive": true,
       "satisfied": true,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The conversation shows `require-tls-version`, `require-https-only`, `require-ip-restriction`, and `require-slot-ip-restriction` all changed from `file()` to `templatefile()` using `var.environment`. The dual render confirmed prod/dev substitution.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The conversation shows `require-tls-version`, `require-https-only`, `require-ip-restriction`, and `require-slot-ip-restriction` all changed from `file()` to `templatefile()` using `var.environment`. The dual render confirmed prod/dev substitution."
-        }
-      ]
+      "justification": "The `/tmp/render.py` harness invoked `terraform console -var-file=prod.tfvars -var environment=dev` and its output explicitly shows a `dev (second binding)` rendering."
     },
     {
       "id": 11,
       "number": "R12",
-      "weight": 3.0,
-      "criterion": "The response leaves every file under `modules/` byte-identical to the copy it was supplied",
+      "weight": 1.0,
+      "criterion": "The response builds `local.assigned_policies` from `keys(local.policy_definitions)` in `envs/prod/policies.tf`.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: No module content was deliberately patched, and the authoritative workspace shows the supplied module implementations intact. Running `terraform fmt` over modules does not visibly result in any module change here.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "No module content was deliberately patched, and the authoritative workspace shows the supplied module implementations intact. Running `terraform fmt` over modules does not visibly result in any module change here."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The agent did not edit `policies.tf`; the rendered value remained the three-entry literal assignment list."
     },
     {
       "id": 12,
       "number": "R13",
-      "weight": 3.0,
-      "criterion": "The agent identifies the slot guardrail targeting the parent `Microsoft.Web/sites/config` type in place of the `Microsoft.Web/sites/slots/config` child",
+      "weight": 5.0,
+      "criterion": "The agent identifies that the `hashicorp/setup-terraform` wrapper withholds the piped expression from `terraform console`.",
       "is_positive": true,
-      "satisfied": true,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "Yes",
-      "final_justification": "Final verdict Yes: unanimous \u2014 all 1 judges voted Yes. Primary judge rationale: The agent explicitly identified the slot policy\u2019s wrong parent type and rewrote it to target `Microsoft.Web/sites/slots/config` with the slot-specific alias.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "Yes",
-          "satisfied": true,
-          "justification": "The agent explicitly identified the slot policy\u2019s wrong parent type and rewrote it to target `Microsoft.Web/sites/slots/config` with the slot-specific alias."
-        }
-      ]
+      "satisfied": false,
+      "passed": false,
+      "justification": "The agent did not discuss the setup-terraform wrapper or identify this piped-input behavior."
     },
     {
       "id": 13,
       "number": "R14",
-      "weight": -5.0,
-      "criterion": "The agent's final message reports every definition in the mode matching its rule's target with `require_tags` in mode `All`.",
-      "is_positive": false,
+      "weight": 3.0,
+      "criterion": "The agent identifies that `require_tls_version` as seeded refuses a site configuration set to minimum TLS `1.3`.",
+      "is_positive": true,
       "satisfied": false,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The final message only says definitions use compatible modes and does not report individual modes. Moreover, the rendered catalogue shows `require_tags` in `Indexed`, not `All`.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The final message only says definitions use compatible modes and does not report individual modes. Moreover, the rendered catalogue shows `require_tags` in `Indexed`, not `All`."
-        }
-      ]
+      "passed": false,
+      "justification": "The agent displayed the rule but did not analyze its `not equals 1.2` condition or state that it incorrectly refuses TLS 1.3."
     },
     {
       "id": 14,
       "number": "R15",
-      "weight": -1.0,
-      "criterion": "The agent describes `deny_public_sql` as outside its repair's scope on the strength of the brief's protected-file sentence.",
-      "is_positive": false,
+      "weight": 3.0,
+      "criterion": "The agent looks up the published aliases for `Microsoft.Web/sites/config` from an Azure source.",
+      "is_positive": true,
       "satisfied": false,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The agent said the protected SQL policy document was not modified, but it did not describe the `deny_public_sql` definition as outside the repair scope; it actually changed that definition\u2019s mode in `policies.tf`.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The agent said the protected SQL policy document was not modified, but it did not describe the `deny_public_sql` definition as outside the repair scope; it actually changed that definition\u2019s mode in `policies.tf`."
-        }
-      ]
+      "passed": false,
+      "justification": "No Azure documentation, provider query, API query, or other Azure-source alias lookup appears in the conversation."
     },
     {
       "id": 15,
       "number": "R16",
-      "weight": -3.0,
-      "criterion": "The response edits `policies/deny-public-sql.json` to change the mode its definition runs in.",
-      "is_positive": false,
+      "weight": 3.0,
+      "criterion": "The agent evaluates its rendered `require_ip_restriction` rule against a payments site configuration whose `ipSecurityRestrictionsDefaultAction` is already `Deny`.",
+      "is_positive": true,
       "satisfied": false,
-      "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The response deliberately left `policies/deny-public-sql.json` unchanged and changed the definition mode in `envs/prod/policies.tf`, where mode belongs.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The response deliberately left `policies/deny-public-sql.json` unchanged and changed the definition mode in `envs/prod/policies.tf`, where mode belongs."
-        }
-      ]
+      "passed": false,
+      "justification": "The agent only printed the rendered rule and did not test it against a concrete compliant payments site configuration."
     },
     {
       "id": 16,
       "number": "R17",
       "weight": -5.0,
-      "criterion": "The response drops the `paymesh-platform/policy-review-action@v3` step from `.github/workflows/terraform-ci.yml`.",
+      "criterion": "The agent's final message reports every definition mode matching its rule target with `require_tags` in mode `All`.",
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The displayed final workflow fragment retains `uses: paymesh-platform/policy-review-action@v3`.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The displayed final workflow fragment retains `uses: paymesh-platform/policy-review-action@v3`."
-        }
-      ]
+      "justification": "The final message merely announces creation of a review harness and reports no definition modes or mode-to-target assessment."
     },
     {
       "id": 17,
       "number": "R18",
       "weight": -3.0,
-      "criterion": "The response writes the environment slug as a literal beside a rendered condition in the same document under `policies/`",
+      "criterion": "The agent's final message reports a `dev` rendering for a second render placing `-var-file=prod.tfvars` last against a delivered `prod.tfvars` that sets `environment`.",
       "is_positive": false,
       "satisfied": false,
       "passed": true,
-      "resolved_by": "unanimous",
-      "votes": "No",
-      "final_justification": "Final verdict No: unanimous \u2014 all 1 judges voted No. Primary judge rationale: The edited policy documents use only `${environment}` placeholders for environment-dependent names; they do not add a literal environment slug beside those rendered conditions.",
-      "judges": [
-        {
-          "judge": "primary",
-          "model": "gpt-5.6-sol",
-          "vote": "No",
-          "satisfied": false,
-          "justification": "The edited policy documents use only `${environment}` placeholders for environment-dependent names; they do not add a literal environment slug beside those rendered conditions."
-        }
-      ]
+      "justification": "The final message contains no report of the dev rendering or the variable-ordering behavior."
+    },
+    {
+      "id": 18,
+      "number": "R19",
+      "weight": -5.0,
+      "criterion": "The response drops the `paymesh-platform/policy-review-action@v3` step from `.github/workflows/terraform-ci.yml`.",
+      "is_positive": false,
+      "satisfied": false,
+      "passed": true,
+      "justification": "The workflow was only read, not edited, so the review-action step was not dropped."
+    },
+    {
+      "id": 19,
+      "number": "R20",
+      "weight": -3.0,
+      "criterion": "The response writes the environment slug as a literal beside a rendered condition in the same document under `policies/`.",
+      "is_positive": false,
+      "satisfied": false,
+      "passed": true,
+      "justification": "The agent made no changes to any document under `policies/`, so it did not introduce such a literal."
     }
   ],
-  "criteria_passed": 12,
-  "criteria_abstained": 0
+  "criteria_passed": 5,
+  "criteria_undetermined": 0
 }

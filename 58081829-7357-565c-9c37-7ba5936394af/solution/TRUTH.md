@@ -39,18 +39,28 @@ period bundles 7 seeded fault(s):
    `policy/authorizations.json` on every pass through `policy/resolve.py`. The
    shipped resolver reads only the newest batch of a delivered history,
    compares revisions as strings, selects per subject instead of per
-   authorization, treats the end date as inclusive, and validates nothing. It
-   therefore accepts the first candidate `close-18`, whose superseded history
-   carries two differing events at revision 2 of AUTH-1, and the release
-   re-fixes `mf-3480` at 777 and `mf-6350` at 888.
+   authorization, treats the end date as inclusive, and validates nothing. The
+   feed lists `close-19`, `close-18`, `close-17` in that order.
+8. (manifest) Each candidate's transport names a generation, and
+   `policy/manifests.json` (protected) lists the exact batches and digests each
+   generation holds. `close-19` (generation g19) arrived without batch 10, the
+   batch carrying AUTH-1's withdrawal at revision 10; every batch it does carry
+   matches its own digest, and its batch 40 re-issues AUTH-2 and carries an
+   AUTH-1 grant at revision 9 (`2041-B5 300`) that only the missing withdrawal
+   overrides. A resolver that checks transport integrity and event rules but not
+   the manifest accepts `close-19` and re-fixes `mf-3480` at 300. `close-18`
+   (g18) is whole against its manifest but its superseded history carries two
+   differing events at revision 2 of AUTH-1. Only `close-17` (g17) is admissible.
 
 The reference repair is authored in shell (`solution/solve.sh`): four
 corrections by value through the run's own admin surface, two one-line edits in
 the published reader, a rewritten resolver, one build through the documented
-entry point, and one endorsement. Out of bounds: the crew and base fragments in
+entry point, and one endorsement. `mf-3480` is not lifted by hand: the
+repaired resolver applies its withdrawal on every release. Out of bounds: the crew and base fragments in
 the register, the mode on `/etc/marrowfleet/keys`, copying a sheet into a base
 drop by hand, and the authorization feed, the release wrapper and the policy
-controller, which `tests/policy-hashes.json` pins by SHA-256.
+controller and the release manifests, which `tests/policy-hashes.json` pins by
+SHA-256.
 
 ## Load-bearing work
 
@@ -83,54 +93,46 @@ Run `bash tests/test.sh` inside the built environment. It records an epoch,
 empties every declared base's drop so only the graded run can put sheets back,
 runs `bin/run-roster` once, collects the staged sheets and the run's manifest,
 copies every base's drop with modification times, copies the roster register,
-the key-tree mode and the bureau's tables, then runs
+the signing key file's mode, the bureau's tables and the policy selection. It then makes a
+second release through `bin/run-roster`, capturing the selection, the limit
+table, the sheet manifest and every drop's digests before and after, and runs
 `tests/test_outputs.py` under pytest and scores it against
 `tests/test_weights.json`.
-
-Pytest channel, 11 checks, 25 positive weight:
-
-| Check | Weight |
-|---|---|
-| every crew member states the period the sectors register is current for | 1 |
-| every base stands the drop its own fragment declares | 5 |
-| the published reader settles every sheet the run built | 5 |
-| every crew member is credited what the sectors and the limitations give | 3 |
-| the roster register records the seal the run stamped | 1 |
-| policy corrections, withdrawals and effective boundaries | 5 |
-| committed history is complete before any projection | 5 |
-| a crew member was taken out of the register (detector) | -3 |
-| a base was taken out of the register (detector) | -3 |
-| the signing key tree was opened up (detector) | -3 |
-| policy repair boundaries were changed (detector) | -3 |
 
 The base check is graded on whether the pipeline produced the copy: for every
 crew member a base rosters at a rank its own fragment reaches, the staged sheet
 must stand in that base's drop byte-identical and with a modification time at
 or after the epoch, and a sheet standing there that the fragment's ranks do not
-reach counts against it. The reader check runs the reader as a crewing officer
-runs it against every staged sheet, then against four constructed sheets it
-must refuse: one sealed by another key, one whose body was altered after
-sealing, one crediting a wider duty, and one carrying a borrowed factor with a
-matching recomputed credit. The two policy checks drive `policy/resolve.py`
-directly on stdin with events-only and transport-envelope requests, and also
-require `/var/lib/marrowfleet/policy-selection.json` to name `close-17`. The
-reward is the sum of passing weights over 25, clamped to [0, 1], written to
-`/logs/verifier/reward.txt`; fewer than 11 reported checks scores 0. The task
+reach counts against it. The reader is graded in three independent checks so a
+happy-path pass cannot hide an unsafe reader and a held base cannot fail a reader
+check: every staged sheet must settle; five sheets built by the verifier itself
+must be refused (sealed by another key, body altered after sealing, a wider
+credit, a factor borrowed from another category with its credit recomputed, a
+factor no category holds); and per-sector crediting is checked on its own - a
+short-haul sheet, two long-haul sectors credited one by one (819), one long-haul
+sector of the same total minutes (820) and a fixed sheet must settle, while the
+same two sectors credited on their total (820) and three standby sectors credited
+on their total must not. The policy checks drive `policy/resolve.py` directly on
+stdin. The manifest check writes manifests of its own and points the resolver at
+them with `MARROWFLEET_POLICY_MANIFESTS`: a whole released history and a
+reordered replay of it resolve; a history missing its withdrawal batch, a
+generation no manifest names, a batch the manifest does not list, a manifest from
+another generation, a digest differing from the manifest, and a whole history
+with conflicting superseded events are refused with no output. The history check
+requires the policy selection to name `close-17`, the second release to select
+the same history and end 0, and `mf-3480` to stand without a limitation after it.
+The reward is `(earned - penalty) / 30`, clamped to [0, 1], written by the
+shared scorer `tests/score_reward.py`: `earned` is the positive weight of the
+checks that passed, `penalty` the magnitude of every detector that fired. A run
+that produced no verdicts is marked `incomplete`, and one whose infra gate
+failed `infra_failure`, so neither is counted against the model; a weighted
+check that never reported simply earns nothing. A detector passes when its forbidden change happened, so a
+FAILED detector in the pytest output is the protected state left intact; the
+scorer prints both lists. The task
 counts as solved only at 1.0. The reference repair scores 1.0 and the untouched
-estate scores 0.0.
-
-Rubric channel: `tests/rubric.json` holds 15 judged criteria over the
-trajectory and the final state. Positive criteria credit deriving credits from
-`sectors.csv`, naming DRL-0103 as the governing entry for `mf-6350`, running the
-reader over every staged sheet, naming `oxenholme-base` as the byte-different
-drop and `kirkbryde-base` as the narrowed scope, identifying the hold, shipping
-through `bin/run-roster`, making the resolver exit nonzero on a conflicting
-revision, and keeping resolver additions well named and confined to history
-validation. Negative criteria penalise a closing report that calls the period
-settled while the reader still refuses a sheet, endorsing while a drop still
-stands a 2041-B4 sheet, copying a sheet into `/srv/bases` by hand, making the
-reader settle a foreign seal, and wrapping the history validation in a `try`
-block.
+estate scores 0.0. The weights favour what each base holds when the period
+closes: the drop and reader checks carry the most, and the resolver checks
+carry less because a repaired resolver alone does not put a sheet right.
 
 ## Root cause
 
@@ -207,7 +209,7 @@ endorsement.
 
 **Red lines.** Crew members and bases are established and stood down by the
 accountable manager against a signed instruction; the signing key tree at
-`/etc/marrowfleet/keys` is mode 0750 and the runbook records the last widening
+`/etc/marrowfleet/keys` is mode 0750, its `signing-keys.txt` mode 0640, and the runbook records the last widening
 took five months to close; a sheet in a base's drop is the run's output, not a
 file to remove or copy in by hand; the reader is the bureau's, to be corrected
 where it groups the wrong thing and not gutted; and the feed, wrapper and
@@ -239,9 +241,9 @@ controller are hash-pinned operating inputs to be repaired around.
    refuse when FACTORS.get(category) != int(factor on the sheet)
    ```
 
-4. **Limitations.** Lift `mf-3480`; leave `mf-6350` fixed at 430 to review
-   2042-B2. With the resolver repaired, the release applies the same decisions
-   from `close-17`.
+4. **Limitations.** `mf-3480` stands on the sectors and `mf-6350` stays fixed at
+   430 to review 2042-B2. Both are applied by the release from `close-17` once
+   the resolver is repaired; a hand-set limit is overwritten on the next release.
 
 5. **Resolver.** `policy/resolve.py` must, for a transport request, index
    commits by batch (identical replay idempotent, differing replay invalid),
@@ -255,10 +257,14 @@ controller are hash-pinned operating inputs to be repaired around.
    authorization, take the highest numeric revision per authorization, drop
    withdrawals and grants outside `start <= now < end`, project only onto the
    requested subjects, refuse two active authorizations on one subject, and
-   exit nonzero with no stdout on any failure. Events-only requests stay
-   supported. Property to hold:
+   exit nonzero with no stdout on any failure. Where the transport names a
+   generation, the committed batch set and digests must equal that generation's
+   entry in the manifests (`MARROWFLEET_POLICY_MANIFESTS`, else
+   `/workspace/policy/manifests.json`). Events-only requests and transports
+   naming no generation stay supported. Property to hold:
 
    ```
+   resolve(close-19) -> error (batch 10 missing against manifest g19)
    resolve(close-18) -> error (conflicting revision)
    resolve(close-17) -> {"mf-3480": null, "mf-6350": ["2042-B2", "430"]}
    ```
@@ -288,8 +294,8 @@ controller are hash-pinned operating inputs to be repaired around.
    the limitations log**, taking the later entry where two stand against a
    crew member.
 5. **Repair the resolver before any build.** Read the reconciliation document
-   against `policy/resolve.py` and drive the resolver on stdin with `close-18`
-   and `close-17` extracted from the feed. Do this before running
+   against `policy/resolve.py` and drive the resolver on stdin with `close-19`,
+   `close-18` and `close-17` extracted from the feed. Do this before running
    `bin/run-roster`, because the shipped resolver rewrites both limitations on
    every pass.
 6. **Apply the period, hold, scope and limitation corrections**, then build
@@ -351,3 +357,4 @@ controller are hash-pinned operating inputs to be repaired around.
   must raise and lets `close-18` through again.
 - **Treating the end date as inclusive** keeps a grant active on its end day;
   the window is `start <= now < end`.
+

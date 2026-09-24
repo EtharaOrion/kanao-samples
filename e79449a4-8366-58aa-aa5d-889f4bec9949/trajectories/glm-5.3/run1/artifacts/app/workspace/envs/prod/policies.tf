@@ -8,6 +8,10 @@ locals {
   # The catalogue of custom definitions this environment owns. One entry per
   # definition; `rule` holds the document exactly as the control plane receives
   # it, so what is reviewed here is what Azure evaluates.
+  #
+  # Documents that carry an environment slug are rendered from the single copy
+  # under policies/, taking the slug from this environment's own input. A
+  # document loaded verbatim ships the placeholder and matches nothing.
   policy_definitions = {
     deny_public_sql = {
       mode         = "Indexed"
@@ -23,10 +27,17 @@ locals {
       rule         = file("${path.module}/../../policies/require-tags.json")
     }
 
+    require_resource_group_tags = {
+      mode         = "Indexed"
+      display_name = "PayMesh - require the mandatory tags on resource groups"
+      description  = "Refuses a resource group created without the 'environment' and 'data_classification' tags. Resource groups are where the cost allocation report, the PCI DSS scoping inventory and the on-call escalation map all start: an untagged group falls out of the monthly chargeback run, is invisible to the quarterly assessment that proves the cardholder data environment is contained, and pages nobody when something inside it breaks. The tags are therefore required at creation, not added afterwards by a clean-up script, and a group that arrives without them is refused in the control plane before any resource can be placed in it."
+      rule         = file("${path.module}/../../policies/require-resource-group-tags.json")
+    }
+
     require_tls_version = {
       mode         = "All"
       display_name = "PayMesh - require TLS 1.2 on every site in this environment"
-      description  = "Refuses a site in this environment that will still negotiate an obsolete TLS version."
+      description  = "Refuses a site configuration in this environment that will still negotiate an obsolete TLS version."
       rule         = templatefile("${path.module}/../../policies/require-tls-version.json", { environment = var.environment })
     }
 
@@ -61,9 +72,9 @@ locals {
     }
   }
 
-  # The definitions that carry an assignment at subscription scope. A
-  # definition missing from this list still exists in the subscription and
-  # still evaluates nothing at all.
+  # Every definition the environment owns is enforced. A definition missing
+  # from this list still exists in the subscription and still evaluates
+  # nothing at all, while the sweep counts it as a control.
   assigned_policies = keys(local.policy_definitions)
 }
 

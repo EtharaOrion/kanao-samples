@@ -29,22 +29,18 @@ refused their first deployment once already, and that is not a mistake this
 team makes twice.
 
 **A2.** The definition reads the setting on the object that holds it, using the
-name the platform publishes for that object. A setting read from a parent
-object is not the same setting: the control plane sends a partial body for
-writes that do not touch it, and the definition then either refuses legitimate
-writes or passes writes it should refuse.
+name the platform publishes for that object.
 
 **A3.** A matcher the platform constrains is used inside that constraint.
-Exceeding it does not produce a narrower rule; it produces a definition the
-control plane rejects outright, which leaves whatever was live before still
-live. The constraints are in the platform's own documentation for the
-operator being used.
 
 **A4.** The payments flow also keeps a `blue` deployment slot under each of
-the two Function Apps. Slot configuration is a different child resource from
-site configuration and publishes its own setting alias. The slot guardrail
-evaluates the `blue` slot of both payments apps, follows the environment
-binding, refuses an open default action, and sees no slot under a bystander.
+the two Function Apps. The slot guardrail evaluates the `blue` slot of both
+payments apps, follows the environment binding, refuses an open default action,
+and sees no slot under a bystander.
+
+**A5.** Every other definition in the catalogue evaluates the objects its own
+description names. A definition whose scope can never be true is present and
+inert.
 
 ## B. A definition the environment owns is a definition the environment enforces
 
@@ -53,12 +49,9 @@ scope. A definition with no assignment exists in the subscription, evaluates
 nothing, and is counted as a control by the sweep.
 
 **B2.** Every definition runs in the evaluation mode that matches the objects
-its rule targets. The platform offers a narrow mode that covers only resource
-types carrying tags and a location of their own, and a broad one that covers
-everything. A definition in the wrong mode is not a slower definition; it is
-one that never runs. Neither mode is the safe default - a definition put into
-the broad mode because the narrow one did not work will evaluate objects the
-team did not intend to evaluate.
+its rule targets. A definition in the wrong mode either skips objects its rule
+was written for, or evaluates objects the team never meant it to evaluate.
+Neither mode is the safe default.
 
 ## C. A document that names an environment is rendered, not copied
 
@@ -88,7 +81,8 @@ cannot tell the two apart.
 definition is declared, and `local.assigned_policies` is the only place an
 assignment is declared. Nothing is declared beside them.
 
-**D2.** Scope is narrowed by name, never by resource type alone.
+**D2.** A guardrail over named workloads narrows its scope by name, never by
+resource type alone.
 
 **D3.** A rule document holds no secret material. Documents are committed and
 are readable by anyone with repository access.

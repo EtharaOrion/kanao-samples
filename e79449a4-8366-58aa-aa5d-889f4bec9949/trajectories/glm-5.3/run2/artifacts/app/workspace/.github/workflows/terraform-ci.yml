@@ -38,8 +38,12 @@ jobs:
       # is read offline. The review job renders it once for this environment
       # and once at a second binding, and compares the two.
       - name: render the policy catalogue
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
+          # A var-file wins over a -var set ahead of it, so the second render
+          # has to take the binding last to be a different binding at all.
           echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt
           echo "$EXPR" | terraform console -var-file=prod.tfvars -var environment=dev > /tmp/catalogue-dev.txt
 

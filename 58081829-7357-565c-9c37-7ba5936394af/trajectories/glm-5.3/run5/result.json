@@ -1,40 +1,58 @@
 {
-  "id": "58081829-7357-565c-9c37-7ba5936394af",
-  "started_at": "2026-09-06T20:12:48.354108",
-  "updated_at": "2026-09-06T21:26:51.410618",
-  "finished_at": "2026-09-06T21:26:51.410618",
-  "n_total_trials": 1,
-  "stats": {
-    "n_completed_trials": 1,
-    "n_errored_trials": 0,
-    "n_running_trials": 0,
-    "n_pending_trials": 0,
-    "n_cancelled_trials": 0,
-    "n_retries": 0,
-    "evals": {
-      "terminus-2__glm-5.3__adhoc": {
-        "n_trials": 1,
-        "n_errors": 0,
-        "metrics": [
-          {
-            "mean": 0.76
-          }
-        ],
-        "pass_at_k": {},
-        "reward_stats": {
-          "reward": {
-            "0.76": [
-              "58081829-7357-565c-9c37-7ba5936394af__bC4F9aX"
-            ]
-          }
+    "id": "f6e19464-36e1-46eb-a937-647450695ba6",
+    "started_at": "2026-09-24T01:34:02.639543",
+    "updated_at": "2026-09-24T02:27:34.285970",
+    "finished_at": "2026-09-24T02:27:34.285970",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "openhands-sdk__glm-5.3__adhoc": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "available": 30.0,
+                        "earned": 27.0,
+                        "penalty": 0.0,
+                        "reward": 0.9
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "0.9": [
+                            "58081829-7357-565c-9c37-7ba59363__HME7TY7"
+                        ]
+                    },
+                    "earned": {
+                        "27": [
+                            "58081829-7357-565c-9c37-7ba59363__HME7TY7"
+                        ]
+                    },
+                    "penalty": {
+                        "0": [
+                            "58081829-7357-565c-9c37-7ba59363__HME7TY7"
+                        ]
+                    },
+                    "available": {
+                        "30": [
+                            "58081829-7357-565c-9c37-7ba59363__HME7TY7"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
         },
-        "exception_stats": {}
-      }
-    },
-    "n_input_tokens": 8216888,
-    "n_cache_tokens": 7971328,
-    "n_cache_creation_tokens": 242688,
-    "n_output_tokens": 236606,
-    "cost_usd": 3.542336
-  }
+        "n_input_tokens": 14827793,
+        "n_cache_tokens": 14675648,
+        "n_cache_creation_tokens": 146816,
+        "n_output_tokens": 157121,
+        "cost_usd": 0.0
+    }
 }

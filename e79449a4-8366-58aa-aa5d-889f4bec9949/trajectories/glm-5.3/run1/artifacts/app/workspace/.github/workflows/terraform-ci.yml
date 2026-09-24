@@ -6,6 +6,7 @@ on:
       - "envs/**"
       - "modules/**"
       - "policies/**"
+      - ".github/workflows/terraform-ci.yml"
 
 permissions:
   contents: read
@@ -37,11 +38,57 @@ jobs:
       # No subscription is attached to a pull request build, so the catalogue
       # is read offline. The review job renders it once for this environment
       # and once at a second binding, and compares the two.
+      #
+      # The second binding has to be a different binding. -var and -var-file
+      # are applied in command-line order and the last one wins, so the alt
+      # binding is supplied as the final -var-file: writing it as
+      # `-var environment=dev -var-file=prod.tfvars` renders prod twice and
+      # the comparison below can never see a document that ignores its
+      # environment.
       - name: render the policy catalogue
+        timeout-minutes: 10
         run: |
+          set -e
+          printf 'environment = "dev"\n' > /tmp/alt-binding.tfvars
           EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
           echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt
-          echo "$EXPR" | terraform console -var-file=prod.tfvars -var=environment=dev > /tmp/catalogue-dev.txt
+          echo "$EXPR" | terraform console -var-file=prod.tfvars -var-file=/tmp/alt-binding.tfvars > /tmp/catalogue-dev.txt
+
+          # A rendering that never reached this point must not reach review:
+          # a render step the build can carry on past is a guardrail that is
+          # present and inert.
+          for f in /tmp/catalogue-prod.txt /tmp/catalogue-dev.txt; do
+            if [ ! -s "$f" ]; then
+              echo "$f is empty - the catalogue never rendered" >&2
+              exit 1
+            fi
+          done
+
+          # C1: a slugged document that ships its placeholder is a document
+          # the control plane matches nothing with.
+          for f in /tmp/catalogue-prod.txt /tmp/catalogue-dev.txt; do
+            if tr -d '"' < "$f" | base64 -d | grep -Fq '${environment'; then
+              echo "$f rendered a rule document with its \${environment} placeholder still in it" >&2
+              exit 1
+            fi
+          done
+
+          # C2: the two renderings must differ, or the comparison reviews one
+          # binding twice.
+          if cmp -s /tmp/catalogue-prod.txt /tmp/catalogue-dev.txt; then
+            echo "the catalogue rendered identically at both bindings - the second binding was not a second binding" >&2
+            exit 1
+          fi
+
+          # C1, the trap a single rendering cannot see: a document that is
+          # right for the environment it was written in and wrong for the
+          # next one. Rendered at the second binding, no rule may still name
+          # the slug of the environment this catalogue was written for.
+          PRIMARY="$(echo 'var.environment' | terraform console -var-file=prod.tfvars | tr -d '"')"
+          if tr -d '"' < /tmp/catalogue-dev.txt | base64 -d | grep -Fq -- "-${PRIMARY}"; then
+            echo "a rule rendered at the second binding still names -${PRIMARY}: it was copied for this environment, not rendered for it" >&2
+            exit 1
+          fi
 
       # The reviewer itself lives in the platform org, not in this repository,
       # so a change here cannot change what it looks for. It reads the two

@@ -36,8 +36,12 @@ jobs:
 
       # No subscription is attached to a pull request build, so the catalogue
       # is read offline. The review job renders it once for this environment
-      # and once at a second binding, and compares the two.
+      # and once at a second binding, and compares the two. The -var-file
+      # comes first: a -var named after it overrides the binding, and the
+      # second rendering has to actually be the second binding or a document
+      # that only names its own environment is invisible to the comparison.
       - name: render the policy catalogue
+        timeout-minutes: 10
         run: |
           EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
           echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt

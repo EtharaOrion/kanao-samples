@@ -13,13 +13,13 @@ resource "azurerm_storage_account" "this" {
 }
 
 resource "azurerm_service_plan" "this" {
-  name                = "asp-paymesh-pagos${var.instance_suffix}-${var.environment}"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  os_type             = "Linux"
-  sku_name            = "EP1"
+  name                         = "asp-paymesh-pagos${var.instance_suffix}-${var.environment}"
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  os_type                      = "Linux"
+  sku_name                     = "EP1"
   maximum_elastic_worker_count = var.max_instance_count
-  tags                = var.tags
+  tags                         = var.tags
 }
 
 # The ip restriction below is the control the guardrail in envs/*/policies.tf

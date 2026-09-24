@@ -88,22 +88,6 @@ Run `bash tests/test.sh` inside the running environment. It runs
 `tests/test_outputs.py` under pytest and scores the junit result against
 `tests/test_weights.json`.
 
-Pytest channel, 11 checks, 27 positive weight:
-
-| Check | Weight |
-|---|---|
-| format and known vocabulary | 1 |
-| expected finding reported and carried by signed observations | 5 |
-| causal discriminator holds over the cited intervals | 5 |
-| required population calculations match the cited intervals | 3 |
-| evidence window: 3 owner observations spanning 45 s | 3 |
-| all observations authentic | 3 |
-| required alternatives ruled out | 3 |
-| evidence anomaly pairs match the verdict exactly | 1 |
-| no phantom findings | 3 |
-| phantom finding (detector, per extra pair) | -3 |
-| fabricated observation (detector) | -5 |
-
 Format requires sorted unique lines, one colon each, a known service and a
 label other than `none`. Authenticity recomputes each observation's HMAC over
 its canonical JSON with the signature removed, so any edited, trimmed or
@@ -119,24 +103,43 @@ green with HTTP 200 and `selected_rows` below `expected_scheduled_arrivals`.
 The population check requires `selected_fraction_first` and
 `selected_fraction_latest` to equal `actual_closed_loop_sends` over
 `scheduled_open_loop` for the earliest and latest cited intervals within 1
-percent. The reward is earned weight over 27, where a passing detector
-subtracts its weight, clamped to [0, 1] and written to
-`/logs/verifier/reward.txt`. The reference scores 1.0 and an empty submission
-scores 0.0.
-
-Rubric channel: `tests/rubric.json` holds 9 judged criteria over the evidence
-file and the transcript. Positive criteria credit explaining how declining
-effective worker slots account for falling group completions and rising queue
-age, clearing `availability-cache` through completed productive work,
-clearing `admission-gate` through bounded-policy lifecycle preservation,
-giving every `ruled_out` reason an observed value with its class-specific
-interpretation, grounding every anomaly reason in a reported reading, and
-comparing the closed-loop send-to-response p99 against the open-loop
-scheduled-to-completion p99. Negative criteria penalise an explanation citing
-a value the agent's own transcript contradicts, changing any service or
-workload, and more than two concurrent probes to one service. A recorder in
+percent. A recorder in
 its own container samples every service's `/metrics` and `/casebook` every 5 s
 to a host mount the agent cannot see.
+
+## Scoring channels
+
+Each run carries two numbers, and they measure different things.
+
+**Authoritative reward.** `verifier/reward.json` is the deterministic reward
+the run is graded on: `reward = (earned - penalty) / available`, clamped to
+`[0, 1]`, computed only from the pytest checks in `tests/test_outputs.py`
+against the weights in `tests/test_weights.json`. This is the number a machine
+ingests as the reward signal, and it is fully reproducible from the repository.
+
+**The diagnosis gate.** Naming the wrong primary service or label fails
+`test_gate_expected_finding`, a `test_gate_*` check that the scorer treats as a
+hard gate: if any gate check fails the reward short-circuits to exactly `0.0`
+regardless of what else passed. This is deliberate. A submission with valid
+format, authentic observations and cleared alternatives, but the wrong
+diagnosis, scores `0.0` rather than floating on partial hygiene credit. The
+same gate zeroes a near-correct run that adds a phantom finding
+(`test_gate_no_phantom_findings`): a correct primary diagnosis carried
+alongside an extra fabricated fault still scores `0.0`, because a report that
+also blames a healthy service has not diagnosed the estate.
+
+**The human-eval QA composite.** `score.json` and `pass_summary.json` also
+carry `overall_score = 0.5 * tests_score + 0.5 * rubric_score`. The rubric half
+is scored by a human evaluator (the shipped criteria and each per-criterion
+justification live in `score.json`; the named grader is in the `Evaluated By`
+field). It exists as a quality-assurance view, not as the reward. Because the
+human rubric is not gated, `overall_score` can be non-zero on a run whose
+`reward.json` is `0.0`: the rubric credits genuine partial diagnostic work -
+the mechanism explanation, the two clearances, grounded reasons - even when the
+verdict label is still wrong. That divergence is expected. The authoritative,
+gated, deterministic channel is `reward.json`; `overall_score` is the
+human-eval QA lens over the same run and is not recomputable from the repo
+because it includes human judgement.
 
 ## Root cause
 

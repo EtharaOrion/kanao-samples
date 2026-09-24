@@ -1,8 +1,6 @@
 services:
   main:
-    build:
-      context: ${CONTEXT_DIR}
-    image: ${MAIN_IMAGE_NAME}
+    image: 426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:58081829-marrowfleet-crew-roster-env@sha256:70a05e7ad77352f167e0dc8bd96ebc5fe599171ea0baff71ce116c04a325874e
     command: [bash, -c, "/usr/local/bin/task-start.sh; rm -f /usr/local/bin/task-start.sh; exec sleep infinity"]
     environment:
       - TEST_DIR=${TEST_DIR}

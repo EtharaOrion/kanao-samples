@@ -1,46 +1,18 @@
->       assert elsewhere == [], 'outcome A is met but review fails on: ' + ', '.join(elsewhere)
-E       AssertionError: outcome A is met but review fails on: dev:evaluation_mode, prod:evaluation_mode
-E       assert ['dev:evaluat...luation_mode'] == []
-E         
-E         Left contains 2 more items, first extra item: 'dev:evaluation_mode'
-E         Use -v to get more diff
-
-/tests/test_outputs.py:397: AssertionError
-___________ test_outcome_b_every_definition_is_enforced_under_review ___________
-
-    def test_outcome_b_every_definition_is_enforced_under_review():
-        gaps = _review_gaps()
->       assert not gaps['B'], 'outcome B is not met, at: ' + ', '.join(sorted(set(gaps['B'])))
-E       AssertionError: outcome B is not met, at: dev:evaluation_mode, prod:evaluation_mode
-E       assert not ['prod:evaluation_mode', 'prod:evaluation_mode', 'dev:evaluation_mode', 'dev:evaluation_mode']
-
-/tests/test_outputs.py:402: AssertionError
-__________ test_outcome_c_documents_follow_their_binding_under_review __________
-
-    def test_outcome_c_documents_follow_their_binding_under_review():
-        gaps = _review_gaps()
-        unmet = {key: sorted(set(value)) for key, value in gaps.items() if value}
-        assert 'C' not in unmet, 'outcome C is not met, at: ' + ', '.join(unmet.get('C', []))
->       assert unmet == {}, 'outcome C is met but review fails on: ' + repr(unmet)
-E       AssertionError: outcome C is met but review fails on: {'B': ['dev:evaluation_mode', 'prod:evaluation_mode']}
-E       assert {'B': ['dev:e...uation_mode']} == {}
-E         
-E         Left contains 1 more item:
-E         {'B': ['dev:evaluation_mode', 'prod:evaluation_mode']}
-E         Use -v to get more diff
-
-/tests/test_outputs.py:411: AssertionError
-==================================== PASSES ====================================
-=========================== short test summary info ============================
-PASSED ../../../../tests/test_outputs.py::test_negative_verifier_package_was_removed
-PASSED ../../../../tests/test_outputs.py::test_negative_policy_inputs_were_altered
-FAILED ../../../../tests/test_outputs.py::test_outcome_a_guardrails_see_their_targets_under_review
-FAILED ../../../../tests/test_outputs.py::test_outcome_b_every_definition_is_enforced_under_review
-FAILED ../../../../tests/test_outputs.py::test_outcome_c_documents_follow_their_binding_under_review
-========================= 3 failed, 2 passed in 2.35s ==========================
-[FAIL] test_outcome_a_guardrails_see_their_targets_under_review (weight +5)
-[FAIL] test_outcome_b_every_definition_is_enforced_under_review (weight +5)
-[FAIL] test_outcome_c_documents_follow_their_binding_under_review (weight +5)
-[PASS] test_negative_verifier_package_was_removed (weight -5)
-[PASS] test_negative_policy_inputs_were_altered (weight -3)
-[grade] raw=+0 positive_total=15 reward=+0.000000
+>       assert not gaps, 'the payments setting rule is not met, at: ' + ', '.join(sorted(set(gaps)))
+E       AssertionError: the payments setting rule is not met, at: dev:require_ip_restriction:matches_a_closed_restriction, dev:require_ip_restriction:unpublished_alias, prod:require_ip_restriction:matches_a_closed_restriction, prod:require_ip_restriction:unpublished_alias
+>       assert not gaps, 'the slot setting rule is not met, at: ' + ', '.join(sorted(set(gaps)))
+E       AssertionError: the slot setting rule is not met, at: dev:require_slot_ip_restriction:matches_a_closed_restriction, dev:require_slot_ip_restriction:unpublished_alias, prod:require_slot_ip_restriction:matches_a_closed_restriction, prod:require_slot_ip_restriction:unpublished_alias
+>       assert not gaps, 'the TLS version rule is not met, at: ' + ', '.join(sorted(set(gaps)))
+E       AssertionError: the TLS version rule is not met, at: dev:require_tls_version:matches_a_compliant_site_configuration, prod:require_tls_version:matches_a_compliant_site_configuration
+>       assert not gaps, 'the CI render rule is not met, at: ' + ', '.join(sorted(set(gaps)))
+E       AssertionError: the CI render rule is not met, at: pipeline_catalogue_is_not_the_home_render, pipeline_second_render_is_not_a_second_binding
+PASSED tests/test_outputs.py::test_guardrails_see_their_targets_under_review
+PASSED tests/test_outputs.py::test_catalogue_is_enforced_and_rendered_under_review
+FAILED tests/test_outputs.py::test_payments_guardrail_reads_the_published_setting_under_review
+FAILED tests/test_outputs.py::test_slot_guardrail_reads_the_published_setting_under_review
+FAILED tests/test_outputs.py::test_tls_guardrail_refuses_only_obsolete_versions_under_review
+FAILED tests/test_outputs.py::test_pipeline_renders_both_bindings_under_setup_terraform
+FAILED tests/test_outputs.py::test_negative_policy_inputs_were_altered - Asse...
+FAILED tests/test_outputs.py::test_negative_per_environment_copy_was_added - ...
+FAILED tests/test_outputs.py::test_negative_managed_resources_were_removed - ...
+reward=0.111111 status=ok

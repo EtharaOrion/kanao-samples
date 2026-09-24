@@ -1,27 +1,47 @@
 {
   "if": {
-    "allOf": [
+    "anyOf": [
       {
-        "field": "type",
-        "equals": "Microsoft.Web/sites/slots/config"
-      },
-      {
-        "anyOf": [
+        "allOf": [
           {
-            "field": "id",
-            "like": "*/sites/func-paymesh-pagos-${environment}/slots/blue/config/web"
+            "field": "type",
+            "equals": "Microsoft.Web/sites/slots"
           },
           {
-            "field": "id",
-            "like": "*/sites/func-paymesh-pagos-canary-${environment}/slots/blue/config/web"
+            "field": "fullName",
+            "in": [
+              "func-paymesh-pagos-${environment}/blue",
+              "func-paymesh-pagos-canary-${environment}/blue"
+            ]
+          },
+          {
+            "not": {
+              "field": "Microsoft.Web/sites/slots/siteConfig.ipSecurityRestrictionsDefaultAction",
+              "equals": "Deny"
+            }
           }
         ]
       },
       {
-        "not": {
-          "field": "Microsoft.Web/sites/slots/config/web.ipSecurityRestrictionsDefaultAction",
-          "equals": "Deny"
-        }
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/slots/config"
+          },
+          {
+            "field": "fullName",
+            "in": [
+              "func-paymesh-pagos-${environment}/blue/web",
+              "func-paymesh-pagos-canary-${environment}/blue/web"
+            ]
+          },
+          {
+            "not": {
+              "field": "Microsoft.Web/sites/slots/config/ipSecurityRestrictionsDefaultAction",
+              "equals": "Deny"
+            }
+          }
+        ]
       }
     ]
   },

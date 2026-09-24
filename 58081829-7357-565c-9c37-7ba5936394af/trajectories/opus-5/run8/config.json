@@ -1,17 +1,21 @@
 {
-  "task": {
-    "path": "58081829-7357-565c-9c37-7ba5936394af"
-  },
-  "trial_name": "ci_repair__marrowfleet-crew-roster",
-  "trials_dir": "58081829-7357-565c-9c37-7ba5936394af/trajectories/opus-5",
-  "agent": {
-    "name": "terminus-2",
-    "model_name": "anthropic/opus-5"
-  },
-  "verifier": {
-    "env": {
-      "REWARDKIT_JUDGE": "gpt-5.6-sol"
-    }
-  },
-  "job_id": "58081829-7357-565c-9c37-7ba5936394af"
+    "job_name": "run_8",
+    "jobs_dir": "harness/output/58081829-7357-565c-9c37-7ba5936394af/opus-5",
+    "timeout_multiplier": 2.0,
+    "agents": [
+        {
+            "name": "openhands-sdk",
+            "model_name": "opus-5",
+            "kwargs": {
+                "reasoning_effort": "high",
+                "version": "1.49.2",
+                "timeout": 2700
+            }
+        }
+    ],
+    "tasks": [
+        {
+            "path": "harness/input/58081829-7357-565c-9c37-7ba5936394af"
+        }
+    ]
 }

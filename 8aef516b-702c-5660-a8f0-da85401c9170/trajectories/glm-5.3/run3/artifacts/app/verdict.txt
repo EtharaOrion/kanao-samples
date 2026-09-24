@@ -1,6 +1,4 @@
 admission-gate:load-shedding
-availability-cache:cpu-saturation
-reservation-worker:capacity-cliff
 reservation-worker:input-scaling
 reservation-worker:queue-backlog
 synthetic-probe:probe-population-gap

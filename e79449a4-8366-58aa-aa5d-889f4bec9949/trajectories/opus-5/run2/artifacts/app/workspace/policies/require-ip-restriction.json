@@ -8,12 +8,12 @@
       {
         "anyOf": [
           {
-            "field": "fullName",
-            "equals": "func-paymesh-pagos-${environment}/web"
+            "field": "id",
+            "like": "*/sites/func-paymesh-pagos-${environment}/config/web"
           },
           {
-            "field": "fullName",
-            "equals": "func-paymesh-pagos-canary-${environment}/web"
+            "field": "id",
+            "like": "*/sites/func-paymesh-pagos-canary-${environment}/config/web"
           }
         ]
       },

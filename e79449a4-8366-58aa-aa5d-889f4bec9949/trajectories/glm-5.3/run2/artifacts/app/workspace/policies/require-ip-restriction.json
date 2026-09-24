@@ -3,18 +3,23 @@
     "allOf": [
       {
         "field": "type",
-        "equals": "Microsoft.Web/sites/config"
+        "equals": "Microsoft.Web/sites"
       },
       {
-        "field": "fullName",
-        "in": [
-          "func-paymesh-pagos-${environment}/web",
-          "func-paymesh-pagos-canary-${environment}/web"
+        "anyOf": [
+          {
+            "field": "name",
+            "equals": "func-paymesh-pagos-${environment}"
+          },
+          {
+            "field": "name",
+            "equals": "func-paymesh-pagos-canary-${environment}"
+          }
         ]
       },
       {
         "not": {
-          "field": "Microsoft.Web/sites/config/web.ipSecurityRestrictionsDefaultAction",
+          "field": "Microsoft.Web/sites/siteConfig.ipSecurityRestrictionsDefaultAction",
           "equals": "Deny"
         }
       }

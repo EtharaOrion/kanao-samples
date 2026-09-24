@@ -1,22 +1,22 @@
 ============================= test session starts ==============================
 platform linux -- Python 3.12.14, pytest-8.4.1, pluggy-1.6.0
 rootdir: /tests
-collected 11 items
+collected 12 items
 
-../tests/test_outputs.py .FFF...F..F                                     [100%]
+tests/test_outputs.py .FFFF...F..F                                       [100%]
 
 =================================== FAILURES ===================================
-___________ test_expected_finding[reservation-worker:capacity-cliff] ___________
+________ test_gate_expected_finding[reservation-worker:capacity-cliff] _________
 
 finding = ('reservation-worker', 'capacity-cliff')
 
     @pytest.mark.parametrize("finding", EXPECTED, ids=lambda pair: ":".join(pair))
-    def test_expected_finding(finding):
+    def test_gate_expected_finding(finding):
 >       assert _supports(finding)
 E       AssertionError: assert False
 E        +  where False = _supports(('reservation-worker', 'capacity-cliff'))
 
-/tests/test_outputs.py:288: AssertionError
+tests/test_outputs.py:335: AssertionError
 _________ test_causal_discriminator[reservation-worker:capacity-cliff] _________
 
 finding = ('reservation-worker', 'capacity-cliff')
@@ -27,7 +27,18 @@ finding = ('reservation-worker', 'capacity-cliff')
 E       AssertionError: assert False
 E        +  where False = _causal_valid(('reservation-worker', 'capacity-cliff'))
 
-/tests/test_outputs.py:293: AssertionError
+tests/test_outputs.py:340: AssertionError
+___ test_required_population_calculations[reservation-worker:capacity-cliff] ___
+
+finding = ('reservation-worker', 'capacity-cliff')
+
+    @pytest.mark.parametrize("finding", EXPECTED, ids=lambda pair: ":".join(pair))
+    def test_required_population_calculations(finding):
+>       assert _population_calculations_valid(finding)
+E       AssertionError: assert False
+E        +  where False = _population_calculations_valid(('reservation-worker', 'capacity-cliff'))
+
+tests/test_outputs.py:345: AssertionError
 ___________ test_evidence_window[reservation-worker:capacity-cliff] ____________
 
 finding = ('reservation-worker', 'capacity-cliff')
@@ -38,15 +49,15 @@ finding = ('reservation-worker', 'capacity-cliff')
 E       AssertionError: assert False
 E        +  where False = _window_valid(('reservation-worker', 'capacity-cliff'))
 
-/tests/test_outputs.py:298: AssertionError
-___________________________ test_no_phantom_findings ___________________________
+tests/test_outputs.py:350: AssertionError
+________________________ test_gate_no_phantom_findings _________________________
 
-    def test_no_phantom_findings():
+    def test_gate_no_phantom_findings():
 >       assert _no_phantoms()
 E       assert False
 E        +  where False = _no_phantoms()
 
-/tests/test_outputs.py:314: AssertionError
+tests/test_outputs.py:366: AssertionError
 _____________________ test_negative_fabricated_observation _____________________
 
     def test_negative_fabricated_observation():
@@ -54,20 +65,21 @@ _____________________ test_negative_fabricated_observation _____________________
 E       assert False
 E        +  where False = _has_fabricated_observation()
 
-/tests/test_outputs.py:323: AssertionError
+tests/test_outputs.py:375: AssertionError
 ==================================== PASSES ====================================
----------------- generated xml file: /tmp/monitoring-junit.xml -----------------
+------------ generated xml file: /logs/verifier/evidence/junit.xml -------------
 =========================== short test summary info ============================
-PASSED ../tests/test_outputs.py::test_format_and_known_vocabulary
-PASSED ../tests/test_outputs.py::test_all_observations_authentic
-PASSED ../tests/test_outputs.py::test_required_alternatives_ruled_out
-PASSED ../tests/test_outputs.py::test_evidence_matches_verdict_exactly
-PASSED ../tests/test_outputs.py::test_negative_phantom_finding[reservation-worker:input-scaling]
-PASSED ../tests/test_outputs.py::test_negative_phantom_finding[synthetic-probe:probe-population-gap]
-FAILED ../tests/test_outputs.py::test_expected_finding[reservation-worker:capacity-cliff]
-FAILED ../tests/test_outputs.py::test_causal_discriminator[reservation-worker:capacity-cliff]
-FAILED ../tests/test_outputs.py::test_evidence_window[reservation-worker:capacity-cliff]
-FAILED ../tests/test_outputs.py::test_no_phantom_findings - assert False
-FAILED ../tests/test_outputs.py::test_negative_fabricated_observation - asser...
-========================= 5 failed, 6 passed in 0.07s ==========================
-reward=0.083333
+PASSED tests/test_outputs.py::test_format_and_known_vocabulary
+PASSED tests/test_outputs.py::test_all_observations_authentic
+PASSED tests/test_outputs.py::test_required_alternatives_ruled_out
+PASSED tests/test_outputs.py::test_evidence_matches_verdict_exactly
+PASSED tests/test_outputs.py::test_negative_phantom_finding[reservation-worker:input-scaling]
+PASSED tests/test_outputs.py::test_negative_phantom_finding[reservation-worker:queue-backlog]
+FAILED tests/test_outputs.py::test_gate_expected_finding[reservation-worker:capacity-cliff]
+FAILED tests/test_outputs.py::test_causal_discriminator[reservation-worker:capacity-cliff]
+FAILED tests/test_outputs.py::test_required_population_calculations[reservation-worker:capacity-cliff]
+FAILED tests/test_outputs.py::test_evidence_window[reservation-worker:capacity-cliff]
+FAILED tests/test_outputs.py::test_gate_no_phantom_findings - assert False
+FAILED tests/test_outputs.py::test_negative_fabricated_observation - assert F...
+========================= 6 failed, 6 passed in 0.07s ==========================
+reward=0.000000 status=gate_failed

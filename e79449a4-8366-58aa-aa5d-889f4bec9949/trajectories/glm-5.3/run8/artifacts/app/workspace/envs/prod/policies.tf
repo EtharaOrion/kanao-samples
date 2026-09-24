@@ -10,23 +10,30 @@ locals {
   # it, so what is reviewed here is what Azure evaluates.
   policy_definitions = {
     deny_public_sql = {
-      mode         = "Indexed"
+      mode         = "All"
       display_name = "PayMesh - deny Azure SQL reachable from the public network"
       description  = "Refuses an Azure SQL server whose publicNetworkAccess is anything other than Disabled, which keeps the PCI DSS assessment scope small."
       rule         = file("${path.module}/../../policies/deny-public-sql.json")
     }
 
     require_tags = {
-      mode         = "Indexed"
+      mode         = "All"
       display_name = "PayMesh - require the mandatory tags"
       description  = "Refuses a resource created without the 'environment' and 'data_classification' tags."
       rule         = file("${path.module}/../../policies/require-tags.json")
     }
 
+    require_resource_group_tags = {
+      mode         = "Indexed"
+      display_name = "PayMesh - require the mandatory tags on resource groups"
+      description  = "Refuses a resource group created without the 'environment' and 'data_classification' tags. Resource groups are where the cost allocation report, the PCI DSS scoping inventory and the on-call escalation map all start, so the tags are required at creation, not added afterwards by a clean-up script: a group that arrives without them is refused in the control plane before any resource can be placed in it."
+      rule         = file("${path.module}/../../policies/require-resource-group-tags.json")
+    }
+
     require_tls_version = {
-      mode         = "All"
+      mode         = "Indexed"
       display_name = "PayMesh - require TLS 1.2 on every site in this environment"
-      description  = "Refuses a site in this environment that will still negotiate an obsolete TLS version."
+      description  = "Refuses a site configuration in this environment that will still negotiate an obsolete TLS version."
       rule         = templatefile("${path.module}/../../policies/require-tls-version.json", { environment = var.environment })
     }
 
@@ -67,6 +74,7 @@ locals {
   assigned_policies = [
     "deny_public_sql",
     "require_tags",
+    "require_resource_group_tags",
     "require_tls_version",
     "require_https_only",
     "require_ip_restriction",

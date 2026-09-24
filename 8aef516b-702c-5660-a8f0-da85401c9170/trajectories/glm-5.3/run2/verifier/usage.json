@@ -1,38 +1,20 @@
 {
-  "input_tokens": 974955,
-  "output_tokens": 68277,
-  "cache_read_tokens": 864832,
-  "cache_write_tokens": 60736,
-  "cost_usd": 0.920521,
+  "input_tokens": 1643170,
+  "output_tokens": 29864,
+  "cache_read_tokens": 1592384,
+  "cache_write_tokens": 49344,
+  "cost_usd": 0.702874,
   "sources": {
     "agent": {
-      "input_tokens": 919879,
-      "output_tokens": 64010,
-      "cache_read_tokens": 858304,
-      "cache_write_tokens": 60736,
-      "cost_usd": 0.612266
-    },
-    "judge": {
-      "input_tokens": 55076,
-      "output_tokens": 4267,
-      "cache_read_tokens": 6528,
-      "cache_write_tokens": 0,
-      "request_count": 1,
-      "cost_usd": 0.308255,
-      "per_member": {
-        "primary": {
-          "model": "gpt-5.6-sol",
-          "input_tokens": 55076,
-          "output_tokens": 4267,
-          "cache_read_tokens": 6528,
-          "cache_write_tokens": 0,
-          "request_count": 1,
-          "cost_usd": 0.308255
-        }
-      }
+      "input_tokens": 1643170,
+      "output_tokens": 29864,
+      "cache_read_tokens": 1592384,
+      "cache_write_tokens": 49344,
+      "cost_usd": 0.702874
     }
   },
   "notes": [
-    "agent.input_tokens includes its cache_read_tokens (harbor reports one combined prompt figure); agent.cache_write_tokens comes from harbor n_cache_creation_tokens and is 0 on runs recorded before that field existed"
+    "agent.input_tokens includes its cache_read_tokens (harbor reports one combined prompt figure); agent.cache_write_tokens is 0 because harbor does not split the write side",
+    "agent.cost_usd is estimated from tokens at list rates because the runner reported no dollar cost; non-cached input = input_tokens - cache_read_tokens is billed at the full rate and cache_read_tokens at the model's cached-input rate"
   ]
 }

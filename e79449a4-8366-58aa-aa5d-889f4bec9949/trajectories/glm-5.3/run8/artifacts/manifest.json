@@ -1,138 +1,47 @@
 [
   {
-    "source": "/app/workspace/envs/prod/policies.tf",
-    "destination": "artifacts/app/workspace/envs/prod/policies.tf",
-    "type": "file",
+    "source": "/app/workspace/envs/prod",
+    "destination": "artifacts/app/workspace/envs/prod",
+    "type": "directory",
     "status": "ok",
     "service": null,
+    "exclude": [],
     "collected": true
   },
   {
-    "source": "/app/workspace/envs/prod/main.tf",
-    "destination": "artifacts/app/workspace/envs/prod/main.tf",
-    "type": "file",
+    "source": "/app/workspace/policies",
+    "destination": "artifacts/app/workspace/policies",
+    "type": "directory",
     "status": "ok",
     "service": null,
+    "exclude": [],
     "collected": true
   },
   {
-    "source": "/app/workspace/envs/prod/variables.tf",
-    "destination": "artifacts/app/workspace/envs/prod/variables.tf",
-    "type": "file",
+    "source": "/app/workspace/modules",
+    "destination": "artifacts/app/workspace/modules",
+    "type": "directory",
     "status": "ok",
     "service": null,
+    "exclude": [],
     "collected": true
   },
   {
-    "source": "/app/workspace/envs/prod/versions.tf",
-    "destination": "artifacts/app/workspace/envs/prod/versions.tf",
-    "type": "file",
+    "source": "/app/workspace/docs",
+    "destination": "artifacts/app/workspace/docs",
+    "type": "directory",
     "status": "ok",
     "service": null,
+    "exclude": [],
     "collected": true
   },
   {
-    "source": "/app/workspace/envs/prod/outputs.tf",
-    "destination": "artifacts/app/workspace/envs/prod/outputs.tf",
-    "type": "file",
+    "source": "/app/workspace/.github",
+    "destination": "artifacts/app/workspace/.github",
+    "type": "directory",
     "status": "ok",
     "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/envs/prod/prod.tfvars",
-    "destination": "artifacts/app/workspace/envs/prod/prod.tfvars",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/policies/require-ip-restriction.json",
-    "destination": "artifacts/app/workspace/policies/require-ip-restriction.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/policies/deny-public-sql.json",
-    "destination": "artifacts/app/workspace/policies/deny-public-sql.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/policies/require-tags.json",
-    "destination": "artifacts/app/workspace/policies/require-tags.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/modules/compute-serverless/main.tf",
-    "destination": "artifacts/app/workspace/modules/compute-serverless/main.tf",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/modules/networking/main.tf",
-    "destination": "artifacts/app/workspace/modules/networking/main.tf",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/modules/data-sql/main.tf",
-    "destination": "artifacts/app/workspace/modules/data-sql/main.tf",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/policies/require-https-only.json",
-    "destination": "artifacts/app/workspace/policies/require-https-only.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/policies/require-tls-version.json",
-    "destination": "artifacts/app/workspace/policies/require-tls-version.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/.github/workflows/terraform-ci.yml",
-    "destination": "artifacts/app/workspace/.github/workflows/terraform-ci.yml",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/policies/require-slot-ip-restriction.json",
-    "destination": "artifacts/app/workspace/policies/require-slot-ip-restriction.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "collected": true
-  },
-  {
-    "source": "/app/workspace/docs/POLICY-AS-CODE-STANDARD.md",
-    "destination": "artifacts/app/workspace/docs/POLICY-AS-CODE-STANDARD.md",
-    "type": "file",
-    "status": "ok",
-    "service": null,
+    "exclude": [],
     "collected": true
   }
 ]

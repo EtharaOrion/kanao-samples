@@ -6,10 +6,15 @@
         "equals": "Microsoft.Web/sites/config"
       },
       {
-        "field": "name",
-        "in": [
-          "func-paymesh-pagos-${environment}/web",
-          "func-paymesh-pagos-canary-${environment}/web"
+        "anyOf": [
+          {
+            "field": "name",
+            "equals": "func-paymesh-pagos-${environment}/web"
+          },
+          {
+            "field": "name",
+            "equals": "func-paymesh-pagos-canary-${environment}/web"
+          }
         ]
       },
       {

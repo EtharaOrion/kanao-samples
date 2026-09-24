@@ -1,0 +1,25 @@
+{
+  "if": {
+    "allOf": [
+      {
+        "field": "type",
+        "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+      },
+      {
+        "anyOf": [
+          {
+            "field": "tags['environment']",
+            "exists": "false"
+          },
+          {
+            "field": "tags['data_classification']",
+            "exists": "false"
+          }
+        ]
+      }
+    ]
+  },
+  "then": {
+    "effect": "Deny"
+  }
+}

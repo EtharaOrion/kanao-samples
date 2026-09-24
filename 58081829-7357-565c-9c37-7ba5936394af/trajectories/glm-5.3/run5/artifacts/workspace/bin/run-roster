@@ -1,0 +1,6 @@
+#!/bin/bash
+# The bureau's crew roster run. Builds one duty sheet per crew member the
+# register declares and releases each base's sheets into its own drop.
+set -u
+/usr/local/bin/policy-apply || exit $?
+exec marrowfleet build

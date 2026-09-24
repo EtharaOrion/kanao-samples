@@ -6,12 +6,12 @@
         "equals": "Microsoft.Web/sites/config"
       },
       {
-        "field": "id",
-        "like": "*-${environment}/config/web"
+        "field": "fullName",
+        "like": "*-${environment}/web"
       },
       {
         "not": {
-          "field": "Microsoft.Web/sites/config/web.minTlsVersion",
+          "field": "Microsoft.Web/sites/config/minTlsVersion",
           "equals": "1.2"
         }
       }

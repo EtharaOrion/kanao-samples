@@ -38,9 +38,13 @@ jobs:
       # is read offline. The review job renders it once for this environment
       # and once at a second binding, and compares the two.
       - name: render the policy catalogue
+        timeout-minutes: 10
         run: |
+          set -euo pipefail
           EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
           echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt
+          # -var has to follow -var-file: command line values are applied in the
+          # order given, so the second binding is only a second binding here.
           echo "$EXPR" | terraform console -var-file=prod.tfvars -var environment=dev > /tmp/catalogue-dev.txt
 
       # The reviewer itself lives in the platform org, not in this repository,

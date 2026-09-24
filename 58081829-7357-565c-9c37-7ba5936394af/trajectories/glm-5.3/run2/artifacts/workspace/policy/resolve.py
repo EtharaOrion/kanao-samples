@@ -1,211 +1,232 @@
-"""Resolve the signed authorization snapshot for the roster release.
+"""Resolve the current signed authorization snapshot.
 
-The adapter validates a candidate completely before returning a projection.  It
-never uses host time and never edits the protected authorization feed.
+Implements docs/policy-reconciliation.md: a request carries either an events
+list or a segmented transport (with or without a named generation). The
+complete history is validated before anything is projected; any fault raises
+ResolveError, which the CLI turns into a nonzero exit with no partial result.
 """
-
-import datetime as _datetime
+import hashlib
 import json
-import re
+import os
 import sys
 
-
-_EVENT_KEYS = frozenset({
-    "authorization", "revision", "subject", "operation", "start", "end",
-    "parameters",
-})
-_COMMIT_KEYS = frozenset({"batch", "parts", "sha256"})
-_PAGE_KEYS = frozenset({"batch", "part", "events"})
-_DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
-_REVISION_RE = re.compile(r"(?:0|[1-9][0-9]*)\Z")
-_SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+EVENT_KEYS = {"authorization", "revision", "subject", "operation", "start", "end", "parameters"}
+OPERATIONS = {"grant", "withdraw"}
+MANIFEST_PATH = os.environ.get("MARROWFLEET_POLICY_MANIFESTS", "/workspace/policy/manifests.json")
 
 
-class ResolutionError(ValueError):
-    """A candidate history or request is invalid."""
+class ResolveError(Exception):
+    pass
 
 
-def _is_int(value):
-    return isinstance(value, int) and not isinstance(value, bool)
+def _nonempty_str(value):
+    return isinstance(value, str) and value != ""
 
 
-def _identifier(value, what):
-    if not isinstance(value, str) or not value:
-        raise ResolutionError("%s must be a nonempty string" % what)
+def _revision(value):
+    """A canonical nonnegative decimal string: no leading zeros, no sign."""
+    if not isinstance(value, str) or not value.isdigit():
+        return None
+    if len(value) > 1 and value[0] == "0":
+        return None
+    return int(value)
 
 
-def _date(value, what):
-    if not isinstance(value, str) or not _DATE_RE.fullmatch(value):
-        raise ResolutionError("%s must be an ISO YYYY-MM-DD date" % what)
-    try:
-        _datetime.date.fromisoformat(value)
-    except ValueError:
-        raise ResolutionError("%s is not a valid calendar date" % what) from None
+def _date(value):
+    if not isinstance(value, str) or len(value) != 10 or value[4] != "-" or value[7] != "-":
+        return None
+    year, month, day = value[:4], value[5:7], value[8:10]
+    if not (year.isdigit() and month.isdigit() and day.isdigit()):
+        return None
+    month, day = int(month), int(day)
+    if not (1 <= month <= 12 and 1 <= day <= 31):
+        return None
+    return value
 
 
-def _revision_key(value):
-    # Canonical decimal strings can be compared without conversion and without
-    # imposing Python's int-to-str digit limit on signed delivery histories.
-    return len(value), value
-
-
-def _validate_event(event):
-    if not isinstance(event, dict) or frozenset(event) != _EVENT_KEYS:
-        raise ResolutionError("event keys are invalid")
-    _identifier(event["authorization"], "authorization")
-    _identifier(event["subject"], "subject")
-    revision = event["revision"]
-    if not isinstance(revision, str) or not _REVISION_RE.fullmatch(revision):
-        raise ResolutionError("revision must be a canonical nonnegative decimal string")
-    if event["operation"] not in ("grant", "withdraw"):
-        raise ResolutionError("operation must be grant or withdraw")
-    parameters = event["parameters"]
-    if not isinstance(parameters, list) or not all(
-            isinstance(item, str) for item in parameters):
-        raise ResolutionError("parameters must be a list of strings")
-    _date(event["start"], "start")
-    _date(event["end"], "end")
-    if event["start"] >= event["end"]:
-        raise ResolutionError("start must be before end")
-
-
-def _transport_events(transport):
-    """Validate segmented delivery and return its complete event history."""
-    if not isinstance(transport, dict) or frozenset(transport) != {
-            "commits", "pages"}:
-        raise ResolutionError("transport must contain commits and pages")
-    commits = transport["commits"]
-    pages = transport["pages"]
-    if not isinstance(commits, list) or not isinstance(pages, list):
-        raise ResolutionError("transport commits and pages must be arrays")
+def _history(request):
+    """Yield the complete authorization history, fully validated."""
+    if "transport" in request:
+        source = request["transport"]
+        if "events" in request:
+            raise ResolveError("request carries both events and a transport")
+    else:
+        source = request.get("events")
+    if isinstance(source, list):
+        for event in source:
+            if not isinstance(event, dict):
+                raise ResolveError("event is not an object")
+            yield event
+        return
+    if not isinstance(source, dict):
+        raise ResolveError("request events is neither a list nor a transport")
+    transport = source
+    generation = transport.get("generation")
+    commits = transport.get("commits")
+    pages = transport.get("pages")
+    if generation is not None and not _nonempty_str(generation):
+        raise ResolveError("transport generation is not a nonempty string")
+    if not isinstance(commits, list) or not commits:
+        raise ResolveError("transport commits is not a nonempty list")
+    if not isinstance(pages, list):
+        raise ResolveError("transport pages is not a list")
 
     committed = {}
     for commit in commits:
-        if not isinstance(commit, dict) or frozenset(commit) != _COMMIT_KEYS:
-            raise ResolutionError("commit keys are invalid")
-        _identifier(commit["batch"], "batch")
-        if not _is_int(commit["parts"]) or commit["parts"] < 1:
-            raise ResolutionError("commit parts must be a positive integer")
-        digest = commit["sha256"]
-        if not isinstance(digest, str) or not _SHA256_RE.fullmatch(digest):
-            raise ResolutionError("commit sha256 must be a lowercase hexadecimal digest")
-        old = committed.get(commit["batch"])
-        if old is not None and old != commit:
-            raise ResolutionError("conflicting replay of committed batch %s" % commit["batch"])
-        committed[commit["batch"]] = commit
+        if not isinstance(commit, dict):
+            raise ResolveError("commit is not an object")
+        if set(commit) != {"batch", "parts", "sha256"}:
+            raise ResolveError("commit keys are not exactly batch, parts, sha256")
+        batch, parts, digest = commit["batch"], commit["parts"], commit["sha256"]
+        if not _nonempty_str(batch):
+            raise ResolveError("commit batch is not a nonempty string")
+        if not isinstance(parts, int) or isinstance(parts, bool) or parts < 1:
+            raise ResolveError("commit parts is not a positive integer")
+        if not _nonempty_str(digest) or len(digest) != 64 or digest.strip("0123456789abcdef") != "":
+            raise ResolveError("commit sha256 is not a digest")
+        if batch in committed:
+            if committed[batch] != (parts, digest):
+                raise ResolveError("conflicting replay of commit for batch %r" % batch)
+        else:
+            committed[batch] = (parts, digest)
 
-    delivered = {}
+    assembled = {}
+    seen_pages = set()
     for page in pages:
-        if not isinstance(page, dict) or frozenset(page) != _PAGE_KEYS:
-            raise ResolutionError("page keys are invalid")
-        _identifier(page["batch"], "batch")
-        if not _is_int(page["part"]) or page["part"] < 0:
-            raise ResolutionError("page part must be a zero-based integer")
-        if not isinstance(page["events"], list):
-            raise ResolutionError("page events must be an array")
-        key = (page["batch"], page["part"])
-        old = delivered.get(key)
-        if old is not None and old != page:
-            raise ResolutionError("conflicting replay of page %s part %d" % key)
-        delivered[key] = page
+        if not isinstance(page, dict):
+            raise ResolveError("page is not an object")
+        if set(page) != {"batch", "part", "events"}:
+            raise ResolveError("page keys are not exactly batch, part, events")
+        batch, part = page["batch"], page["part"]
+        if not _nonempty_str(batch):
+            raise ResolveError("page batch is not a nonempty string")
+        if not isinstance(part, int) or isinstance(part, bool) or part < 0:
+            raise ResolveError("page part is not a zero-based integer")
+        page_events = page["events"]
+        if not isinstance(page_events, list):
+            raise ResolveError("page events is not a list")
+        key = (batch, part)
+        if key in seen_pages:
+            if assembled[batch][part] != page_events:
+                raise ResolveError("conflicting replay of page %r part %d" % (batch, part))
+            continue
+        seen_pages.add(key)
+        assembled.setdefault(batch, {})[part] = page_events
 
-    history = []
-    for batch, commit in committed.items():
-        # Each commit is a delta: its digest covers only its own ordered parts.
-        events = []
-        selected = []
-        for part in range(commit["parts"]):
-            page = delivered.pop((batch, part), None)
-            if page is None:
-                raise ResolutionError(
-                    "committed batch %s is missing part %d" % (batch, part))
-            selected.append(page)
-        for page in selected:
-            events.extend(page["events"])
-        encoded = json.dumps(
-            events, sort_keys=True, separators=(",", ":"),
-            ensure_ascii=False,
-        ).encode("utf-8")
-        import hashlib
-        if hashlib.sha256(encoded).hexdigest() != commit["sha256"]:
-            raise ResolutionError("committed batch %s has a mismatching digest" % batch)
-        history.extend(events)
+    if generation is not None:
+        with open(MANIFEST_PATH, encoding="utf-8") as handle:
+            manifests = json.load(handle)
+        generations = manifests.get("generations") if isinstance(manifests, dict) else None
+        if not isinstance(generations, dict):
+            raise ResolveError("manifests file is not a generation record")
+        listed = generations.get(generation)
+        if not isinstance(listed, dict) or not isinstance(listed.get("batches"), dict):
+            raise ResolveError("generation %r is not named by the manifest" % generation)
+        for batch, digest in listed["batches"].items():
+            if batch not in committed:
+                raise ResolveError("generation %r lists batch %r the transport does not commit"
+                                   % (generation, batch))
+            if committed[batch][1] != digest:
+                raise ResolveError("batch %r commits a digest the manifest does not list for it"
+                                   % batch)
+        for batch in committed:
+            if batch not in listed["batches"]:
+                raise ResolveError("transport commits batch %r the manifest of generation %r "
+                                   "does not list" % (batch, generation))
 
-    if delivered:
-        batch, part = sorted(delivered, key=lambda item: (item[0], item[1]))[0]
-        raise ResolutionError("uncommitted page %s part %d" % (batch, part))
-    return history
+    for batch in committed:
+        parts, digest = committed[batch]
+        pages_of = assembled.get(batch, {})
+        if set(pages_of) != set(range(parts)):
+            raise ResolveError("batch %r is committed at %d parts but pages %r arrived"
+                               % (batch, parts, sorted(pages_of)))
+        events_of = [event for part in range(parts) for event in pages_of[part]]
+        payload = json.dumps(events_of, sort_keys=True, separators=(",", ":"),
+                             ensure_ascii=False).encode("utf-8")
+        if hashlib.sha256(payload).hexdigest() != digest:
+            raise ResolveError("batch %r does not assemble at the digest it commits" % batch)
+    for batch in set(assembled) - set(committed):
+        raise ResolveError("batch %r arrived uncommitted" % batch)
+
+    for batch in sorted(committed):
+        parts = committed[batch][0]
+        pages_of = assembled[batch]
+        for part in range(parts):
+            for event in pages_of[part]:
+                if not isinstance(event, dict):
+                    raise ResolveError("event is not an object")
+                yield event
+
+
+def _validated(events):
+    for event in events:
+        if set(event) != EVENT_KEYS:
+            raise ResolveError("event keys are not exactly the event keys")
+        if not _nonempty_str(event["authorization"]):
+            raise ResolveError("event authorization is not a nonempty string")
+        if not _nonempty_str(event["subject"]):
+            raise ResolveError("event subject is not a nonempty string")
+        if _revision(event["revision"]) is None:
+            raise ResolveError("event revision %r is not a canonical nonnegative decimal"
+                               % (event["revision"],))
+        if event["operation"] not in OPERATIONS:
+            raise ResolveError("event operation %r is neither grant nor withdraw"
+                               % (event["operation"],))
+        parameters = event["parameters"]
+        if not isinstance(parameters, list) or not all(_nonempty_str(p) for p in parameters):
+            raise ResolveError("event parameters is not a list of nonempty strings")
+        start, end = _date(event["start"]), _date(event["end"])
+        if start is None or end is None or not start < end:
+            raise ResolveError("event interval %r..%r is not ISO with start before end"
+                               % (event["start"], event["end"]))
+        yield event
 
 
 def resolve(request):
-    """Return the approved parameter projection for a validated request."""
     if not isinstance(request, dict):
-        raise ResolutionError("request must be an object")
-    if "transport" in request and "events" in request:
-        raise ResolutionError("request cannot carry both events and transport")
-
+        raise ResolveError("request is not an object")
     now = request.get("now")
-    _date(now, "now")
+    if _date(now) is None:
+        raise ResolveError("request now is not an ISO date")
     subjects = request.get("subjects")
-    if not isinstance(subjects, list):
-        raise ResolutionError("subjects must be an array")
-    for subject in subjects:
-        _identifier(subject, "subject")
-    if len(set(subjects)) != len(subjects):
-        raise ResolutionError("subjects must not be repeated")
+    if not isinstance(subjects, list) or not all(_nonempty_str(s) for s in subjects):
+        raise ResolveError("request subjects is not a list of nonempty strings")
 
-    if "transport" in request:
-        events = _transport_events(request["transport"])
-    else:
-        events = request.get("events")
-        if not isinstance(events, list):
-            raise ResolutionError("events must be an array")
-
-    # Validate every delivered record before resolving or projecting any of it.
-    for event in events:
-        _validate_event(event)
-
-    # A revision belongs to its authorization.  Repeated identical records are
-    # idempotent; equal revisions differing in any field invalidate history.
-    winners = {}
     revisions = {}
-    for event in events:
+    winners = {}
+    known_subjects = set()
+    for event in _validated(_history(request)):
         authorization = event["authorization"]
-        revision = event["revision"]
-        identities = revisions.setdefault(authorization, {})
-        previous = identities.get(revision)
-        if previous is not None and previous != event:
-            raise ResolutionError(
-                "conflicting revision %s for authorization %s"
-                % (revision, authorization))
-        identities[revision] = event
-        old = winners.get(authorization)
-        if old is None or _revision_key(revision) > _revision_key(old["revision"]):
-            winners[authorization] = event
+        revision = _revision(event["revision"])
+        known_subjects.add(event["subject"])
+        seen = revisions.get((authorization, revision))
+        if seen is None:
+            revisions[(authorization, revision)] = event
+        elif seen != event:
+            raise ResolveError("conflicting equal revisions for %r at %d"
+                               % (authorization, revision))
+        current = winners.get(authorization)
+        if current is None or revision > current[0]:
+            winners[authorization] = (revision, event)
 
     active = {}
-    for authorization, event in sorted(winners.items()):
-        if event["operation"] != "grant":
+    for _revision_value, event in winners.values():
+        if event["operation"] == "withdraw":
             continue
         if not (event["start"] <= now < event["end"]):
             continue
         subject = event["subject"]
         if subject in active:
-            raise ResolutionError(
-                "subject %s has multiple active authorizations" % subject)
-        active[subject] = event
+            raise ResolveError("multiple active authorizations for subject %r" % subject)
+        active[subject] = event["parameters"]
 
-    return {
-        subject: active[subject]["parameters"] if subject in active else None
-        for subject in subjects
-    }
+    return {subject: active.get(subject) for subject in subjects if subject in known_subjects}
 
 
 if __name__ == "__main__":
     try:
-        request = json.load(sys.stdin)
-        result = resolve(request)
-    except (ResolutionError, ValueError, TypeError, KeyError) as exc:
-        sys.stderr.write("policy resolver: %s\n" % exc)
-        raise SystemExit(2)
-    print(json.dumps(result, sort_keys=True, ensure_ascii=False))
+        resolved = resolve(json.load(sys.stdin))
+    except (ResolveError, ValueError, OSError, KeyError, TypeError) as fault:
+        sys.stderr.write("resolve: %s\n" % fault)
+        sys.exit(1)
+    print(json.dumps(resolved, sort_keys=True))

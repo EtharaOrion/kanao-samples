@@ -2,12 +2,32 @@
   "if": {
     "allOf": [
       {
-        "field": "type",
-        "equals": "Microsoft.Web/sites/config"
-      },
-      {
-        "field": "id",
-        "like": "*-${environment}/config/web"
+        "anyOf": [
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Web/sites"
+              },
+              {
+                "field": "name",
+                "like": "*-${environment}"
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Web/sites/config"
+              },
+              {
+                "field": "name",
+                "like": "*-${environment}/web"
+              }
+            ]
+          }
+        ]
       },
       {
         "not": {

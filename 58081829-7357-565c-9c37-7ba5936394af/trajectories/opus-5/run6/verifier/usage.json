@@ -1,35 +1,16 @@
 {
-  "input_tokens": 13959092,
-  "output_tokens": 249878,
-  "cache_read_tokens": 13400805,
-  "cache_write_tokens": 0,
-  "cost_usd": 16.320023,
+  "input_tokens": 4887866,
+  "output_tokens": 79139,
+  "cache_read_tokens": 4769799,
+  "cache_write_tokens": 117933,
+  "cost_usd": 5.101126,
   "sources": {
     "agent": {
-      "input_tokens": 13876389,
-      "output_tokens": 247458,
-      "cache_read_tokens": 13387493,
-      "cache_write_tokens": 0,
-      "cost_usd": 15.935486499999996
-    },
-    "judge": {
-      "input_tokens": 82703,
-      "output_tokens": 2420,
-      "cache_read_tokens": 13312,
-      "cache_write_tokens": 0,
-      "request_count": 1,
-      "cost_usd": 0.384537,
-      "per_member": {
-        "primary": {
-          "model": "gpt-5.6-sol",
-          "input_tokens": 82703,
-          "output_tokens": 2420,
-          "cache_read_tokens": 13312,
-          "cache_write_tokens": 0,
-          "request_count": 1,
-          "cost_usd": 0.384537
-        }
-      }
+      "input_tokens": 4887866,
+      "output_tokens": 79139,
+      "cache_read_tokens": 4769799,
+      "cache_write_tokens": 117933,
+      "cost_usd": 5.101125749999998
     }
   },
   "notes": [

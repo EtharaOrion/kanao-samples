@@ -1,24 +1,31 @@
-schema_version = "1.1"
+schema_version = "1.4"
 artifacts = [
     "/var/lib/marrowfleet/policy-selection.json",
     "/workspace/policy",
     "/workspace/rostering",
+    "/workspace/tools",
+    "/workspace/docs",
     "/srv/bases",
     "/var/lib/marrowfleet/roster.register",
+    "/var/lib/marrowfleet/roster.store",
+    "/workspace/bin/run-roster",
+    "/usr/local/bin/policy-apply",
+    "/etc/marrowfleet/keys",
 ]
 
 [task]
 uuid_v5 = "58081829-7357-565c-9c37-7ba5936394af"
 authors = [
-    "ayush.teotiaint17@ethara.ai" ,
-    "tejaswa.dayal@ethara.ai"
+    { name = "Ayush Teotia", email = "ayush.teotiaint17@ethara.ai" },
+    { name = "Tejaswa Dayal", email = "tejaswa.dayal@ethara.ai" },
+    { name = "Riya Jha", email = "riya.jha@ethara.ai" },
 ]
 name = "kanao/ci_repair__marrowfleet-crew-roster"
-description = "Repair a crew-rostering release pipeline so every base closes the period with complete duty sheets, crewable ranks and correct duty credit under the operating and validation contracts."
+description = "Bring a crew-rostering release pipeline so every base closes the period with complete duty sheets, crewable ranks and correct duty credit under the operating and validation contracts."
 keywords = ["deployment", "ci", "release", "crew-rostering", "lang:go"]
 
 [metadata]
-difficulty = "medium"
+difficulty = "easy"
 category = "deployment"
 tags = ["deployment", "ci", "release-pipeline", "crew-rostering"]
 calibrated = false
@@ -30,10 +37,16 @@ junior_time_estimate_min = 180.0
 timeout_sec = 900.0
 environment_mode = "separate"
 
+[verifier.environment]
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:58081829-marrowfleet-crew-roster-verifier@sha256:3150bccb4586e2825a851a579e5b7c3c67a5b2db394c905a267961f348b30bb7"
+
 [agent]
 timeout_sec = 5400.0
 
 [environment]
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:58081829-marrowfleet-crew-roster-env@sha256:70a05e7ad77352f167e0dc8bd96ebc5fe599171ea0baff71ce116c04a325874e"
 build_timeout_sec = 1800.0
-allow_internet = true
+network_mode = "public"
+cpus = 2
+memory_mb = 4096
 mcp_servers = []

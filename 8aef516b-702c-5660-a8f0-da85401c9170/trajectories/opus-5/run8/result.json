@@ -1,8 +1,8 @@
 {
-    "id": "8aef516b-702c-5660-a8f0-da85401c9170",
-    "started_at": "2026-09-05T23:53:09.032854",
-    "updated_at": "2026-09-06T00:04:17.178339",
-    "finished_at": "2026-09-06T00:04:17.178339",
+    "id": "5568cc5c-c387-416d-b7a2-fc4a86ccb307",
+    "started_at": "2026-09-24T01:40:02.422221",
+    "updated_at": "2026-09-24T01:48:11.302980",
+    "finished_at": "2026-09-24T01:48:11.302980",
     "n_total_trials": 1,
     "stats": {
         "n_completed_trials": 1,
@@ -12,40 +12,47 @@
         "n_cancelled_trials": 0,
         "n_retries": 0,
         "evals": {
-            "terminus-2__opus-5__adhoc": {
+            "openhands-sdk__opus-5__adhoc": {
                 "n_trials": 1,
                 "n_errors": 0,
                 "metrics": [
                     {
-                        "earned": 2.0,
-                        "positive_total": 24.0,
-                        "reward": 0.08333333333333333
+                        "available": 27.0,
+                        "earned": 8.0,
+                        "penalty": 3.0,
+                        "reward": 0.0
                     }
                 ],
                 "pass_at_k": {},
                 "reward_stats": {
                     "reward": {
-                        "0.08333333333333333": [
-                            "8aef516b-702c-5660-a8f0-da85401c9170__4nmfKvG"
-                        ]
-                    },
-                    "positive_total": {
-                        "24": [
-                            "8aef516b-702c-5660-a8f0-da85401c9170__4nmfKvG"
+                        "0.0": [
+                            "8aef516b-702c-5660-a8f0-da85401c__t7E5eGz"
                         ]
                     },
                     "earned": {
-                        "2": [
-                            "8aef516b-702c-5660-a8f0-da85401c9170__4nmfKvG"
+                        "8": [
+                            "8aef516b-702c-5660-a8f0-da85401c__t7E5eGz"
+                        ]
+                    },
+                    "penalty": {
+                        "3": [
+                            "8aef516b-702c-5660-a8f0-da85401c__t7E5eGz"
+                        ]
+                    },
+                    "available": {
+                        "27": [
+                            "8aef516b-702c-5660-a8f0-da85401c__t7E5eGz"
                         ]
                     }
                 },
                 "exception_stats": {}
             }
         },
-        "n_input_tokens": 531620,
-        "n_cache_tokens": 476915,
-        "n_output_tokens": 30106,
-        "cost_usd": 1.33295625
+        "n_input_tokens": 816369,
+        "n_cache_tokens": 755376,
+        "n_cache_creation_tokens": 60947,
+        "n_output_tokens": 24577,
+        "cost_usd": 1.37326175
     }
 }

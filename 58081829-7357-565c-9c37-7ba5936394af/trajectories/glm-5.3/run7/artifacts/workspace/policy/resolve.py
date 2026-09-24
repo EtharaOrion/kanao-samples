@@ -1,240 +1,284 @@
 """Resolve the current signed authorization snapshot.
 
-The request is either an events-only history or a segmented delivery.  All
-validation is completed before any projection is attempted, so a malformed
-candidate can never produce a partial decision.
+Implements the signed authorization reconciliation contract in
+docs/policy-reconciliation.md: complete validation of the delivery
+envelope and of every event in the history before any projection, then
+revision supersede/withdraw resolution keyed on the authorization, not
+the subject. Invalid input raises InvalidHistory; the CLI exits nonzero
+and prints no partial result.
 """
 import datetime
 import hashlib
 import json
-import re
+import os
 import sys
 
-EVENT_KEYS = {
-    "authorization", "revision", "subject", "operation", "start", "end",
-    "parameters",
-}
-COMMIT_KEYS = {"batch", "parts", "sha256"}
-PAGE_KEYS = {"batch", "part", "events"}
-DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
-SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+EVENT_KEYS = {"authorization", "revision", "subject", "operation",
+              "start", "end", "parameters"}
+OPERATIONS = {"grant", "withdraw"}
+DEFAULT_MANIFESTS = "/workspace/policy/manifests.json"
 
 
-class InvalidRequest(ValueError):
-    """The authorization request violates the delivery contract."""
+class InvalidHistory(Exception):
+    pass
 
 
-def _exact_int(value, name, minimum=None):
-    if type(value) is not int:
-        raise InvalidRequest("%s must be an integer" % name)
-    if minimum is not None and value < minimum:
-        raise InvalidRequest("%s must be at least %d" % (name, minimum))
-    return value
+def _bad(message):
+    raise InvalidHistory(message)
 
 
-def _identifier(value, name):
-    if not isinstance(value, str) or not value:
-        raise InvalidRequest("%s must be a nonempty string" % name)
-    return value
+def _is_nonempty_str(value):
+    return isinstance(value, str) and value != ""
 
 
-def _date(value, name):
-    if not isinstance(value, str) or not DATE_RE.fullmatch(value):
-        raise InvalidRequest("%s must be an ISO YYYY-MM-DD date" % name)
+def _is_canonical_revision(value):
+    if not isinstance(value, str) or not value.isdigit():
+        return False
+    return value == "0" or not value.startswith("0")
+
+
+def _is_date(value):
+    if not isinstance(value, str):
+        return False
     try:
-        return datetime.date.fromisoformat(value)
-    except ValueError as exc:
-        raise InvalidRequest("%s is not a valid date" % name) from exc
+        datetime.date.fromisoformat(value)
+    except ValueError:
+        return False
+    return True
 
 
-def _revision(value):
-    if not isinstance(value, str) or not value.isdecimal():
-        raise InvalidRequest("revision must be a nonnegative decimal string")
-    # isdecimal accepts non-ASCII digits, so restrict to the intended alphabet.
-    if not re.fullmatch(r"[0-9]+", value):
-        raise InvalidRequest("revision must use ASCII decimal digits")
-    if len(value) > 1 and value.startswith("0"):
-        raise InvalidRequest("revision has a leading zero")
-    return value
-
-
-def _revision_key(value):
-    # Canonical decimals can be compared safely without converting arbitrarily
-    # long numbers to machine integers.
-    return (len(value), value)
-
-
-def _validate_event(event):
-    if not isinstance(event, dict) or set(event) != EVENT_KEYS:
-        raise InvalidRequest("each event must have exactly the event keys")
-    _identifier(event["authorization"], "authorization")
-    _revision(event["revision"])
-    _identifier(event["subject"], "subject")
-    if event["operation"] not in ("grant", "withdraw"):
-        raise InvalidRequest("operation must be grant or withdraw")
+def _check_event(event, where):
+    if not isinstance(event, dict):
+        _bad("event is not an object at %s" % where)
+    if set(event) != EVENT_KEYS:
+        _bad("event keys are not exactly the contract keys at %s" % where)
+    for field in ("authorization", "revision", "subject", "operation",
+                  "start", "end"):
+        if not _is_nonempty_str(event[field]):
+            _bad("%s is not a nonempty string at %s" % (field, where))
+    if not _is_canonical_revision(event["revision"]):
+        _bad("revision is not a canonical nonnegative decimal at %s" % where)
+    if event["operation"] not in OPERATIONS:
+        _bad("operation is not grant or withdraw at %s" % where)
+    if not _is_date(event["start"]) or not _is_date(event["end"]):
+        _bad("start and end must be ISO dates at %s" % where)
+    if not (event["start"] < event["end"]):
+        _bad("start is not strictly before end at %s" % where)
     parameters = event["parameters"]
     if not isinstance(parameters, list) or not all(
-            isinstance(item, str) for item in parameters):
-        raise InvalidRequest("parameters must be a list of strings")
-    start = _date(event["start"], "start")
-    end = _date(event["end"], "end")
-    if start >= end:
-        raise InvalidRequest("start must be strictly before end")
+            _is_nonempty_str(p) for p in parameters):
+        _bad("parameters is not a list of nonempty strings at %s" % where)
 
 
-def _events_only(request):
-    if "events" not in request:
-        raise InvalidRequest("request must carry events or transport")
-    events = request["events"]
+def _check_commit(commit, where):
+    if not isinstance(commit, dict):
+        _bad("commit is not an object at %s" % where)
+    if set(commit) != {"batch", "parts", "sha256"}:
+        _bad("commit keys are not exactly the contract keys at %s" % where)
+    if not _is_nonempty_str(commit["batch"]):
+        _bad("commit batch is not a nonempty string at %s" % where)
+    parts = commit["parts"]
+    if not isinstance(parts, int) or isinstance(parts, bool) or parts < 1:
+        _bad("commit parts is not a positive integer at %s" % where)
+    digest = commit["sha256"]
+    if not _is_nonempty_str(digest) or len(digest) != 64 \
+            or any(c not in "0123456789abcdef" for c in digest):
+        _bad("commit sha256 is not a hex digest at %s" % where)
+
+
+def _check_page(page, where):
+    if not isinstance(page, dict):
+        _bad("page is not an object at %s" % where)
+    if set(page) != {"batch", "part", "events"}:
+        _bad("page keys are not exactly the contract keys at %s" % where)
+    if not _is_nonempty_str(page["batch"]):
+        _bad("page batch is not a nonempty string at %s" % where)
+    part = page["part"]
+    if not isinstance(part, int) or isinstance(part, bool) or part < 0:
+        _bad("page part is not a zero-based integer at %s" % where)
+    if not isinstance(page["events"], list):
+        _bad("page events is not a list at %s" % where)
+
+
+def _digest(events):
+    payload = json.dumps(events, sort_keys=True, separators=(",", ":"),
+                         ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _batch_sort_key(batch):
+    return (0, int(batch), "") if batch.isdigit() else (1, 0, batch)
+
+
+def _check_generation(transport, by_batch):
+    generation = transport["generation"]
+    if not _is_nonempty_str(generation):
+        _bad("generation is not a nonempty string")
+    path = os.environ.get("MARROWFLEET_POLICY_MANIFESTS",
+                          DEFAULT_MANIFESTS)
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            manifest = json.load(handle)
+    except (OSError, ValueError):
+        _bad("cannot read release manifests at %s" % path)
+    generations = manifest.get("generations") if isinstance(manifest, dict) \
+        else None
+    record = generations.get(generation) if isinstance(generations, dict) \
+        else None
+    if not isinstance(record, dict):
+        _bad("manifest names no generation %s" % generation)
+    batches = record.get("batches")
+    if not isinstance(batches, dict):
+        _bad("generation %s carries no batch record" % generation)
+    committed = {batch: commit["sha256"] for batch, commit in by_batch.items()}
+    if set(committed) != set(batches):
+        _bad("generation %s commits %s against manifest batches %s"
+             % (generation, sorted(committed), sorted(batches)))
+    for batch, digest in batches.items():
+        if not isinstance(digest, str) or committed[batch] != digest:
+            _bad("batch %s does not match the manifest digest" % batch)
+
+
+def _history_from_transport(transport):
+    """Validate the delivery envelope and return the complete event history."""
+    if not isinstance(transport, dict):
+        _bad("transport is not an object")
+    expected = {"commits", "pages"}
+    if "generation" in transport:
+        expected.add("generation")
+    if set(transport) != expected:
+        _bad("transport keys are not exactly the contract keys")
+    commits = transport["commits"]
+    pages = transport["pages"]
+    if not isinstance(commits, list) or not commits:
+        _bad("transport commits is not a nonempty list")
+    if not isinstance(pages, list) or not pages:
+        _bad("transport pages is not a nonempty list")
+
+    by_batch = {}
+    for index, commit in enumerate(commits):
+        _check_commit(commit, "commit %d" % index)
+        previous = by_batch.get(commit["batch"])
+        if previous is not None and previous != commit:
+            _bad("conflicting replay of commit for batch %s" % commit["batch"])
+        by_batch[commit["batch"]] = commit
+
+    page_by_batch = {}
+    for index, page in enumerate(pages):
+        _check_page(page, "page %d" % index)
+        if page["batch"] not in by_batch:
+            _bad("page %d carries uncommitted batch %s"
+                 % (index, page["batch"]))
+        for offset, event in enumerate(page["events"]):
+            _check_event(event, "page %d event %d" % (index, offset))
+        slot = page_by_batch.setdefault(page["batch"], {})
+        previous = slot.get(page["part"])
+        if previous is not None and previous != page["events"]:
+            _bad("conflicting replay of page %s part %d"
+                 % (page["batch"], page["part"]))
+        slot[page["part"]] = page["events"]
+
+    if "generation" in transport:
+        _check_generation(transport, by_batch)
+
+    history = []
+    for batch in sorted(by_batch, key=_batch_sort_key):
+        commit = by_batch[batch]
+        slot = page_by_batch.get(batch, {})
+        for part in range(commit["parts"]):
+            if part not in slot:
+                _bad("batch %s is missing part %d" % (batch, part))
+        extra = [part for part in slot if not 0 <= part < commit["parts"]]
+        if extra:
+            _bad("batch %s carries parts outside its commit %s"
+                 % (batch, sorted(extra)))
+        events = []
+        for part in range(commit["parts"]):
+            events.extend(slot[part])
+        if _digest(events) != commit["sha256"]:
+            _bad("batch %s does not match its committed digest" % batch)
+        history.extend(events)
+    return history
+
+
+def _history_from_events(events):
     if not isinstance(events, list):
-        raise InvalidRequest("events must be a list")
-    for event in events:
-        _validate_event(event)
+        _bad("events is not a list")
+    for index, event in enumerate(events):
+        _check_event(event, "event %d" % index)
     return events
 
 
-def _canonical_events_bytes(events):
-    raw = json.dumps(
-        events, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-    ).encode("utf-8")
-    return raw
-
-
-def _segmented_events(transport):
-    if not isinstance(transport, dict) or set(transport) != {"commits", "pages"}:
-        raise InvalidRequest("transport must carry exactly commits and pages")
-    commits = transport["commits"]
-    pages = transport["pages"]
-    if not isinstance(commits, list) or not isinstance(pages, list):
-        raise InvalidRequest("commits and pages must be lists")
-
-    committed = {}
-    for commit in commits:
-        if not isinstance(commit, dict) or set(commit) != COMMIT_KEYS:
-            raise InvalidRequest("each commit must have exactly batch, parts and sha256")
-        batch = _identifier(commit["batch"], "commit batch")
-        parts = _exact_int(commit["parts"], "parts", 1)
-        digest = commit["sha256"]
-        if not isinstance(digest, str) or not SHA256_RE.fullmatch(digest):
-            raise InvalidRequest("sha256 must be a lowercase hexadecimal digest")
-        prior = committed.get(batch)
-        if prior is not None and prior != commit:
-            raise InvalidRequest("conflicting replay of commit %r" % batch)
-        committed[batch] = commit
-
-    replay = {}
-    for page in pages:
-        if not isinstance(page, dict) or set(page) != PAGE_KEYS:
-            raise InvalidRequest("each page must have exactly batch, part and events")
-        batch = _identifier(page["batch"], "page batch")
-        part = _exact_int(page["part"], "part", 0)
-        if not isinstance(page["events"], list):
-            raise InvalidRequest("page events must be a list")
-        prior = replay.get((batch, part))
-        if prior is not None and prior != page:
-            raise InvalidRequest("conflicting replay of page %r part %d" % (batch, part))
-        replay[(batch, part)] = page
-
-    uncommitted = sorted({batch for batch, _ in replay} - set(committed))
-    if uncommitted:
-        raise InvalidRequest("uncommitted page batch %r" % uncommitted[0])
-
-    complete = []
-    for batch, commit in committed.items():
-        expected_parts = set(range(commit["parts"]))
-        actual_parts = {part for page_batch, part in replay if page_batch == batch}
-        if actual_parts != expected_parts:
-            missing = sorted(expected_parts - actual_parts)
-            extra = sorted(actual_parts - expected_parts)
-            detail = "missing %r" % missing[0] if missing else "extra %r" % extra[0]
-            raise InvalidRequest("batch %r has %s part" % (batch, detail))
-        assembled = []
-        for part in range(commit["parts"]):
-            assembled.extend(replay[(batch, part)]["events"])
-        digest = hashlib.sha256(_canonical_events_bytes(assembled)).hexdigest()
-        if digest != commit["sha256"]:
-            raise InvalidRequest("batch %r digest mismatch" % batch)
-        complete.extend(assembled)
-
-    for event in complete:
-        _validate_event(event)
-    return complete
-
-
 def resolve(request):
-    """Return the approved parameter projection for ``request``.
-
-    Invalid or internally inconsistent history raises :class:`InvalidRequest`.
-    A valid result contains only requested subjects, including ``None`` when
-    no winning authorization currently applies to a requested subject.
-    """
     if not isinstance(request, dict):
-        raise InvalidRequest("request must be an object")
-    now = _date(request.get("now"), "now")
+        _bad("request is not an object")
+    if set(request) - {"now", "subjects", "events", "transport"}:
+        _bad("request carries keys outside the contract")
+    if not _is_date(request.get("now")):
+        _bad("now is not an ISO date")
     subjects = request.get("subjects")
-    if not isinstance(subjects, list):
-        raise InvalidRequest("subjects must be a list")
-    for subject in subjects:
-        _identifier(subject, "subject")
+    if not isinstance(subjects, list) or not subjects \
+            or not all(_is_nonempty_str(s) for s in subjects):
+        _bad("subjects is not a nonempty list of nonempty strings")
     if len(set(subjects)) != len(subjects):
-        raise InvalidRequest("subjects must not contain duplicates")
-
+        _bad("subjects carries duplicates")
     if "transport" in request:
         if "events" in request:
-            raise InvalidRequest("request must carry either events or transport")
-        events = _segmented_events(request["transport"])
+            _bad("request carries both events and transport")
+        history = _history_from_transport(request["transport"])
+    elif "events" in request:
+        history = _history_from_events(request["events"])
     else:
-        events = _events_only(request)
+        _bad("request carries neither events nor transport")
 
-    # Every equal revision in the complete history must be identical, even if
-    # a later revision has superseded it.  Only after that whole-history check
-    # does the numerically highest revision replace the earlier ones.
-    seen = {}
+    now = request["now"]
+    by_revision = {}
+    for event in history:
+        key = (event["authorization"], int(event["revision"]))
+        current = by_revision.get(key)
+        if current is not None and current != event:
+            _bad("authorization %s carries conflicting revisions %s"
+                 % (event["authorization"], event["revision"]))
+        by_revision[key] = event
+
     winners = {}
-    for event in events:
-        authorization = event["authorization"]
-        revision = event["revision"]
-        identity = (authorization, revision)
-        old = seen.get(identity)
-        if old is not None and old != event:
-            raise InvalidRequest(
-                "conflicting revision %r for authorization %r"
-                % (revision, authorization)
-            )
-        seen[identity] = event
-        winner = winners.get(authorization)
-        if winner is None or _revision_key(revision) > _revision_key(winner["revision"]):
+    for (authorization, revision), event in by_revision.items():
+        current = winners.get(authorization)
+        if current is None or revision > int(current["revision"]):
             winners[authorization] = event
 
-    active_by_subject = {}
-    for event in winners.values():
+    active = {}
+    for authorization in sorted(winners):
+        event = winners[authorization]
         if event["operation"] != "grant":
             continue
-        if not (event["start"] <= now.isoformat() < event["end"]):
+        if not (event["start"] <= now < event["end"]):
             continue
         subject = event["subject"]
-        if subject in active_by_subject:
-            raise InvalidRequest(
-                "multiple active authorizations for subject %r" % subject
-            )
-        active_by_subject[subject] = event
+        if subject in active:
+            _bad("subject %s carries multiple active authorizations"
+                 % subject)
+        active[subject] = event["parameters"]
 
-    return {
-        subject: active_by_subject[subject]["parameters"]
-        if subject in active_by_subject else None
-        for subject in subjects
-    }
+    known = {event["subject"] for event in history}
+    return {subject: active.get(subject)
+            for subject in subjects if subject in known}
 
 
-def main(argv=None):
+def main(argv):
     try:
         request = json.load(sys.stdin)
-        print(json.dumps(resolve(request), sort_keys=True, ensure_ascii=False))
-        return 0
-    except (InvalidRequest, ValueError, TypeError, json.JSONDecodeError) as exc:
-        sys.stderr.write("policy resolver: %s\n" % exc)
-        return 2
+    except ValueError:
+        sys.stderr.write("resolve: request is not JSON\n")
+        return 1
+    try:
+        result = resolve(request)
+    except InvalidHistory as error:
+        sys.stderr.write("resolve: %s\n" % error)
+        return 1
+    print(json.dumps(result, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

@@ -1,2 +1,2 @@
 reservation-worker:input-scaling
-synthetic-probe:probe-population-gap
+reservation-worker:queue-backlog

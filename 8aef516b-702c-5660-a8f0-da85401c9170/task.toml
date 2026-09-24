@@ -1,22 +1,23 @@
-schema_version = "1.1"
+schema_version = "1.4"
 artifacts = [
     "/app/verdict.txt",
     "/app/monitor_evidence.json",
-    "/var/log/svc/synthetic-probe.log",
-    "/var/log/svc/reservation-edge.log",
-    "/var/log/svc/admission-gate.log",
-    "/var/log/svc/reservation-worker.log",
-    "/var/log/svc/availability-cache.log",
-    "/var/log/svc/inventory.log",
-    "/var/log/svc/confirmation.log",
-    "/var/log/svc/user-wait-log.log",
+    { source = "/var/log/svc/synthetic-probe.log",    destination = "logs/synthetic-probe.log",    service = "synthetic-probe" },
+    { source = "/var/log/svc/reservation-edge.log",   destination = "logs/reservation-edge.log",   service = "reservation-edge" },
+    { source = "/var/log/svc/admission-gate.log",     destination = "logs/admission-gate.log",     service = "admission-gate" },
+    { source = "/var/log/svc/reservation-worker.log", destination = "logs/reservation-worker.log", service = "reservation-worker" },
+    { source = "/var/log/svc/availability-cache.log", destination = "logs/availability-cache.log", service = "availability-cache" },
+    { source = "/var/log/svc/inventory.log",          destination = "logs/inventory.log",          service = "inventory" },
+    { source = "/var/log/svc/confirmation.log",       destination = "logs/confirmation.log",       service = "confirmation" },
+    { source = "/var/log/svc/user-wait-log.log",      destination = "logs/user-wait-log.log",      service = "user-wait-log" },
 ]
 
 [task]
 uuid_v5 = "8aef516b-702c-5660-a8f0-da85401c9170"
 authors = [
-    "harish.gandhi@ethara.ai" ,
-    "bharat.patidar@ethara.ai"
+    { name = "Harish Gandhi", email = "harish.gandhi@ethara.ai" },
+    { name = "Bharat Patidar", email = "bharat.patidar@ethara.ai" },
+    { name = "Vikas Gupta", email = "vikas.gupta@ethara.ai" },
 ]
 name = "kanao/monitoring__reservation-admission-latency"
 description = "Determine whether a reservation platform's apparent recovery after admission control is real, identify the service whose capacity loss the closed-loop probes hide, and clear the alternatives whose behaviour matches their contracts."
@@ -35,10 +36,16 @@ junior_time_estimate_min = 90.0
 timeout_sec = 300.0
 environment_mode = "separate"
 
+[verifier.environment]
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-verifier@sha256:172e9b104be0d8793f0f29e282dae2eca66dccd1bb8e9f1814b9a113d5f3b559"
+
 [agent]
 timeout_sec = 3600.0
 
 [environment]
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-env-workstation@sha256:a0e338cd03de7383cec08ac2d24564abd0f9213d4e8be4b926c2925bc786f6a8"
 build_timeout_sec = 1800.0
-allow_internet = true
+network_mode = "public"
+cpus = 2
+memory_mb = 4096
 mcp_servers = []

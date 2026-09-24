@@ -1,8 +1,8 @@
 {
-  "id": "8aef516b-702c-5660-a8f0-da85401c9170",
-  "started_at": "2026-09-06T22:46:12.600726",
-  "updated_at": "2026-09-06T23:23:08.297749",
-  "finished_at": "2026-09-06T23:23:08.297749",
+  "id": "044f4501-f5d6-44a1-9374-14ab67dd48f1",
+  "started_at": "2026-09-24T03:03:01.744345",
+  "updated_at": "2026-09-24T03:43:19.495585",
+  "finished_at": "2026-09-24T03:43:19.495585",
   "n_total_trials": 1,
   "stats": {
     "n_completed_trials": 1,
@@ -12,13 +12,14 @@
     "n_cancelled_trials": 0,
     "n_retries": 0,
     "evals": {
-      "terminus-2__glm-5.3__adhoc": {
+      "openhands-sdk__glm-5.3__adhoc": {
         "n_trials": 1,
         "n_errors": 0,
         "metrics": [
           {
-            "earned": -18.0,
-            "positive_total": 24.0,
+            "available": 27.0,
+            "earned": 21.0,
+            "penalty": 3.0,
             "reward": 0.0
           }
         ],
@@ -26,27 +27,32 @@
         "reward_stats": {
           "reward": {
             "0.0": [
-              "8aef516b-702c-5660-a8f0-da85401c9170__ZPdWRCV"
-            ]
-          },
-          "positive_total": {
-            "24": [
-              "8aef516b-702c-5660-a8f0-da85401c9170__ZPdWRCV"
+              "8aef516b-702c-5660-a8f0-da85401c__QskscQf"
             ]
           },
           "earned": {
-            "-18": [
-              "8aef516b-702c-5660-a8f0-da85401c9170__ZPdWRCV"
+            "21": [
+              "8aef516b-702c-5660-a8f0-da85401c__QskscQf"
+            ]
+          },
+          "penalty": {
+            "3": [
+              "8aef516b-702c-5660-a8f0-da85401c__QskscQf"
+            ]
+          },
+          "available": {
+            "27": [
+              "8aef516b-702c-5660-a8f0-da85401c__QskscQf"
             ]
           }
         },
         "exception_stats": {}
       }
     },
-    "n_input_tokens": 1335600,
-    "n_cache_tokens": 1246656,
-    "n_cache_creation_tokens": 88064,
-    "n_output_tokens": 101300,
-    "cost_usd": 0.925195
+    "n_input_tokens": 2131913,
+    "n_cache_tokens": 2073792,
+    "n_cache_creation_tokens": 56128,
+    "n_output_tokens": 89618,
+    "cost_usd": 1.113099
   }
 }

@@ -24,6 +24,16 @@ def history(request):
             raise ValueError('conflicting commit')
         if type(commit['parts']) is not int or commit['parts']<1:raise ValueError('invalid part count')
         batches[key]=commit
+    if 'generation' in envelope:
+        import os
+        generation=envelope['generation']
+        if not isinstance(generation,str) or not generation:raise ValueError('invalid generation')
+        source=os.environ.get('MARROWFLEET_POLICY_MANIFESTS','/workspace/policy/manifests.json')
+        with open(source,encoding='utf-8') as fh:
+            generations=json.load(fh)['generations']
+        if generation not in generations:raise ValueError('unknown generation')
+        if {batch:commit['sha256'] for batch,commit in batches.items()}!=generations[generation]['batches']:
+            raise ValueError('committed batches differ from the release manifest')
     pages={}
     for page in envelope['pages']:
         key=(page['batch'],page['part'])
@@ -94,9 +104,9 @@ marrowfleet hold clear oxenholme-base
 # standing a drop short of the ranks its fragment declares.
 marrowfleet scope clear kirkbryde-base
 
-# The fatigue limitation was reviewed at 2041-B5 and the crew member goes back
-# to the sectors; the certificate limitation was carried on and stands.
-marrowfleet limit lift mf-3480
+# The fatigue limitation on mf-3480 was withdrawn and the certificate limitation
+# on mf-6350 stands to 2042-B2. Both subjects are governed by the policy feed, so
+# the release applies them from the repaired resolver; nothing is set by hand.
 
 # The published reader takes the crediting factor over the period's block
 # minutes together rather than over each sector, and settles no sheet against

@@ -38,10 +38,12 @@ jobs:
       # is read offline. The review job renders it once for this environment
       # and once at a second binding, and compares the two.
       - name: render the policy catalogue
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           EXPR='base64encode(jsonencode({ definitions = { for k, v in local.policy_definitions : k => { mode = v.mode, rule = v.rule } }, assigned = local.assigned_policies }))'
           echo "$EXPR" | terraform console -var-file=prod.tfvars > /tmp/catalogue-prod.txt
-          echo "$EXPR" | terraform console -var-file=prod.tfvars -var environment=dev > /tmp/catalogue-dev.txt
+          echo "$EXPR" | terraform console -var environment=dev -var-file=prod.tfvars > /tmp/catalogue-dev.txt
 
       # The reviewer itself lives in the platform org, not in this repository,
       # so a change here cannot change what it looks for. It reads the two

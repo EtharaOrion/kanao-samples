@@ -7,13 +7,13 @@
     },
     "summary": {
       "tests": 14,
-      "passed": 10,
-      "failed": 4,
+      "passed": 7,
+      "failed": 7,
       "pending": 0,
       "skipped": 0,
       "other": 0,
-      "start": 1788712348252,
-      "stop": 1788712348252
+      "start": 1790212009746,
+      "stop": 1790212009746
     },
     "tests": [
       {
@@ -23,8 +23,8 @@
         "weight": 1
       },
       {
-        "name": "test_expected_finding[reservation-worker:capacity-cliff]",
-        "status": "passed",
+        "name": "test_gate_expected_finding[reservation-worker:capacity-cliff]",
+        "status": "failed",
         "suite": "tests",
         "weight": 5
       },
@@ -35,8 +35,14 @@
         "weight": 5
       },
       {
+        "name": "test_required_population_calculations[reservation-worker:capacity-cliff]",
+        "status": "failed",
+        "suite": "tests",
+        "weight": 3
+      },
+      {
         "name": "test_evidence_window[reservation-worker:capacity-cliff]",
-        "status": "passed",
+        "status": "failed",
         "suite": "tests",
         "weight": 3
       },
@@ -59,19 +65,13 @@
         "weight": 1
       },
       {
-        "name": "test_no_phantom_findings",
+        "name": "test_gate_no_phantom_findings",
         "status": "failed",
         "suite": "tests",
         "weight": 3
       },
       {
         "name": "test_negative_phantom_finding[admission-gate:load-shedding]",
-        "status": "passed",
-        "suite": "tests",
-        "weight": -3
-      },
-      {
-        "name": "test_negative_phantom_finding[availability-cache:cpu-saturation]",
         "status": "passed",
         "suite": "tests",
         "weight": -3
@@ -102,10 +102,10 @@
       }
     ],
     "environment": {
-      "testEnvironment": "monitoring__reservation-admission-latency",
+      "testEnvironment": "8aef516b-702c-5660-a8f0-da85401c9170",
       "extra": {
         "model": "glm-5.3",
-        "run": "run3",
+        "run": "run_3",
         "source": "ctrf.json",
         "reward": 0.0
       }

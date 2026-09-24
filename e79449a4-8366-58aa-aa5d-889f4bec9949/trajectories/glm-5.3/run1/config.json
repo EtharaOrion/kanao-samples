@@ -1,18 +1,25 @@
 {
-  "task": {
-    "path": "e79449a4-8366-58aa-aa5d-889f4bec9949"
-  },
-  "trial_name": "iac_guardrails_paymesh-policy",
-  "trials_dir": "e79449a4-8366-58aa-aa5d-889f4bec9949/trajectories/glm-5.3",
-  "agent_setup_timeout_multiplier": 2.0,
-  "agent": {
-    "name": "terminus-2",
-    "model_name": "glm-5.3"
-  },
-  "verifier": {
-    "env": {
-      "REWARDKIT_JUDGE": "gpt-5.6-sol"
+  "job_name": "run_1",
+  "jobs_dir": "e79449a4-8366-58aa-aa5d-889f4bec9949/glm-5.3",
+  "timeout_multiplier": 2.0,
+  "agents": [
+    {
+      "name": "openhands-sdk",
+      "model_name": "glm-5.3",
+      "kwargs": {
+        "reasoning_effort": "high",
+        "version": "1.49.2",
+        "timeout": 2700
+      }
     }
-  },
-  "job_id": "e79449a4-8366-58aa-aa5d-889f4bec9949"
+  ],
+  "tasks": [
+    {
+      "path": "e79449a4-8366-58aa-aa5d-889f4bec9949"
+    }
+  ],
+  "notes": [
+    "model_info is registered only for models LiteLLM does not ship pricing and limits for (the GLM seats); an Anthropic id carries null because LiteLLM already knows it. Per-token rates come from judge/pricing.py.",
+    "model_info is registered only for models LiteLLM does not ship pricing and limits for (the GLM seats); an Anthropic id needs none because LiteLLM already knows it, so the key is absent rather than null. Per-token rates come from judge/pricing.py."
+  ]
 }

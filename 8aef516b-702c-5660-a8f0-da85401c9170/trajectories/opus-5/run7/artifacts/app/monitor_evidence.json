@@ -3,66 +3,118 @@
     {
       "service": "reservation-worker",
       "class": "queue-backlog",
-      "reason": "reservation-worker locally owns an unbounded work queue: its own signed metrics show queue_depth rising 622->1043 and queue_oldest_age_sec 165.1->281.0 over 105.4s of its own uptime, with latency_ms 430.2->662.0 growing linearly with the age of the oldest queued item. Its own signed probe receipts show group work takes 166ms versus 6ms for single-room at every sampled uptime, so the extra wait is produced inside this service and hits larger (group) bookings; cpu_seconds_total and cpu_pressure_full are identical to every unaffected peer, so the delay is queueing time behind a shrinking number of effective worker slots, not CPU saturation or a downstream dependency. Every other service reports queue_depth 0 and flat 18ms latency over the same window, so no upstream or downstream owner explains the wait.",
+      "reason": "reservation-worker locally owns an unbounded, class-scoped work backlog. Its own signed metrics are the only ones in the estate with a non-zero queue: across 180.5 s of its own uptime (91.4 s -> 271.9 s) queue_depth rises monotonically 405 -> 552 -> 700 -> 1127, queue_oldest_age_sec rises 105.5 -> 146.0 -> 186.5 -> 304.1 (faster than its own elapsed uptime, so the head of the queue is ageing rather than draining) and latency_ms rises 311.0 -> 392.1 -> 473.1 -> 708.2. Every other service sampled at the same instants reports queue_depth 0, queue_oldest_age_sec 0.0 and latency_ms 18.0, so the wait is created inside the worker and not inherited from the edge, the admission layer or the cache. The worker's own signed probe receipts localise the backlog to the group cohort: group requests take 166.0 ms at the worker while single-room requests served by the same process at the same moments take 6.0 ms, and the identical group/single-room probes against availability-cache, inventory, confirmation, admission-gate and reservation-edge all return 6.0 ms. The lifecycle records the worker signs show the same asymmetry: effective_worker_slots for the group cohort fall 10 -> 2 while queue_oldest_age_sec climbs 10 -> 503 s, completed per 100 scheduled arrivals falls 94 -> 18 and open_loop_scheduled_to_completion_p99_ms grows without bound 260 -> 3595 ms, whereas single_room_control on the same worker stays healthy (98/100 completed, p99 85 ms, 10 slots). Arrivals therefore exceed drain rate for group work and the queue ages faster than it drains, which is exactly the long guest wait and the declining reservation completions. This is not CPU exhaustion: the worker's cpu_seconds_total (4.079) matches its idle peers, cpu_pressure_full stays at 0.002, and availability-cache burns far more CPU (8.190, cpu_pressure_some 0.16) with no queue and no latency effect.",
       "observations": [
         {
           "kind": "metrics",
           "service": "reservation-worker",
-          "uptime_sec": 145.548866,
-          "requests_total": 205,
+          "uptime_sec": 91.383598,
+          "requests_total": 135,
           "errors_total": 0,
-          "cpu_seconds_total": 2.183233,
-          "latency_ms": 430.207506,
-          "queue_depth": 622,
-          "queue_oldest_age_sec": 165.103753,
+          "cpu_seconds_total": 1.370754,
+          "latency_ms": 311.043915,
+          "queue_depth": 405,
+          "queue_oldest_age_sec": 105.521957,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "94a08c12761ba0bccb9828ff6d895d4378e1090a6e09cc5ea433477a332cc359"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 91.550817,
+          "request_id": "reservation-worker-137",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 166.0,
+          "outcome": "accepted",
+          "signature": "eb5ab5597b1fefcdf232fc048db03dffec65c4270386d5329f88065c4f8c61b4"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 91.557588,
+          "request_id": "reservation-worker-138",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "0f041c025eb18cc54bf2dc272d310e79348e40dfef30b8b94f50b037230bab50"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 128.213482,
+          "requests_total": 191,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.923202,
+          "latency_ms": 392.069661,
+          "queue_depth": 552,
+          "queue_oldest_age_sec": 146.034831,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 32,
+          "durable_outcomes_total": 32,
+          "process_epoch": 5,
+          "signature": "ec0938b02f9651c780a0345ac55bc7159d95cf27266dcac8e0e70989cbf6d320"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 128.380733,
+          "request_id": "reservation-worker-193",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 166.0,
+          "outcome": "accepted",
+          "signature": "cb2d9adc7977f71902151e59d76388a3c3a1d1382dd765edf7d96a4d3be5c086"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-worker",
+          "uptime_sec": 128.387486,
+          "request_id": "reservation-worker-194",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "842ff3d0ebd21ac7e5c43b31d479af7dd61fa3a5608e8b031c5ccd78951c7675"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 165.043007,
+          "requests_total": 247,
+          "errors_total": 0,
+          "cpu_seconds_total": 2.475645,
+          "latency_ms": 473.094615,
+          "queue_depth": 700,
+          "queue_oldest_age_sec": 186.547307,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 41,
+          "durable_outcomes_total": 41,
           "process_epoch": 6,
-          "signature": "376310d20312c915762d68673265b56e8635aa4426d11fd315a9ed70c07e3464"
-        },
-        {
-          "kind": "metrics",
-          "service": "reservation-worker",
-          "uptime_sec": 194.190889,
-          "requests_total": 271,
-          "errors_total": 0,
-          "cpu_seconds_total": 2.912863,
-          "latency_ms": 537.219955,
-          "queue_depth": 816,
-          "queue_oldest_age_sec": 218.609977,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "5adcbc3aee8e4a72d6fe461ec47263b83d5a5b868c274c93b1805a28c403a94e"
-        },
-        {
-          "kind": "metrics",
-          "service": "reservation-worker",
-          "uptime_sec": 250.929082,
-          "requests_total": 347,
-          "errors_total": 0,
-          "cpu_seconds_total": 3.763936,
-          "latency_ms": 662.04398,
-          "queue_depth": 1043,
-          "queue_oldest_age_sec": 281.02199,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "562366bcd4d521c38e86683a79f27fea386f4f57e4850e007380c0755428ef7d"
+          "signature": "90a9b3083c73e37808bfdac4692218bd92fdd857f43d2f3920c79efffe379c10"
         },
         {
           "kind": "casebook",
           "service": "reservation-worker",
-          "uptime_sec": 145.553853,
+          "uptime_sec": 165.043513,
           "mechanism": "coordinated-omission",
           "intervals": [
             {
@@ -256,14 +308,38 @@
               "effective_worker_slots": 2,
               "completed": 18,
               "rejected": 105
+            },
+            {
+              "interval": 16,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2100,
+              "queue_oldest_age_sec": 282,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 112
+            },
+            {
+              "interval": 17,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 2215,
+              "queue_oldest_age_sec": 299,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 119
             }
           ],
           "dashboard_summary": {
             "http_status": 200,
             "status": "green",
             "series": "closed_loop_send_to_response_p99_ms",
-            "selected_rows": 685,
-            "expected_scheduled_arrivals": 1600,
+            "selected_rows": 733,
+            "expected_scheduled_arrivals": 1800,
             "latest_p99_ms": 70,
             "population": "requests emitted after the previous closed-loop request completed"
           },
@@ -274,7 +350,7 @@
             ],
             "scheduled_population_available": true,
             "completion_population_available": true,
-            "intervals": 16
+            "intervals": 18
           },
           "single_room_control": {
             "scheduled": 100,
@@ -283,12 +359,30 @@
             "worker_slots": 10
           },
           "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
-          "signature": "aa45794d386c1f8a87d2b22ef01624e6b9a72b2a5b01355e4f8f37c15c30bbbb"
+          "signature": "33c6442ca23fb1db908626ab917c7c612a172b02409f7bf5a39be49ed0ff454a"
+        },
+        {
+          "kind": "metrics",
+          "service": "reservation-worker",
+          "uptime_sec": 271.903428,
+          "requests_total": 394,
+          "errors_total": 0,
+          "cpu_seconds_total": 4.078551,
+          "latency_ms": 708.187542,
+          "queue_depth": 1127,
+          "queue_oldest_age_sec": 304.093771,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 67,
+          "durable_outcomes_total": 67,
+          "process_epoch": 11,
+          "signature": "076fe20f1b2b7c603f259122ff646264edecf0845e5e4743ab9ca02bb612e173"
         },
         {
           "kind": "casebook",
           "service": "reservation-worker",
-          "uptime_sec": 250.934958,
+          "uptime_sec": 271.904008,
           "mechanism": "coordinated-omission",
           "intervals": [
             {
@@ -614,14 +708,50 @@
               "effective_worker_slots": 2,
               "completed": 18,
               "rejected": 182
+            },
+            {
+              "interval": 27,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3365,
+              "queue_oldest_age_sec": 469,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 189
+            },
+            {
+              "interval": 28,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3480,
+              "queue_oldest_age_sec": 486,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 196
+            },
+            {
+              "interval": 29,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3595,
+              "queue_oldest_age_sec": 503,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 203
             }
           ],
           "dashboard_summary": {
             "http_status": 200,
             "status": "green",
             "series": "closed_loop_send_to_response_p99_ms",
-            "selected_rows": 949,
-            "expected_scheduled_arrivals": 2700,
+            "selected_rows": 1021,
+            "expected_scheduled_arrivals": 3000,
             "latest_p99_ms": 70,
             "population": "requests emitted after the previous closed-loop request completed"
           },
@@ -632,7 +762,7 @@
             ],
             "scheduled_population_available": true,
             "completion_population_available": true,
-            "intervals": 27
+            "intervals": 30
           },
           "single_room_control": {
             "scheduled": 100,
@@ -641,108 +771,358 @@
             "worker_slots": 10
           },
           "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
-          "signature": "effc94ff671248e3593f721e0f26879ab473bde423c9a3f7467b3a47d47fc350"
+          "signature": "a01a12dcc34ca2a3080c29aa22c0b585553dcad3ff74f70836ae106b149b9f8e"
         },
         {
           "kind": "probe-receipt",
           "service": "reservation-worker",
-          "uptime_sec": 380.005106,
-          "request_id": "reservation-worker-524",
+          "uptime_sec": 272.070829,
+          "request_id": "reservation-worker-395",
           "request": {
             "reservation_class": "group",
             "probe_mode": "open-loop"
           },
           "duration_ms": 166.0,
           "outcome": "accepted",
-          "signature": "7c86cb4f9a37440a651a69f2a6b38d3c2f2855d3d14be3801ee2bb0f99d19c41"
+          "signature": "8f0a1b2b54be0235cc2d8dee624f540a35ae25426ecfb5775c76c213ce67ee13"
         },
         {
           "kind": "probe-receipt",
           "service": "reservation-worker",
-          "uptime_sec": 398.732775,
-          "request_id": "reservation-worker-553",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 166.0,
-          "outcome": "accepted",
-          "signature": "c8d2bcf5ca419f6a640583adf29bb142fc9c8ff6acbce881b25ff90ef3eaf871"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "reservation-worker",
-          "uptime_sec": 426.83766,
-          "request_id": "reservation-worker-597",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 166.0,
-          "outcome": "accepted",
-          "signature": "8c176e01d1cecc35ad25c67d86776e86c00d340d519405c03625e7ee08c70993"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "reservation-worker",
-          "uptime_sec": 380.023563,
-          "request_id": "reservation-worker-525",
+          "uptime_sec": 272.077497,
+          "request_id": "reservation-worker-396",
           "request": {
             "reservation_class": "single-room",
-            "probe_mode": "open-loop"
+            "probe_mode": "closed-loop"
           },
           "duration_ms": 6.0,
           "outcome": "accepted",
-          "signature": "c66cb60dd8d0431ace26c9115a2e46258ec95663b16dd7765b7eb25bcbe30616"
+          "signature": "4a397c5890e39c6c4b819c9eac07d3d0e99fa0e3a364b8988098e9a3aa1ac7b2"
         },
         {
-          "kind": "probe-receipt",
-          "service": "reservation-worker",
-          "uptime_sec": 426.864378,
-          "request_id": "reservation-worker-598",
-          "request": {
-            "reservation_class": "single-room",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "d2ea3a96d49632cf9c1c23368df27fde93df55a540d541020b6903382baca649"
+          "kind": "metrics",
+          "service": "availability-cache",
+          "uptime_sec": 92.483695,
+          "requests_total": 143,
+          "errors_total": 0,
+          "cpu_seconds_total": 5.666888,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.16,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 23,
+          "durable_outcomes_total": 23,
+          "process_epoch": 3,
+          "signature": "d1d3d4b71e8270c36bdbc53fd0a58b2b927bfe0cfd25d3bde93b8f46ade48450"
+        },
+        {
+          "kind": "metrics",
+          "service": "availability-cache",
+          "uptime_sec": 273.003584,
+          "requests_total": 432,
+          "errors_total": 0,
+          "cpu_seconds_total": 8.190108,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.16,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "dcb7ed68bc026021b1b4940dd4d4be2f5c35911f7bbdf4ab4722206696a21dad"
+        },
+        {
+          "kind": "metrics",
+          "service": "admission-gate",
+          "uptime_sec": 272.814383,
+          "requests_total": 432,
+          "errors_total": 0,
+          "cpu_seconds_total": 4.092216,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "b864230b34fbacdf7e781428b45013f1ae66a7e1735af3e6f19e18d85792dc64"
         }
       ],
       "calculations": {
-        "worker_uptime_span_sec": 105.38,
-        "queue_depth_first": 622,
-        "queue_depth_last": 1043,
-        "queue_depth_growth_per_sec": 3.995,
-        "queue_oldest_age_first_sec": 165.103753,
-        "queue_oldest_age_last_sec": 281.02199,
-        "queue_oldest_age_growth_per_sec": 1.1,
-        "latency_ms_first": 430.207506,
-        "latency_ms_last": 662.04398,
-        "peer_queue_depth_admission_gate": 0,
-        "peer_latency_ms_admission_gate": 18.0,
-        "worker_cpu_seconds_total_last": 3.763936,
-        "peer_cpu_seconds_total_last": 3.763579,
-        "worker_cpu_pressure_full": 0.002,
-        "probe_duration_ms_group": 166.0,
-        "probe_duration_ms_single_room": 6.0,
-        "group_over_single_room_duration_ratio": 27.67,
-        "probe_receipt_uptime_span_sec": 46.833,
-        "effective_worker_slots_first_interval": 10,
-        "effective_worker_slots_last_interval": 2,
-        "requests_total_worker_last": 347,
-        "requests_total_peer_last": 382
+        "selected_fraction_first": 1.0,
+        "selected_fraction_latest": 0.24,
+        "selected_fraction_definition": "actual_closed_loop_sends / scheduled_open_loop",
+        "first_interval_cited": {
+          "interval": 0,
+          "reservation_class": "group",
+          "scheduled_open_loop": 100,
+          "actual_closed_loop_sends": 100,
+          "closed_loop_send_to_response_p99_ms": 240,
+          "open_loop_scheduled_to_completion_p99_ms": 260,
+          "queue_oldest_age_sec": 10,
+          "effective_worker_slots": 10,
+          "completed": 94,
+          "rejected": 0
+        },
+        "latest_interval_cited": {
+          "interval": 29,
+          "reservation_class": "group",
+          "scheduled_open_loop": 100,
+          "actual_closed_loop_sends": 24,
+          "closed_loop_send_to_response_p99_ms": 70,
+          "open_loop_scheduled_to_completion_p99_ms": 3595,
+          "queue_oldest_age_sec": 503,
+          "effective_worker_slots": 2,
+          "completed": 18,
+          "rejected": 203
+        },
+        "queue_depth_series": [
+          405,
+          552,
+          700,
+          1127
+        ],
+        "queue_oldest_age_sec_series": [
+          105.521957,
+          146.034831,
+          186.547307,
+          304.093771
+        ],
+        "latency_ms_series": [
+          311.043915,
+          392.069661,
+          473.094615,
+          708.187542
+        ],
+        "uptime_span_sec": 180.51983,
+        "queue_growth_per_sec": 3.99956060228951,
+        "queue_age_growth_per_sec_of_uptime": 1.1000000055395576,
+        "worker_probe_duration_ms_group": [
+          166.0,
+          166.0,
+          166.0
+        ],
+        "worker_probe_duration_ms_single_room": [
+          6.0,
+          6.0,
+          6.0
+        ],
+        "peer_probe_duration_ms_group_latest": {
+          "reservation-edge": 6.0,
+          "admission-gate": 6.0,
+          "availability-cache": 6.0,
+          "inventory": 6.0,
+          "confirmation": 6.0,
+          "user-wait-log": 6.0,
+          "synthetic-probe": 6.0
+        },
+        "group_completed_per_100_scheduled": [
+          94,
+          18
+        ],
+        "single_room_control": {
+          "scheduled": 100,
+          "completed": 98,
+          "p99_ms": 85,
+          "worker_slots": 10
+        },
+        "effective_worker_slots_first_latest": [
+          10,
+          2
+        ],
+        "open_loop_scheduled_to_completion_p99_ms_first_latest": [
+          260,
+          3595
+        ]
       }
     },
     {
       "service": "synthetic-probe",
       "class": "probe-population-gap",
-      "reason": "synthetic-probe measures only the closed-loop population it manages to emit, so its green dashboard does not describe the traffic the platform is expected to serve. In its own signed casebook the dashboard series closed_loop_send_to_response_p99_ms falls 240ms -> 70ms while, for the same intervals, open_loop_scheduled_to_completion_p99_ms rises 260ms -> 3250ms. actual_closed_loop_sends collapse from 100 to 24 per 100 scheduled arrivals because the closed-loop probe waits for the previous completion before sending, so delayed arrivals are never emitted and never measured (coordinated omission). The dashboard selected only 949 rows of 2700 expected scheduled arrivals (35.1% coverage), omitting 1751 scheduled requests, and its coverage_manifest confirms the scheduled and completion populations were available. The gap is owned by the probe harness itself: the population string names requests emitted after the previous closed-loop request completed, and the omitted arrivals are exactly the group requests waiting in reservation-worker. The apparent latency improvement is therefore a measurement artefact, not recovery.",
+      "reason": "synthetic-probe's dashboard recovery is an artefact of its own measured population, not of the traffic the platform must serve. Its /traffic-contract declares that all four documented combinations, including open-loop arrivals, are exercised, but the population records it signs show that for the group cohort scheduled_open_loop stays at 100 arrivals per interval while actual_closed_loop_sends collapse from 100 to 24: selected_fraction falls from 1.0 in the earliest cited interval to 0.24 in the latest. Because a closed-loop send is only emitted after the previous request completes, the requests that suffer the growing wait are never issued, so they can never appear in the series the dashboard selects. The dashboard_summary synthetic-probe signs states this explicitly: its population is 'requests emitted after the previous closed-loop request completed', it reports http_status 200 / status green with latest_p99_ms improving 144 -> 70 ms, and it selects only 1021 rows out of 3000 expected_scheduled_arrivals (selected_rows/expected_scheduled_arrivals falls 0.541 -> 0.340). Over the same intervals, and inside the same signed records, the scheduled-to-completion p99 for the identical cohort rises 260 -> 3595 ms, so true guest wait grew by more than 13x while the reported series fell by 3.4x. This is classic coordinated omission and it is locally owned by the emitter: synthetic-probe is the service that schedules and sends the synthetic arrivals and the only one that reports scheduled-versus-actually-sent counts, whereas the delay itself is owned by reservation-worker (the only service with non-zero queue_depth and class-scoped probe latency). synthetic-probe's own metrics confirm it is not itself impaired - latency_ms flat at 18.0, queue_depth 0, errors_total 0 - so its green dashboard reflects a shrunken, self-selected population rather than a recovered service.",
       "observations": [
         {
           "kind": "casebook",
           "service": "synthetic-probe",
-          "uptime_sec": 145.613802,
+          "uptime_sec": 93.625036,
+          "mechanism": "coordinated-omission",
+          "intervals": [
+            {
+              "interval": 0,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 100,
+              "closed_loop_send_to_response_p99_ms": 240,
+              "open_loop_scheduled_to_completion_p99_ms": 260,
+              "queue_oldest_age_sec": 10,
+              "effective_worker_slots": 10,
+              "completed": 94,
+              "rejected": 0
+            },
+            {
+              "interval": 1,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 89,
+              "closed_loop_send_to_response_p99_ms": 216,
+              "open_loop_scheduled_to_completion_p99_ms": 375,
+              "queue_oldest_age_sec": 27,
+              "effective_worker_slots": 9,
+              "completed": 84,
+              "rejected": 7
+            },
+            {
+              "interval": 2,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 78,
+              "closed_loop_send_to_response_p99_ms": 192,
+              "open_loop_scheduled_to_completion_p99_ms": 490,
+              "queue_oldest_age_sec": 44,
+              "effective_worker_slots": 8,
+              "completed": 74,
+              "rejected": 14
+            },
+            {
+              "interval": 3,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 67,
+              "closed_loop_send_to_response_p99_ms": 168,
+              "open_loop_scheduled_to_completion_p99_ms": 605,
+              "queue_oldest_age_sec": 61,
+              "effective_worker_slots": 7,
+              "completed": 64,
+              "rejected": 21
+            },
+            {
+              "interval": 4,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 56,
+              "closed_loop_send_to_response_p99_ms": 144,
+              "open_loop_scheduled_to_completion_p99_ms": 720,
+              "queue_oldest_age_sec": 78,
+              "effective_worker_slots": 6,
+              "completed": 54,
+              "rejected": 28
+            },
+            {
+              "interval": 5,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 45,
+              "closed_loop_send_to_response_p99_ms": 120,
+              "open_loop_scheduled_to_completion_p99_ms": 835,
+              "queue_oldest_age_sec": 95,
+              "effective_worker_slots": 5,
+              "completed": 44,
+              "rejected": 35
+            },
+            {
+              "interval": 6,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 34,
+              "closed_loop_send_to_response_p99_ms": 96,
+              "open_loop_scheduled_to_completion_p99_ms": 950,
+              "queue_oldest_age_sec": 112,
+              "effective_worker_slots": 4,
+              "completed": 34,
+              "rejected": 42
+            },
+            {
+              "interval": 7,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 72,
+              "open_loop_scheduled_to_completion_p99_ms": 1065,
+              "queue_oldest_age_sec": 129,
+              "effective_worker_slots": 3,
+              "completed": 24,
+              "rejected": 49
+            },
+            {
+              "interval": 8,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1180,
+              "queue_oldest_age_sec": 146,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 56
+            },
+            {
+              "interval": 9,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 1295,
+              "queue_oldest_age_sec": 163,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 63
+            }
+          ],
+          "dashboard_summary": {
+            "http_status": 200,
+            "status": "green",
+            "series": "closed_loop_send_to_response_p99_ms",
+            "selected_rows": 541,
+            "expected_scheduled_arrivals": 1000,
+            "latest_p99_ms": 70,
+            "population": "requests emitted after the previous closed-loop request completed"
+          },
+          "coverage_manifest": {
+            "reservation_classes": [
+              "single-room",
+              "group"
+            ],
+            "scheduled_population_available": true,
+            "completion_population_available": true,
+            "intervals": 10
+          },
+          "single_room_control": {
+            "scheduled": 100,
+            "completed": 98,
+            "p99_ms": 85,
+            "worker_slots": 10
+          },
+          "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
+          "signature": "9a0d740532ee200dfdd678bf5f2b0eab5e022b4d779c70933ad94ff00a34fc33"
+        },
+        {
+          "kind": "metrics",
+          "service": "synthetic-probe",
+          "uptime_sec": 93.624274,
+          "requests_total": 143,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.404364,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 23,
+          "durable_outcomes_total": 23,
+          "process_epoch": 3,
+          "signature": "7a702ec91ad0290a6dffbaeb1addf1211ff9d2dcd890c5fad311a70066f94dc9"
+        },
+        {
+          "kind": "casebook",
+          "service": "synthetic-probe",
+          "uptime_sec": 130.454978,
           "mechanism": "coordinated-omission",
           "intervals": [
             {
@@ -912,38 +1292,14 @@
               "effective_worker_slots": 2,
               "completed": 18,
               "rejected": 91
-            },
-            {
-              "interval": 14,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 1870,
-              "queue_oldest_age_sec": 248,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 98
-            },
-            {
-              "interval": 15,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 1985,
-              "queue_oldest_age_sec": 265,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 105
             }
           ],
           "dashboard_summary": {
             "http_status": 200,
             "status": "green",
             "series": "closed_loop_send_to_response_p99_ms",
-            "selected_rows": 685,
-            "expected_scheduled_arrivals": 1600,
+            "selected_rows": 637,
+            "expected_scheduled_arrivals": 1400,
             "latest_p99_ms": 70,
             "population": "requests emitted after the previous closed-loop request completed"
           },
@@ -954,7 +1310,7 @@
             ],
             "scheduled_population_available": true,
             "completion_population_available": true,
-            "intervals": 16
+            "intervals": 14
           },
           "single_room_control": {
             "scheduled": 100,
@@ -963,12 +1319,30 @@
             "worker_slots": 10
           },
           "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
-          "signature": "0d0e9f2c735c946a4129766f023ccac6b7c0b027dc1e39f25d3f37bc197136b3"
+          "signature": "f967c963c1ab1d90fcf7b4d8e8816cfdb4f6a6689c579d39a58079f8afac1eaa"
+        },
+        {
+          "kind": "metrics",
+          "service": "synthetic-probe",
+          "uptime_sec": 130.454344,
+          "requests_total": 205,
+          "errors_total": 0,
+          "cpu_seconds_total": 1.956815,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 32,
+          "durable_outcomes_total": 32,
+          "process_epoch": 5,
+          "signature": "f4b5627ed9d1400efb25e62dcdf865d0b6462a585e13428bf8611a11948d9010"
         },
         {
           "kind": "casebook",
           "service": "synthetic-probe",
-          "uptime_sec": 194.245743,
+          "uptime_sec": 167.284428,
           "mechanism": "coordinated-omission",
           "intervals": [
             {
@@ -1186,50 +1560,14 @@
               "effective_worker_slots": 2,
               "completed": 18,
               "rejected": 119
-            },
-            {
-              "interval": 18,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2330,
-              "queue_oldest_age_sec": 316,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 126
-            },
-            {
-              "interval": 19,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2445,
-              "queue_oldest_age_sec": 333,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 133
-            },
-            {
-              "interval": 20,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2560,
-              "queue_oldest_age_sec": 350,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 140
             }
           ],
           "dashboard_summary": {
             "http_status": 200,
             "status": "green",
             "series": "closed_loop_send_to_response_p99_ms",
-            "selected_rows": 805,
-            "expected_scheduled_arrivals": 2100,
+            "selected_rows": 733,
+            "expected_scheduled_arrivals": 1800,
             "latest_p99_ms": 70,
             "population": "requests emitted after the previous closed-loop request completed"
           },
@@ -1240,7 +1578,7 @@
             ],
             "scheduled_population_available": true,
             "completion_population_available": true,
-            "intervals": 21
+            "intervals": 18
           },
           "single_room_control": {
             "scheduled": 100,
@@ -1249,12 +1587,12 @@
             "worker_slots": 10
           },
           "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
-          "signature": "e317184938919f9e1d5c1233fa73737604d55f22cf5270abf29c5a4d2c57ee70"
+          "signature": "7f52a9f8b23f489e34c9aca510bde0827a2d9e81a756532841fa389f53b06314"
         },
         {
           "kind": "casebook",
           "service": "synthetic-probe",
-          "uptime_sec": 250.984592,
+          "uptime_sec": 274.144571,
           "mechanism": "coordinated-omission",
           "intervals": [
             {
@@ -1580,14 +1918,50 @@
               "effective_worker_slots": 2,
               "completed": 18,
               "rejected": 182
+            },
+            {
+              "interval": 27,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3365,
+              "queue_oldest_age_sec": 469,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 189
+            },
+            {
+              "interval": 28,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3480,
+              "queue_oldest_age_sec": 486,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 196
+            },
+            {
+              "interval": 29,
+              "reservation_class": "group",
+              "scheduled_open_loop": 100,
+              "actual_closed_loop_sends": 24,
+              "closed_loop_send_to_response_p99_ms": 70,
+              "open_loop_scheduled_to_completion_p99_ms": 3595,
+              "queue_oldest_age_sec": 503,
+              "effective_worker_slots": 2,
+              "completed": 18,
+              "rejected": 203
             }
           ],
           "dashboard_summary": {
             "http_status": 200,
             "status": "green",
             "series": "closed_loop_send_to_response_p99_ms",
-            "selected_rows": 949,
-            "expected_scheduled_arrivals": 2700,
+            "selected_rows": 1021,
+            "expected_scheduled_arrivals": 3000,
             "latest_p99_ms": 70,
             "population": "requests emitted after the previous closed-loop request completed"
           },
@@ -1598,7 +1972,7 @@
             ],
             "scheduled_population_available": true,
             "completion_population_available": true,
-            "intervals": 27
+            "intervals": 30
           },
           "single_room_control": {
             "scheduled": 100,
@@ -1607,102 +1981,123 @@
             "worker_slots": 10
           },
           "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
-          "signature": "dafaf3586f11498b17eb3cbc9fd1e4a5f53938e576d4183fc1dc275becb59ad8"
+          "signature": "85e6786da341aeda8ce88c2f00f779a87d10b873f0b6e324e55df58ddfb9c9ea"
         },
         {
           "kind": "metrics",
           "service": "synthetic-probe",
-          "uptime_sec": 145.607536,
-          "requests_total": 223,
+          "uptime_sec": 274.143895,
+          "requests_total": 432,
           "errors_total": 0,
-          "cpu_seconds_total": 2.184113,
+          "cpu_seconds_total": 4.112158,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "ec029e35bb2a289e02425e6a76e2f29bf135e9667d67302479e65e6ff91db5e7"
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "c93fe5531dcffe23978b0a0009e9fa475c69e5c45fcf4af34af23d1ab8b8d81d"
         },
         {
-          "kind": "metrics",
+          "kind": "probe-receipt",
           "service": "synthetic-probe",
-          "uptime_sec": 250.977351,
-          "requests_total": 382,
-          "errors_total": 0,
-          "cpu_seconds_total": 3.76466,
-          "latency_ms": 18.0,
-          "queue_depth": 0,
-          "queue_oldest_age_sec": 0.0,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "35a3c64f321b01d3075a2875bd378b26849c410d50e352853cd6068ca962ad19"
+          "uptime_sec": 93.631801,
+          "request_id": "synthetic-probe-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "e937e207041e6f5b2b4ac19ad5fa7c70a9d5fdbd9ffa21d241376b99aa293b13"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "synthetic-probe",
+          "uptime_sec": 274.151472,
+          "request_id": "synthetic-probe-433",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "d711cb4bb2e21bb8d9452508506ae6f1f8b9c2d69d871161492e7b4c84e9fc88"
         },
         {
           "kind": "metrics",
           "service": "reservation-worker",
-          "uptime_sec": 145.548866,
-          "requests_total": 205,
+          "uptime_sec": 271.903428,
+          "requests_total": 394,
           "errors_total": 0,
-          "cpu_seconds_total": 2.183233,
-          "latency_ms": 430.207506,
-          "queue_depth": 622,
-          "queue_oldest_age_sec": 165.103753,
+          "cpu_seconds_total": 4.078551,
+          "latency_ms": 708.187542,
+          "queue_depth": 1127,
+          "queue_oldest_age_sec": 304.093771,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "376310d20312c915762d68673265b56e8635aa4426d11fd315a9ed70c07e3464"
-        },
-        {
-          "kind": "metrics",
-          "service": "reservation-worker",
-          "uptime_sec": 250.929082,
-          "requests_total": 347,
-          "errors_total": 0,
-          "cpu_seconds_total": 3.763936,
-          "latency_ms": 662.04398,
-          "queue_depth": 1043,
-          "queue_oldest_age_sec": 281.02199,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "562366bcd4d521c38e86683a79f27fea386f4f57e4850e007380c0755428ef7d"
+          "attempts_total": 67,
+          "durable_outcomes_total": 67,
+          "process_epoch": 11,
+          "signature": "076fe20f1b2b7c603f259122ff646264edecf0845e5e4743ab9ca02bb612e173"
         }
       ],
       "calculations": {
-        "synthetic_probe_uptime_span_sec": 105.371,
-        "expected_scheduled_arrivals": 2700,
-        "dashboard_selected_rows": 949,
-        "omitted_scheduled_arrivals": 1751,
-        "population_coverage_fraction": 0.3515,
-        "closed_loop_p99_ms_first_interval": 240,
-        "closed_loop_p99_ms_latest": 70,
-        "open_loop_scheduled_to_completion_p99_ms_first_interval": 260,
-        "open_loop_scheduled_to_completion_p99_ms_latest": 3250,
-        "latency_understatement_factor_latest_interval": 46.43,
-        "actual_closed_loop_sends_first": 100,
-        "actual_closed_loop_sends_latest": 24,
-        "scheduled_open_loop_per_interval": 100,
-        "completed_first_interval": 94,
-        "completed_latest_interval": 18,
-        "rejected_first_interval": 0,
-        "rejected_latest_interval": 182,
-        "single_room_control_p99_ms": 85,
-        "single_room_control_completed": 98,
-        "joined_worker_queue_oldest_age_sec_latest": 281.02199
+        "selected_fraction_first": 1.0,
+        "selected_fraction_latest": 0.24,
+        "selected_fraction_definition": "actual_closed_loop_sends / scheduled_open_loop",
+        "first_interval_cited": {
+          "interval": 0,
+          "reservation_class": "group",
+          "scheduled_open_loop": 100,
+          "actual_closed_loop_sends": 100,
+          "closed_loop_send_to_response_p99_ms": 240,
+          "open_loop_scheduled_to_completion_p99_ms": 260,
+          "queue_oldest_age_sec": 10,
+          "effective_worker_slots": 10,
+          "completed": 94,
+          "rejected": 0
+        },
+        "latest_interval_cited": {
+          "interval": 29,
+          "reservation_class": "group",
+          "scheduled_open_loop": 100,
+          "actual_closed_loop_sends": 24,
+          "closed_loop_send_to_response_p99_ms": 70,
+          "open_loop_scheduled_to_completion_p99_ms": 3595,
+          "queue_oldest_age_sec": 503,
+          "effective_worker_slots": 2,
+          "completed": 18,
+          "rejected": 203
+        },
+        "first_interval_source": {
+          "service": "synthetic-probe",
+          "uptime_sec": 93.625036,
+          "signature": "9a0d740532ee200dfdd678bf5f2b0eab5e022b4d779c70933ad94ff00a34fc33"
+        },
+        "latest_interval_source": {
+          "service": "synthetic-probe",
+          "uptime_sec": 274.144571,
+          "signature": "85e6786da341aeda8ce88c2f00f779a87d10b873f0b6e324e55df58ddfb9c9ea"
+        },
+        "dashboard_coverage_first": 0.541,
+        "dashboard_coverage_latest": 0.3403333333333333,
+        "unmeasured_scheduled_arrivals_latest": 1979,
+        "reported_closed_loop_p99_ms_first_latest": [
+          240,
+          70
+        ],
+        "true_open_loop_completion_p99_ms_first_latest": [
+          260,
+          3595
+        ],
+        "reported_p99_ratio": 0.2916666666666667,
+        "true_p99_ratio": 13.826923076923077,
+        "probe_uptime_span_sec": 180.519535
       }
     }
   ],
@@ -1710,66 +2105,61 @@
     {
       "service": "admission-gate",
       "class": "none",
-      "reason": "admission-gate never shows locally owned shedding or queueing: across >100s of its own uptime its signed metrics report queue_depth 0, queue_oldest_age_sec 0, errors_total 0, flat latency_ms 18.0 and attempts_total equal to durable_outcomes_total, and its signed probe receipts return outcome accepted with 6.0ms duration for both single-room and group in closed-loop and open-loop mode. The rejections visible in the shared casebook track the shrinking effective_worker_slots owned by reservation-worker, so admission control is reacting to the worker backlog rather than originating the customer wait.",
+      "reason": "Examined as the owner of load-shedding, since operators enabled admission control just before the dashboards improved. admission-gate shows no locally owned shedding or delay: across 180 s of its own uptime (92.3 s -> 272.8 s) every signed snapshot reports errors_total 0, queue_depth 0, queue_oldest_age_sec 0.0 and latency_ms flat at 18.0, and every probe it signs - group and single-room, open-loop and closed-loop - returns outcome 'accepted' in 6.0 ms. The rising 'rejected' column appears only in the shared incident casebook that synthetic-probe and reservation-worker serve identically; it is a cumulative event counter (it reaches 203 against 100 scheduled arrivals per interval, so it cannot be a per-interval request outcome) and admission-gate emits no local record of refusing any request. The customer-visible wait is queueing after admission, not refusal at the gate: the backlog and the class-scoped latency live entirely in reservation-worker, which is also the only service whose probes are slow. Behaviour is consistent with its contract.",
       "observations": [
         {
           "kind": "metrics",
           "service": "admission-gate",
-          "uptime_sec": 145.527691,
-          "requests_total": 223,
+          "uptime_sec": 92.294871,
+          "requests_total": 143,
           "errors_total": 0,
-          "cpu_seconds_total": 2.182915,
+          "cpu_seconds_total": 1.384423,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "c1c67d3c9d94c96e0cfc5bc40e87a048342d197b1d81a86350e2c6b41726ad33"
+          "attempts_total": 23,
+          "durable_outcomes_total": 23,
+          "process_epoch": 3,
+          "signature": "05fc4f0f4af53d9aa08345bbd3e4c9f74b564f2ae17c039957fbc95ef3de295b"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "admission-gate",
+          "uptime_sec": 92.302109,
+          "request_id": "admission-gate-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "8e84fd63576b250f9d3a3f4a171b3edf8a9ff8660fcb9df40dc6f694f04d22f8"
         },
         {
           "kind": "metrics",
           "service": "admission-gate",
-          "uptime_sec": 194.167055,
-          "requests_total": 297,
+          "uptime_sec": 129.124721,
+          "requests_total": 205,
           "errors_total": 0,
-          "cpu_seconds_total": 2.912506,
+          "cpu_seconds_total": 1.936871,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "fece510cb85d64701f271ff3ca37eff0a3d90e3706f66791d0bc268055210cd4"
-        },
-        {
-          "kind": "metrics",
-          "service": "admission-gate",
-          "uptime_sec": 250.905285,
-          "requests_total": 382,
-          "errors_total": 0,
-          "cpu_seconds_total": 3.763579,
-          "latency_ms": 18.0,
-          "queue_depth": 0,
-          "queue_oldest_age_sec": 0.0,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "5fc03dfc6139fcf10c83d29486a8a560aeac5c1673e504236b9ac83954621894"
+          "attempts_total": 32,
+          "durable_outcomes_total": 32,
+          "process_epoch": 5,
+          "signature": "668bc9d1dceb3b83f16c19e8a9e74de7a6d3231596b9920252df7bd1ecf1c16a"
         },
         {
           "kind": "casebook",
           "service": "admission-gate",
-          "uptime_sec": 250.912283,
+          "uptime_sec": 129.125263,
           "mechanism": "coordinated-omission",
           "intervals": [
             {
@@ -1939,170 +2329,14 @@
               "effective_worker_slots": 2,
               "completed": 18,
               "rejected": 91
-            },
-            {
-              "interval": 14,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 1870,
-              "queue_oldest_age_sec": 248,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 98
-            },
-            {
-              "interval": 15,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 1985,
-              "queue_oldest_age_sec": 265,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 105
-            },
-            {
-              "interval": 16,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2100,
-              "queue_oldest_age_sec": 282,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 112
-            },
-            {
-              "interval": 17,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2215,
-              "queue_oldest_age_sec": 299,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 119
-            },
-            {
-              "interval": 18,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2330,
-              "queue_oldest_age_sec": 316,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 126
-            },
-            {
-              "interval": 19,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2445,
-              "queue_oldest_age_sec": 333,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 133
-            },
-            {
-              "interval": 20,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2560,
-              "queue_oldest_age_sec": 350,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 140
-            },
-            {
-              "interval": 21,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2675,
-              "queue_oldest_age_sec": 367,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 147
-            },
-            {
-              "interval": 22,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2790,
-              "queue_oldest_age_sec": 384,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 154
-            },
-            {
-              "interval": 23,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 2905,
-              "queue_oldest_age_sec": 401,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 161
-            },
-            {
-              "interval": 24,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 3020,
-              "queue_oldest_age_sec": 418,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 168
-            },
-            {
-              "interval": 25,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 3135,
-              "queue_oldest_age_sec": 435,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 175
-            },
-            {
-              "interval": 26,
-              "reservation_class": "group",
-              "scheduled_open_loop": 100,
-              "actual_closed_loop_sends": 24,
-              "closed_loop_send_to_response_p99_ms": 70,
-              "open_loop_scheduled_to_completion_p99_ms": 3250,
-              "queue_oldest_age_sec": 452,
-              "effective_worker_slots": 2,
-              "completed": 18,
-              "rejected": 182
             }
           ],
           "dashboard_summary": {
             "http_status": 200,
             "status": "green",
             "series": "closed_loop_send_to_response_p99_ms",
-            "selected_rows": 949,
-            "expected_scheduled_arrivals": 2700,
+            "selected_rows": 637,
+            "expected_scheduled_arrivals": 1400,
             "latest_p99_ms": 70,
             "population": "requests emitted after the previous closed-loop request completed"
           },
@@ -2113,7 +2347,7 @@
             ],
             "scheduled_population_available": true,
             "completion_population_available": true,
-            "intervals": 27
+            "intervals": 14
           },
           "single_room_control": {
             "scheduled": 100,
@@ -2122,513 +2356,542 @@
             "worker_slots": 10
           },
           "timestamp_contract": "scheduled_at precedes actual_send_at, admission_at, and completion_at",
-          "signature": "2f504f54e9c820920a24837534be7919e2df6fac9b4491d218ed3c1a38d2189a"
+          "signature": "8e1953d59308bd9d641d07df5a576d09d3f9ff7abb398aad98403e5fd2e80dd8"
+        },
+        {
+          "kind": "metrics",
+          "service": "admission-gate",
+          "uptime_sec": 272.814383,
+          "requests_total": 432,
+          "errors_total": 0,
+          "cpu_seconds_total": 4.092216,
+          "latency_ms": 18.0,
+          "queue_depth": 0,
+          "queue_oldest_age_sec": 0.0,
+          "cpu_pressure_some": 0.02,
+          "cpu_pressure_full": 0.002,
+          "metric_eligible": true,
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "b864230b34fbacdf7e781428b45013f1ae66a7e1735af3e6f19e18d85792dc64"
         },
         {
           "kind": "probe-receipt",
           "service": "admission-gate",
-          "uptime_sec": 380.045915,
-          "request_id": "admission-gate-582",
+          "uptime_sec": 272.821754,
+          "request_id": "admission-gate-433",
           "request": {
             "reservation_class": "group",
             "probe_mode": "open-loop"
           },
           "duration_ms": 6.0,
           "outcome": "accepted",
-          "signature": "43a0824be8d529d27bd44a6c1c04559a62c9a1939d4f3e13c8688c110fe2c646"
+          "signature": "5bd2fe55e967707fce0676e35433cdeaa2504669aeabff8d8af74d3b7475eb1e"
         },
         {
           "kind": "probe-receipt",
           "service": "admission-gate",
-          "uptime_sec": 380.059002,
-          "request_id": "admission-gate-583",
+          "uptime_sec": 272.828459,
+          "request_id": "admission-gate-434",
           "request": {
             "reservation_class": "single-room",
-            "probe_mode": "open-loop"
+            "probe_mode": "closed-loop"
           },
           "duration_ms": 6.0,
           "outcome": "accepted",
-          "signature": "d0d4c391a9c8abdae00eb65c7a780ac3f592a4de1ea8fb14f151a88aabe9400b"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "admission-gate",
-          "uptime_sec": 426.890024,
-          "request_id": "admission-gate-662",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "8121ca5c4574871054eb46e34988cd39e3cecf83f57454d73748305ca27a6ef2"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "admission-gate",
-          "uptime_sec": 426.903599,
-          "request_id": "admission-gate-663",
-          "request": {
-            "reservation_class": "single-room",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "be7f095be128f65af9bae03642908717bc35d7ab97e65cc73ff4522050a50b54"
+          "signature": "724b4aa320c8ab926949591c359e4ed328b15dc6802ce2ebbc6832fab2e4ec7f"
         }
       ]
     },
     {
       "service": "availability-cache",
       "class": "none",
-      "reason": "availability-cache burns roughly twice the cpu_seconds_total of its peers, but that is a level difference with no consequence: over >100s of its own uptime latency_ms stays 18.0, queue_depth and queue_oldest_age_sec stay 0, errors_total stays 0, cpu_pressure_full stays 0.002, and its probe receipts return 6.0ms for both single-room and group. No slow query or saturation signal is locally owned here.",
+      "reason": "Examined as the owner of cpu-saturation / slow-query because it is the CPU outlier: cpu_seconds_total 5.667 -> 8.190 and cpu_pressure_some 0.16 versus 0.02 for every peer. Repeated signed snapshots over 180 s of its uptime (92.5 s -> 273.0 s) show the elevated CPU never converts into contention or delay: cpu_pressure_full stays at 0.002, queue_depth 0, queue_oldest_age_sec 0.0, errors_total 0 and latency_ms flat at 18.0, and its cpu_seconds_total is not even monotonic (5.667 -> 4.490 -> 3.511 -> 4.984 -> 8.190), so the counter is a sampled utilisation figure rather than evidence of exhaustion. Its own signed probe receipts return 6.0 ms for both single-room and group at the same instants that reservation-worker returns 166.0 ms for group, so no query it serves is slow and it cannot explain a group-only, monotonically growing wait. Behaviour is consistent with its contract.",
       "observations": [
         {
           "kind": "metrics",
           "service": "availability-cache",
-          "uptime_sec": 145.453154,
-          "requests_total": 223,
+          "uptime_sec": 92.483695,
+          "requests_total": 143,
           "errors_total": 0,
-          "cpu_seconds_total": 4.363595,
+          "cpu_seconds_total": 5.666888,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.16,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "620463982c47ca45f3af6547539fd1e1ed48950138e6a9e264486c0f458c5717"
+          "attempts_total": 23,
+          "durable_outcomes_total": 23,
+          "process_epoch": 3,
+          "signature": "d1d3d4b71e8270c36bdbc53fd0a58b2b927bfe0cfd25d3bde93b8f46ade48450"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 92.490869,
+          "request_id": "availability-cache-145",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "74574a8c500b4ae36452bb70c2bef1815dbae7d61b88d8ca8d904a9d56edcba6"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 92.497495,
+          "request_id": "availability-cache-146",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "9e12c3a117ae278cc53077f52fafd7dfd2746878f690e133c48534b084096e75"
         },
         {
           "kind": "metrics",
           "service": "availability-cache",
-          "uptime_sec": 194.096294,
-          "requests_total": 297,
+          "uptime_sec": 129.313487,
+          "requests_total": 206,
           "errors_total": 0,
-          "cpu_seconds_total": 5.822889,
+          "cpu_seconds_total": 3.879405,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.16,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "6347fc6c124f60bef24fd541e3baa00f92a256b35463130df927649e2c5eebca"
+          "attempts_total": 32,
+          "durable_outcomes_total": 32,
+          "process_epoch": 5,
+          "signature": "c6e2e46297359e4593abf0a9be67c015fdccaf33156bc5a61b5d75197b878023"
         },
         {
           "kind": "metrics",
           "service": "availability-cache",
-          "uptime_sec": 250.836272,
-          "requests_total": 382,
+          "uptime_sec": 273.003584,
+          "requests_total": 432,
           "errors_total": 0,
-          "cpu_seconds_total": 7.525088,
+          "cpu_seconds_total": 8.190108,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.16,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "549edb3fcbbdcc71fc21723dca37f9ecb9fac2e58640e08859e50346a69156b6"
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "dcb7ed68bc026021b1b4940dd4d4be2f5c35911f7bbdf4ab4722206696a21dad"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 273.010725,
+          "request_id": "availability-cache-433",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "a58f19071ebb7704d9e9198b1856b649fa091e86ed27372378fdbb96f089336f"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "availability-cache",
+          "uptime_sec": 273.017379,
+          "request_id": "availability-cache-434",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "80abb4dbce26e729f468494e64a2d7c771c48b3093b4c4c5b84415377c88b4de"
         },
         {
           "kind": "casebook",
           "service": "availability-cache",
-          "uptime_sec": 250.842672,
+          "uptime_sec": 273.004153,
           "mechanism": "coordinated-omission",
           "records": [],
           "scope": "no owned lifecycle records",
-          "signature": "4ae4b3636f3206e66ee30da65441029bbd3b2a81d988c53428c175b359e6db2b"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "availability-cache",
-          "uptime_sec": 380.022894,
-          "request_id": "availability-cache-582",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "3b986c97d3d9f18f12f5ec7ffb44dbbfd3daecc0a23198610efcfe6fd5c84c19"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "availability-cache",
-          "uptime_sec": 380.035261,
-          "request_id": "availability-cache-583",
-          "request": {
-            "reservation_class": "single-room",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "f055dcae67242f990dd032f9d6f15945288a886964f85ca630a4fa324a21f46f"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "availability-cache",
-          "uptime_sec": 426.867247,
-          "request_id": "availability-cache-662",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "d7a38d149d94405f536a7bc030c68b46e1d1ed06bb051189672101c634a71e20"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "availability-cache",
-          "uptime_sec": 426.878854,
-          "request_id": "availability-cache-663",
-          "request": {
-            "reservation_class": "single-room",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "ec206313033f20180b04e0331313c15708acd881156ca6f0e2eb43bea4efd50e"
+          "signature": "72f912435e84f5aadc47f71bc1f1f75cc072eae5bffe7bcd82fa62323357d7eb"
         }
       ]
     },
     {
       "service": "reservation-edge",
       "class": "none",
-      "reason": "reservation-edge shows flat latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0 and 0 errors across >100s of its own uptime, its casebook is empty of owned lifecycle records, and its probes return 6.0ms accepted receipts for every documented class and mode, so it neither delays nor sheds the incident population.",
+      "reason": "Examined as the entry point that could be adding the guest-visible wait. Over 180 s of its own uptime (91.4 s -> 271.9 s) every signed snapshot reports latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0.0, errors_total 0 and cpu_seconds_total in line with idle peers, and its signed probe receipts return 6.0 ms with outcome 'accepted' for both reservation classes and both probe modes. Its casebook is empty ('no owned lifecycle records'), which is not proof of health on its own, so the clearance rests on the repeated local measurements above and on the fact that the class-dependent delay is reproducible only against reservation-worker. Behaviour is consistent with its contract.",
       "observations": [
         {
           "kind": "metrics",
           "service": "reservation-edge",
-          "uptime_sec": 145.597957,
-          "requests_total": 223,
+          "uptime_sec": 91.354501,
+          "requests_total": 142,
           "errors_total": 0,
-          "cpu_seconds_total": 2.183969,
+          "cpu_seconds_total": 1.370318,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "d0be6f56be594c7683d337273b4d7b1024e7fdd6a99dd44256192d9a7bdbb2b2"
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "a3ab00f8730a84147867fd22bf86c21e483201f8d21addf5350abb2adcd5c43b"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 91.361689,
+          "request_id": "reservation-edge-143",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "ff8c828d9b024fa307dd3dd9f301da38c3686477b1a69f2e42599b275a6ddc06"
         },
         {
           "kind": "metrics",
           "service": "reservation-edge",
-          "uptime_sec": 194.233558,
-          "requests_total": 297,
+          "uptime_sec": 128.184399,
+          "requests_total": 204,
           "errors_total": 0,
-          "cpu_seconds_total": 2.913503,
+          "cpu_seconds_total": 1.922766,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "c3332b939bd773839b51a61444be90a62c5e701938c730bb5eadc1f8cc7d6130"
+          "attempts_total": 32,
+          "durable_outcomes_total": 32,
+          "process_epoch": 5,
+          "signature": "6b1c95e2fbf52448724ec2796fb9c7ae7efe6ca3a66568bfabb6f032e05aade5"
         },
         {
           "kind": "metrics",
           "service": "reservation-edge",
-          "uptime_sec": 250.970726,
-          "requests_total": 382,
+          "uptime_sec": 271.874107,
+          "requests_total": 431,
           "errors_total": 0,
-          "cpu_seconds_total": 3.764561,
+          "cpu_seconds_total": 4.078112,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "6937928fb8980187d9bce87b19fc76e03b6588191dc4093a10a9aef52e29406a"
+          "attempts_total": 67,
+          "durable_outcomes_total": 67,
+          "process_epoch": 11,
+          "signature": "daea45766e1fb8404c76cf4a60698045acc355721dc79b7ae6710af654773a7c"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 271.88125,
+          "request_id": "reservation-edge-432",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "dff9374a5616da1f1ee683cb473dcd4003c99983f0677bb83daac4923f996c2d"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "reservation-edge",
+          "uptime_sec": 271.887905,
+          "request_id": "reservation-edge-433",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "47fbbb3c1676c769406cceecce3b39cce3dbccdaded56f4d644f8e1e6bcc06e8"
         },
         {
           "kind": "casebook",
           "service": "reservation-edge",
-          "uptime_sec": 250.977672,
+          "uptime_sec": 271.874657,
           "mechanism": "coordinated-omission",
           "records": [],
           "scope": "no owned lifecycle records",
-          "signature": "f29385b9c92c5204c5540f55cc3be3d6527ea1031d4e84868eeb188935a9dfae"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "reservation-edge",
-          "uptime_sec": 380.234393,
-          "request_id": "reservation-edge-582",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "8240c04bb17f2305ba8ee580db1d4ccdddfcaaf0c5931d2707572116b2a1fc0d"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "reservation-edge",
-          "uptime_sec": 380.245792,
-          "request_id": "reservation-edge-583",
-          "request": {
-            "reservation_class": "single-room",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "522644666b45df1ed93bb74fc962ffa39049c6afeb6d2d7af7f0d8cd05d8c943"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "reservation-edge",
-          "uptime_sec": 427.076416,
-          "request_id": "reservation-edge-662",
-          "request": {
-            "reservation_class": "group",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "ef996d0179cd36042fe45c8b358868f63550c7bb76d2c4f5fc390be21f1da256"
-        },
-        {
-          "kind": "probe-receipt",
-          "service": "reservation-edge",
-          "uptime_sec": 427.088722,
-          "request_id": "reservation-edge-663",
-          "request": {
-            "reservation_class": "single-room",
-            "probe_mode": "open-loop"
-          },
-          "duration_ms": 6.0,
-          "outcome": "accepted",
-          "signature": "f3a01a5c3682bc01997ad0ac3cdaf14b7d012aaa9dd74785600152efe41c36f5"
+          "signature": "75d3d31409f8726455bc0c3955ae53bd78639f9c4f51e499eb1f7d60eb36ea69"
         }
       ]
     },
     {
       "service": "inventory",
       "class": "none",
-      "reason": "inventory reports flat latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0 and 0 errors across >100s of its own uptime with attempts_total equal to durable_outcomes_total, so it is not a slow dependency of the worker.",
+      "reason": "Examined as a possible downstream dependency of the slow group path. Over 180 s of its own uptime (92.2 s -> 272.7 s) its signed snapshots hold latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0.0, errors_total 0 and cpu_pressure_some 0.02, and its signed probe receipts return 6.0 ms 'accepted' for group as well as single-room, so it adds no class-dependent cost. Behaviour is consistent with its contract.",
       "observations": [
         {
           "kind": "metrics",
           "service": "inventory",
-          "uptime_sec": 145.497484,
-          "requests_total": 223,
+          "uptime_sec": 92.209795,
+          "requests_total": 144,
           "errors_total": 0,
-          "cpu_seconds_total": 2.182462,
+          "cpu_seconds_total": 1.383147,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "6669acd908917f96cd72be29f90da3cad2266dda055f7d20ee843858764cbfad"
+          "attempts_total": 23,
+          "durable_outcomes_total": 23,
+          "process_epoch": 3,
+          "signature": "781ee24f2153bb0df2673df31d1281d4f5cc5f08635113685d93cffe3d36c4d6"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "inventory",
+          "uptime_sec": 92.21684,
+          "request_id": "inventory-145",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "9c86916d79d07cf26e6736e9dc03e68e24df528612bb530aaeb71e681d08024f"
         },
         {
           "kind": "metrics",
           "service": "inventory",
-          "uptime_sec": 194.14161,
-          "requests_total": 297,
+          "uptime_sec": 272.729794,
+          "requests_total": 432,
           "errors_total": 0,
-          "cpu_seconds_total": 2.912124,
+          "cpu_seconds_total": 4.090947,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "ba2e06837706bb4edf5028547f650d80b5e86f63c5358ed67a066c4bdf55d3ba"
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "4c7c4b22d3ace3992c10ffe0a31f4c61911dcf01a8a0914faf798275ad478858"
         },
         {
-          "kind": "metrics",
+          "kind": "probe-receipt",
           "service": "inventory",
-          "uptime_sec": 250.883894,
-          "requests_total": 382,
-          "errors_total": 0,
-          "cpu_seconds_total": 3.763258,
-          "latency_ms": 18.0,
-          "queue_depth": 0,
-          "queue_oldest_age_sec": 0.0,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "5f022d6323767d2d9ff62fa2a286a8d7715dfc2ff24322d6699cb2a788cb0ab3"
+          "uptime_sec": 272.736928,
+          "request_id": "inventory-433",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "d1cc42a087cccf5c1d8ddca4e6b5c96b5c4bf5a5712731feb34ade650001182b"
         },
         {
-          "kind": "casebook",
+          "kind": "probe-receipt",
           "service": "inventory",
-          "uptime_sec": 250.889601,
-          "mechanism": "coordinated-omission",
-          "records": [],
-          "scope": "no owned lifecycle records",
-          "signature": "a2ee8d59438a585f42e295275485dd81134bb9cb4007cd8ab5007119f578ddd5"
+          "uptime_sec": 272.743563,
+          "request_id": "inventory-434",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "4b4db2e07d2af3285ad3e240e4fe9338b25b971eb8c5a261a8573df3ea4dff15"
         }
       ]
     },
     {
       "service": "confirmation",
       "class": "none",
-      "reason": "confirmation reports flat latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0 and 0 errors across >100s of its own uptime, and its durable_outcomes_total keeps pace with attempts_total, so declining reservation completions are not produced here.",
+      "reason": "Examined because reservation completions are falling and confirmation is the terminal step. Over 180 s of its own uptime (91.6 s -> 272.1 s) its signed snapshots show errors_total 0, queue_depth 0, queue_oldest_age_sec 0.0 and latency_ms 18.0, with attempts_total and durable_outcomes_total staying equal (22/22 -> 68/68), i.e. every attempt it receives becomes a durable outcome. Its probe receipts return 6.0 ms 'accepted' for both classes. The lost completions are work that never reaches it because it is still queued in reservation-worker. Behaviour is consistent with its contract.",
       "observations": [
         {
           "kind": "metrics",
           "service": "confirmation",
-          "uptime_sec": 145.462516,
-          "requests_total": 223,
+          "uptime_sec": 91.585249,
+          "requests_total": 141,
           "errors_total": 0,
-          "cpu_seconds_total": 2.181938,
+          "cpu_seconds_total": 1.373779,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "bcffd3ba6a404969f9469b6966975faf110d18feee2073fbfa78f326a219201c"
+          "attempts_total": 22,
+          "durable_outcomes_total": 22,
+          "process_epoch": 3,
+          "signature": "4d153d3f6572d74581ae13d4e0640787689ad19bdf77e670bfe455fbcaaed4e9"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 91.592382,
+          "request_id": "confirmation-142",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "6ed126920df5bb5b674a3f6bbe8187c4c3804152a3c00baef45852eb1f3e1803"
         },
         {
           "kind": "metrics",
           "service": "confirmation",
-          "uptime_sec": 194.10661,
-          "requests_total": 297,
+          "uptime_sec": 128.41545,
+          "requests_total": 203,
           "errors_total": 0,
-          "cpu_seconds_total": 2.911599,
+          "cpu_seconds_total": 1.926232,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "fb5c6e656ca2852a6ae846fd10fc81806cdd80171eac85148a62ab5c98075ff5"
+          "attempts_total": 32,
+          "durable_outcomes_total": 32,
+          "process_epoch": 5,
+          "signature": "50cb0c5367804aecd461e6fc4b14b64b021d10878cee7c779db16db0994b8f67"
         },
         {
           "kind": "metrics",
           "service": "confirmation",
-          "uptime_sec": 250.851574,
-          "requests_total": 382,
+          "uptime_sec": 272.105501,
+          "requests_total": 429,
           "errors_total": 0,
-          "cpu_seconds_total": 3.762774,
+          "cpu_seconds_total": 4.081583,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "ffbde1a84e7c674a3b787b5647fbd09bbb4e8a1735e385fa3fe0d542e6430a3a"
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "6bc6776387de5c5ba0a33a39086cfed605ab0320f6cea308ad5bfd9e3806c111"
         },
         {
-          "kind": "casebook",
+          "kind": "probe-receipt",
           "service": "confirmation",
-          "uptime_sec": 250.857023,
-          "mechanism": "coordinated-omission",
-          "records": [],
-          "scope": "no owned lifecycle records",
-          "signature": "9a2cc6547c5aeb8765e70d30cbb17a627770d8dacac9a9ab06707b3b6b13d842"
+          "uptime_sec": 272.112642,
+          "request_id": "confirmation-430",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "4d6f945ecabbc1dd81aaed887287e232d1623485e3b036787524ecf566d92aab"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "confirmation",
+          "uptime_sec": 272.119273,
+          "request_id": "confirmation-431",
+          "request": {
+            "reservation_class": "single-room",
+            "probe_mode": "closed-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "399bf60da1764b1ed4194a58899e7de0716064ce379fddc5f392abbce44f1c2b"
         }
       ]
     },
     {
       "service": "user-wait-log",
       "class": "none",
-      "reason": "user-wait-log reports flat latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0 and 0 errors across >100s of its own uptime and owns no lifecycle records; it only records waits produced elsewhere.",
+      "reason": "Examined as the recorder of guest-visible waiting. Over 180 s of its own uptime (94.3 s -> 274.9 s) its signed snapshots show latency_ms 18.0, queue_depth 0, queue_oldest_age_sec 0.0 and errors_total 0, and its probe receipts return 6.0 ms 'accepted' for both classes; its casebook owns no lifecycle records. It neither delays nor selects traffic, so it neither causes nor conceals the wait. Behaviour is consistent with its contract.",
       "observations": [
         {
           "kind": "metrics",
           "service": "user-wait-log",
-          "uptime_sec": 145.659778,
-          "requests_total": 223,
+          "uptime_sec": 94.337702,
+          "requests_total": 143,
           "errors_total": 0,
-          "cpu_seconds_total": 2.184897,
+          "cpu_seconds_total": 1.415066,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 36,
-          "durable_outcomes_total": 36,
-          "process_epoch": 6,
-          "signature": "e6d0cc9d467e967913cd4182a09add9a7128f2807cfc1e75407942e07a1fc8b1"
+          "attempts_total": 23,
+          "durable_outcomes_total": 23,
+          "process_epoch": 3,
+          "signature": "79ac72167ce34e2a5b08dbc99709ad86ce0ca38bcffd5ac5985a9028efc06900"
+        },
+        {
+          "kind": "probe-receipt",
+          "service": "user-wait-log",
+          "uptime_sec": 94.34477,
+          "request_id": "user-wait-log-144",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "8b29d4bf2ed731c392d47f8b1697d05bc3ae520e3fc7fa9be99fa206db2c58a0"
         },
         {
           "kind": "metrics",
           "service": "user-wait-log",
-          "uptime_sec": 194.303783,
-          "requests_total": 297,
+          "uptime_sec": 274.857928,
+          "requests_total": 432,
           "errors_total": 0,
-          "cpu_seconds_total": 2.914557,
+          "cpu_seconds_total": 4.122869,
           "latency_ms": 18.0,
           "queue_depth": 0,
           "queue_oldest_age_sec": 0.0,
           "cpu_pressure_some": 0.02,
           "cpu_pressure_full": 0.002,
           "metric_eligible": true,
-          "attempts_total": 48,
-          "durable_outcomes_total": 48,
-          "process_epoch": 8,
-          "signature": "75373bd120f29a6c4ba53824407a3b0e0c7f019348eb5275b9d628d7006fdcff"
+          "attempts_total": 68,
+          "durable_outcomes_total": 68,
+          "process_epoch": 11,
+          "signature": "9c9099159b4b3773a15878679b44464faf2573d369ce97f7147eac3cb79ad798"
         },
         {
-          "kind": "metrics",
+          "kind": "probe-receipt",
           "service": "user-wait-log",
-          "uptime_sec": 251.05029,
-          "requests_total": 382,
-          "errors_total": 0,
-          "cpu_seconds_total": 3.765754,
-          "latency_ms": 18.0,
-          "queue_depth": 0,
-          "queue_oldest_age_sec": 0.0,
-          "cpu_pressure_some": 0.02,
-          "cpu_pressure_full": 0.002,
-          "metric_eligible": true,
-          "attempts_total": 62,
-          "durable_outcomes_total": 62,
-          "process_epoch": 10,
-          "signature": "0dd2b5e23d076660bca8e59561ff3ecee0eccc611ff40ebdf14204eaa8e55679"
+          "uptime_sec": 274.865,
+          "request_id": "user-wait-log-433",
+          "request": {
+            "reservation_class": "group",
+            "probe_mode": "open-loop"
+          },
+          "duration_ms": 6.0,
+          "outcome": "accepted",
+          "signature": "c0c7a8b0cee88249c1f08ae5e0bb2fdcf31530845f7f00cf384efca6d285918f"
         },
         {
           "kind": "casebook",
           "service": "user-wait-log",
-          "uptime_sec": 251.056263,
+          "uptime_sec": 274.858458,
           "mechanism": "coordinated-omission",
           "records": [],
           "scope": "no owned lifecycle records",
-          "signature": "cccdb62bd3337c56b6491ee983af1de58e947f147aa13d3b41abaa657ac0d4e6"
+          "signature": "c6f2ed7122240efb499a17ff11167c2e5476e72fc23b706596e75578d0e7f2a8"
         }
       ]
     }

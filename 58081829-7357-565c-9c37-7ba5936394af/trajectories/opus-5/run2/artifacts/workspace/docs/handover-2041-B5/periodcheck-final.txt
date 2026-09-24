@@ -1,0 +1,8 @@
+period under test: 2041-B5
+
+note:      mf-1130 (thurlby-base purser) flew no sector in 2041-B5, so the period builds no sheet for it
+SHORTFALL: thurlby-base is established for first-officer but the register declares no first-officer at that base, so it cannot crew one
+SHORTFALL: thurlby-base cannot crew purser: its only purser (mf-1130) flew no sector this period, so the period builds no sheet
+
+the run is sound: every sheet this period owes is in its base's drop and settles with the published reader.
+2 shortfall(s) for the accountable manager: the register does not cover every rank its bases are established for.

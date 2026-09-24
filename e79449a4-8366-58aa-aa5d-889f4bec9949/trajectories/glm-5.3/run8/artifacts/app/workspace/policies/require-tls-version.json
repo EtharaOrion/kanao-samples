@@ -6,8 +6,8 @@
         "equals": "Microsoft.Web/sites/config"
       },
       {
-        "field": "fullName",
-        "like": "*-${environment}/web"
+        "field": "name",
+        "like": "*-${environment}"
       },
       {
         "not": {

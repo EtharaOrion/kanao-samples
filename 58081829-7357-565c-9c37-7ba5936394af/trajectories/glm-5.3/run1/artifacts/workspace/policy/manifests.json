@@ -1,0 +1,24 @@
+{
+ "generations": {
+  "g17": {
+   "batches": {
+    "10": "ff7bc27fea589af1e13f534f333f74301af16508dbed97429461650ba9ee6469",
+    "2": "e1881576b71a93f133bf91d906f93c0a67a427bd5dffc6257ebd29457d863c09"
+   }
+  },
+  "g18": {
+   "batches": {
+    "10": "ff7bc27fea589af1e13f534f333f74301af16508dbed97429461650ba9ee6469",
+    "2": "e1881576b71a93f133bf91d906f93c0a67a427bd5dffc6257ebd29457d863c09",
+    "30": "c20760e216075ee8152859be9c1778415973321feb5119c7293fa41606756d4f"
+   }
+  },
+  "g19": {
+   "batches": {
+    "10": "ff7bc27fea589af1e13f534f333f74301af16508dbed97429461650ba9ee6469",
+    "2": "e1881576b71a93f133bf91d906f93c0a67a427bd5dffc6257ebd29457d863c09",
+    "40": "b92d6ca08367feebab349b45a4e779763e2c10d56d0dddbad9dabd147854ec4d"
+   }
+  }
+ }
+}

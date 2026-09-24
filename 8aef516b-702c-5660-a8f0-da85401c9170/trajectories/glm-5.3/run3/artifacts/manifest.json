@@ -1,18 +1,11 @@
 [
   {
-    "source": "/logs/artifacts",
-    "destination": "artifacts/logs/artifacts",
-    "type": "directory",
-    "status": "empty",
-    "service": null,
-    "collected": true
-  },
-  {
     "source": "/app/verdict.txt",
     "destination": "artifacts/app/verdict.txt",
     "type": "file",
     "status": "ok",
     "service": null,
+    "exclude": [],
     "collected": true
   },
   {
@@ -21,6 +14,7 @@
     "type": "file",
     "status": "ok",
     "service": null,
+    "exclude": [],
     "collected": true
   },
   {
@@ -29,6 +23,7 @@
     "type": "file",
     "status": "ok",
     "service": "synthetic-probe",
+    "exclude": [],
     "collected": true
   },
   {
@@ -37,6 +32,7 @@
     "type": "file",
     "status": "ok",
     "service": "reservation-edge",
+    "exclude": [],
     "collected": true
   },
   {
@@ -45,6 +41,7 @@
     "type": "file",
     "status": "ok",
     "service": "admission-gate",
+    "exclude": [],
     "collected": true
   },
   {
@@ -53,6 +50,7 @@
     "type": "file",
     "status": "ok",
     "service": "reservation-worker",
+    "exclude": [],
     "collected": true
   },
   {
@@ -61,6 +59,7 @@
     "type": "file",
     "status": "ok",
     "service": "availability-cache",
+    "exclude": [],
     "collected": true
   },
   {
@@ -69,6 +68,7 @@
     "type": "file",
     "status": "ok",
     "service": "inventory",
+    "exclude": [],
     "collected": true
   },
   {
@@ -77,6 +77,7 @@
     "type": "file",
     "status": "ok",
     "service": "confirmation",
+    "exclude": [],
     "collected": true
   },
   {
@@ -85,6 +86,7 @@
     "type": "file",
     "status": "ok",
     "service": "user-wait-log",
+    "exclude": [],
     "collected": true
   }
 ]

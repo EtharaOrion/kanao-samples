@@ -1,0 +1,28 @@
+What each base is holding at the close of 2041-B5, as settled by the published reader
+(tools/rostercheck, run with the register's key_fingerprint 7c1d4a90e35b26f8):
+
+arnwick-base  ranks established: captain,first-officer
+    arnwick-base mf-2210 2041-B5: 837 credited
+    arnwick-base mf-3480 2041-B5: 645 credited
+kirkbryde-base  ranks established: captain,first-officer,purser
+    kirkbryde-base mf-6350 2041-B5: 430 credited
+    kirkbryde-base mf-7040 2041-B5: 833 credited
+    kirkbryde-base mf-8890 2041-B5: 515 credited
+oxenholme-base  ranks established: captain,first-officer
+    oxenholme-base mf-4160 2041-B5: 884 credited
+    oxenholme-base mf-5720 2041-B5: 468 credited
+thurlby-base  ranks established: captain,first-officer,purser
+    thurlby-base mf-9270 2041-B5: 819 credited
+
+roster.register:
+    2041-B4 arnwick-base b6c8641944681bbb
+    2041-B4 kirkbryde-base 66cf81438643142b
+    2041-B4 oxenholme-base ff24eea0bb93b5c8
+    2041-B4 thurlby-base 0f9d967de6db5e4f
+    2041-B5 arnwick-base 29702aa5826b4514
+    2041-B5 kirkbryde-base 740cd8a3a9e03fe8
+    2041-B5 oxenholme-base 8ee6331c2516adb0
+    2041-B5 thurlby-base b6b6f2a3bf29e4bc
+
+policy-selection.json:
+    {"decisions": {"mf-3480": null, "mf-6350": ["2042-B2", "430"]}, "selected": "close-17"}

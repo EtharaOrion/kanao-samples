@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""drop-audit - check every base drop against the register and the schedule.
+
+What the desk runs after a roster pass (and before endorsing a period) to be
+sure that what each base is holding is what the run staged:
+
+  * every crew member the register declares that the current period records
+    a sector for has that period's sheet in its base's drop, byte-identical
+    to the staged sheet,
+  * every sheet in a drop settles under the published reader
+    (tools/rostercheck), seal, factor and credit,
+  * the drop holds a sheet for every rank the base's fragment declares,
+  * the endorsement the roster register records for the period still covers
+    exactly the sheets the drop holds.
+
+Usage:  drop-audit [--fix] [fingerprint]
+Exit:   0 complete, 1 a base is short or a sheet does not settle, 2 usage
+"""
+import os
+import subprocess
+import sys
+
+WORKSPACE = "/workspace"
+ROSTERCHECK = os.path.join(WORKSPACE, "tools/rostercheck/rostercheck.py")
+MASK64 = (1 << 64) - 1
+
+
+def read_registerconf(path):
+    conf = {}
+    with open(path) as fh:
+        for line in fh:
+            if ":" in line and not line.lstrip().startswith("#"):
+                key, _, value = line.partition(":")
+                conf[key.strip()] = value.strip()
+    return conf
+
+
+def read_fragment(path):
+    frag = {}
+    with open(path) as fh:
+        for line in fh:
+            if "=" in line and not line.lstrip().startswith("#"):
+                key, _, value = line.partition("=")
+                frag[key.strip()] = value.strip().strip('"')
+    return frag
+
+
+def current_period():
+    out = subprocess.run(["marrowfleet", "status"], capture_output=True, text=True)
+    for line in out.stdout.splitlines():
+        fields = line.split()
+        if fields and fields[0] == "period":
+            return fields[1]
+    raise SystemExit("drop-audit: cannot read the current period from marrowfleet status")
+
+
+def sectors_by_crew(period):
+    flown = set()
+    path = os.path.join(WORKSPACE, "rostering/sectors.csv")
+    with open(path) as fh:
+        for row in fh:
+            fields = row.strip().split(",")
+            if len(fields) == 4 and fields[0] == period and fields[1]:
+                flown.add(fields[1])
+    return flown
+
+
+def checksum(data):
+    h = 0xCBF29CE484222325
+    for b in data:
+        h ^= b
+        h = (h * 0x100000001B3) & MASK64
+    return "%016x" % ((((h << 17) | (h >> 47)) & MASK64) ^ 0x517CC1B727220A95)
+
+
+def endorsed(period, base_root):
+    seals = {}
+    path = "/var/lib/marrowfleet/roster.register"
+    if not os.path.exists(path):
+        return seals
+    with open(path) as fh:
+        for line in fh:
+            fields = line.split()
+            if len(fields) == 3:
+                seals[(fields[0], fields[1])] = fields[2]
+    return seals
+
+
+def main(argv):
+    fix = False
+    args = [a for a in argv if a != "--fix"]
+    fix = "--fix" in argv
+    if len(args) > 1:
+        sys.stderr.write("usage: drop-audit [--fix] [fingerprint]\n")
+        return 2
+    conf = read_registerconf(os.path.join(WORKSPACE, "rostering/rostering.yaml"))
+    fingerprint = args[0] if args else conf["key_fingerprint"]
+    base_root = conf["base_root"]
+    sheets_root = conf["sheets_root"]
+    period = current_period()
+    flown = sectors_by_crew(period)
+
+    crew = {}
+    for name in sorted(os.listdir(os.path.join(WORKSPACE, "rostering/crew.d"))):
+        frag = read_fragment(os.path.join(WORKSPACE, "rostering/crew.d", name))
+        if frag.get("enabled") == "true":
+            crew[frag["name"]] = frag
+    bases = {}
+    for name in sorted(os.listdir(os.path.join(WORKSPACE, "rostering/bases.d"))):
+        frag = read_fragment(os.path.join(WORKSPACE, "rostering/bases.d", name))
+        if frag.get("enabled") == "true":
+            bases[frag["name"]] = frag
+
+    roster = {}
+    for crew_name, frag in crew.items():
+        roster.setdefault(frag["base"], []).append(crew_name)
+
+    problems = 0
+    seals = endorsed(period, base_root)
+    for base_name, frag in sorted(bases.items()):
+        drop = os.path.join(base_root, base_name)
+        expected = sorted(c for c in roster.get(base_name, []) if c in flown)
+        blob = ""
+        for crew_name in expected:
+            sheet = "marrowfleet_%s.sheet" % crew_name
+            staged = os.path.join(sheets_root, sheet)
+            target = os.path.join(drop, sheet)
+            with open(staged, "rb") as fh:
+                staged_bytes = fh.read()
+            blob += staged_bytes.decode("utf-8", "replace")
+            if not os.path.exists(target):
+                print("MISSING %s in %s" % (sheet, base_name))
+                problems += 1
+                if fix:
+                    with open(target, "wb") as fh:
+                        fh.write(staged_bytes)
+                    print("  restored from the staged sheet")
+            else:
+                with open(target, "rb") as fh:
+                    if fh.read() != staged_bytes:
+                        print("DIFFERS %s in %s" % (sheet, base_name))
+                        problems += 1
+                        if fix:
+                            with open(target, "wb") as fh:
+                                fh.write(staged_bytes)
+                            print("  restored from the staged sheet")
+            check = subprocess.run([sys.executable, ROSTERCHECK, target, fingerprint],
+                                   capture_output=True, text=True)
+            if check.returncode:
+                detail = check.stderr.strip().splitlines()[-1] if check.stderr.strip() else "no output"
+                print("UNSETTLED %s in %s: %s" % (sheet, base_name, detail))
+                problems += 1
+        extra = sorted(set(os.listdir(drop)) - {"marrowfleet_%s.sheet" % c for c in expected})
+        if extra:
+            print("EXTRA %s in %s" % (", ".join(extra), base_name))
+            problems += 1
+        held = set()
+        for crew_name in expected:
+            target = os.path.join(drop, "marrowfleet_%s.sheet" % crew_name)
+            if os.path.exists(target):
+                head = {}
+                with open(target) as fh:
+                    for line in fh:
+                        if ":" in line and not line.startswith("#"):
+                            key, _, value = line.partition(":")
+                            head[key.strip()] = value.strip()
+                if head.get("period") == period:
+                    held.add(head.get("rank"))
+        short = [r for r in frag["ranks"].split(",") if r and r not in held]
+        if short:
+            print("RANKS %s declares %s with no %s sheet this period"
+                  % (base_name, frag["ranks"], ",".join(short)))
+        seal = seals.get((period, base_name))
+        if seal is not None and seal != checksum(blob.encode("utf-8")):
+            print("ENDORSEMENT %s does not cover the sheets the drop holds" % base_name)
+            problems += 1
+    if problems:
+        print("drop-audit: %d problem(s)" % problems)
+        return 1
+    print("drop-audit: every declared base holds this period's sheets, settled"
+          " (rank gaps reported above are not drop faults)")
+    return 0
+
+
+sys.exit(main(sys.argv[1:]))

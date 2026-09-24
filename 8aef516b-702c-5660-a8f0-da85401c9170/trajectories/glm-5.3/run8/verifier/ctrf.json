@@ -6,14 +6,14 @@
       "name": "pytest"
     },
     "summary": {
-      "tests": 13,
-      "passed": 9,
-      "failed": 4,
+      "tests": 12,
+      "passed": 10,
+      "failed": 2,
       "pending": 0,
       "skipped": 0,
       "other": 0,
-      "start": 1788716444501,
-      "stop": 1788716444501
+      "start": 1790223380471,
+      "stop": 1790223380471
     },
     "tests": [
       {
@@ -23,16 +23,22 @@
         "weight": 1
       },
       {
-        "name": "test_expected_finding[reservation-worker:capacity-cliff]",
+        "name": "test_gate_expected_finding[reservation-worker:capacity-cliff]",
         "status": "passed",
         "suite": "tests",
         "weight": 5
       },
       {
         "name": "test_causal_discriminator[reservation-worker:capacity-cliff]",
-        "status": "failed",
+        "status": "passed",
         "suite": "tests",
         "weight": 5
+      },
+      {
+        "name": "test_required_population_calculations[reservation-worker:capacity-cliff]",
+        "status": "passed",
+        "suite": "tests",
+        "weight": 3
       },
       {
         "name": "test_evidence_window[reservation-worker:capacity-cliff]",
@@ -48,7 +54,7 @@
       },
       {
         "name": "test_required_alternatives_ruled_out",
-        "status": "failed",
+        "status": "passed",
         "suite": "tests",
         "weight": 3
       },
@@ -59,16 +65,10 @@
         "weight": 1
       },
       {
-        "name": "test_no_phantom_findings",
+        "name": "test_gate_no_phantom_findings",
         "status": "failed",
         "suite": "tests",
         "weight": 3
-      },
-      {
-        "name": "test_negative_phantom_finding[admission-gate:load-shedding]",
-        "status": "passed",
-        "suite": "tests",
-        "weight": -3
       },
       {
         "name": "test_negative_phantom_finding[reservation-worker:input-scaling]",
@@ -83,12 +83,6 @@
         "weight": -3
       },
       {
-        "name": "test_negative_phantom_finding[synthetic-probe:probe-population-gap]",
-        "status": "passed",
-        "suite": "tests",
-        "weight": -3
-      },
-      {
         "name": "test_negative_fabricated_observation",
         "status": "failed",
         "suite": "tests",
@@ -96,12 +90,12 @@
       }
     ],
     "environment": {
-      "testEnvironment": "monitoring__reservation-admission-latency",
+      "testEnvironment": "8aef516b-702c-5660-a8f0-da85401c9170",
       "extra": {
         "model": "glm-5.3",
-        "run": "run8",
+        "run": "run_8",
         "source": "ctrf.json",
-        "reward": 0.041667
+        "reward": 0.0
       }
     }
   }

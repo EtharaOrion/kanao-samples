@@ -5,60 +5,66 @@
 data "azurerm_subscription" "current" {}
 
 locals {
+  # Slug-bearing documents are rendered from the single copy under policies/
+  # with this environment's own input, so a document never reaches the control
+  # plane with the placeholder still in it and never has to be copied per
+  # environment.
+  policy_slug = {
+    environment = var.environment
+  }
+
   # The catalogue of custom definitions this environment owns. One entry per
   # definition; `rule` holds the document exactly as the control plane receives
-  # it, so what is reviewed here is what Azure evaluates. A document that
-  # carries the environment slug is rendered from the single copy under
-  # policies/ with this environment's own input, never copied per environment.
+  # it, so what is reviewed here is what Azure evaluates. `mode` follows the
+  # objects the rule targets: "Indexed" for types that carry tags and a
+  # location, "All" for resource groups and for the site/slot config children,
+  # which carry neither and which "Indexed" would skip.
   policy_definitions = {
     deny_public_sql = {
-      mode         = "All"
+      mode         = "Indexed"
       display_name = "PayMesh - deny Azure SQL reachable from the public network"
       description  = "Refuses an Azure SQL server whose publicNetworkAccess is anything other than Disabled, which keeps the PCI DSS assessment scope small."
       rule         = file("${path.module}/../../policies/deny-public-sql.json")
     }
 
     require_tags = {
-      mode         = "All"
+      mode         = "Indexed"
       display_name = "PayMesh - require the mandatory tags"
       description  = "Refuses a resource created without the 'environment' and 'data_classification' tags."
       rule         = file("${path.module}/../../policies/require-tags.json")
     }
 
-    # Targets Microsoft.Web/sites/config, a child object that carries neither
-    # tags nor a location of its own, so it is invisible to the indexed mode.
+    require_resource_group_tags = {
+      mode         = "All"
+      display_name = "PayMesh - require the mandatory tags on resource groups"
+      description  = "Refuses a resource group created without the 'environment' and 'data_classification' tags. Resource groups are where the cost allocation report, the PCI DSS scoping inventory and the on-call escalation map all start: an untagged group falls out of the monthly chargeback run, is invisible to the quarterly assessment that proves the cardholder data environment is contained, and pages nobody when something inside it breaks. The tags are therefore required at creation, not added afterwards by a clean-up script, and a group that arrives without them is refused in the control plane before any resource can be placed in it."
+      rule         = file("${path.module}/../../policies/require-resource-group-tags.json")
+    }
+
     require_tls_version = {
       mode         = "All"
       display_name = "PayMesh - require TLS 1.2 on every site in this environment"
-      description  = "Refuses a site in this environment that will still negotiate an obsolete TLS version."
-      rule = templatefile("${path.module}/../../policies/require-tls-version.json", {
-        environment = var.environment
-      })
+      description  = "Refuses a site configuration in this environment that will still negotiate an obsolete TLS version."
+      rule         = templatefile("${path.module}/../../policies/require-tls-version.json", local.policy_slug)
     }
 
     require_https_only = {
       mode         = "Indexed"
       display_name = "PayMesh - require HTTPS on every site in this environment"
       description  = "Refuses a site in this environment that will serve plaintext HTTP."
-      rule = templatefile("${path.module}/../../policies/require-https-only.json", {
-        environment = var.environment
-      })
+      rule         = templatefile("${path.module}/../../policies/require-https-only.json", local.policy_slug)
     }
 
     # Deliberately scoped by name rather than to Microsoft.Web as a whole: the
     # same resource group holds an App Service and a workers Function App that
     # were never designed with an ip restriction, and a type-wide definition
     # would have refused their first deployment. Only the two Function Apps of
-    # the payments flow carry one. The setting is read on the site config child
-    # object that holds it, one wildcard per match, so the control plane
-    # accepts the document and evaluates a partial write correctly.
+    # the payments flow carry one.
     require_ip_restriction = {
       mode         = "All"
       display_name = "PayMesh - require an ip restriction on the payments Function Apps"
       description  = "Refuses a write to the payments Function Apps that leaves ipSecurityRestrictionsDefaultAction at anything other than Deny."
-      rule = templatefile("${path.module}/../../policies/require-ip-restriction.json", {
-        environment = var.environment
-      })
+      rule         = templatefile("${path.module}/../../policies/require-ip-restriction.json", local.policy_slug)
     }
 
     # Deployment slots are separate Azure child resources with a separate
@@ -69,15 +75,14 @@ locals {
       mode         = "All"
       display_name = "PayMesh - require an ip restriction on payments deployment slots"
       description  = "Refuses a write to either payments blue slot that leaves its default restriction action open."
-      rule = templatefile("${path.module}/../../policies/require-slot-ip-restriction.json", {
-        environment = var.environment
-      })
+      rule         = templatefile("${path.module}/../../policies/require-slot-ip-restriction.json", local.policy_slug)
     }
   }
 
   # The definitions that carry an assignment at subscription scope. A
   # definition missing from this list still exists in the subscription and
-  # still evaluates nothing at all, so every entry in the catalogue is here.
+  # still evaluates nothing at all, so the catalogue is the list: an entry
+  # cannot be added without its assignment.
   assigned_policies = keys(local.policy_definitions)
 }
 

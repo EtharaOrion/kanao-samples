@@ -50,6 +50,37 @@ Dates are ISO YYYY-MM-DD with start strictly before end. Invalid history must
 raise an error (nonzero CLI exit), with no partial result. Complete validation
 precedes projection. Existing events-only requests remain supported.
 
+## Release manifests
+
+A released delivery names its generation: transport={generation,commits,pages},
+where generation is a nonempty string. `policy/manifests.json` is the release
+authority's record of every generation, and it is what says which batches a
+generation's history holds - a transport only says which batches arrived. Its
+shape is {"generations": {<generation>: {"batches": {<batch>: <sha256>}}}}. A
+transport that names a generation must commit exactly the batches that
+generation's manifest lists, each at the digest the manifest lists for it. A
+batch the manifest lists that the transport does not commit, a batch the
+transport commits that the manifest does not list, a committed digest that
+differs from the manifest's, or a generation the manifest does not name
+invalidates the entire request, even when every page the transport does carry
+matches its own commit. Every other rule above still applies to a generation's
+history, including the page digests, the event rules and the revision rules.
+
+A transport that names no generation is an unreleased trial delivery and is
+checked as above without a manifest; events-only requests likewise. The resolver
+reads the manifests from the file named by the MARROWFLEET_POLICY_MANIFESTS
+environment variable when it is set, and from `/workspace/policy/manifests.json`
+otherwise, so a trial can be checked against manifests of its own. The release
+controller sets no such variable. `policy/manifests.json` is a protected
+operating input, like the feed.
+
+## Replay
+
+Reconciliation runs on every release. A second release from the same feed and
+manifests selects the same candidate, applies the same decisions and builds the
+same sheets; a limitation the selected history withdraws stays absent however
+many releases follow.
+
 ## Candidate handover
 
 The feed holds subjects and an ordered candidates list. Each candidate has an

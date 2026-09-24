@@ -1,5 +1,1 @@
-admission-gate:load-shedding
-reservation-worker:capacity-cliff
-reservation-worker:input-scaling
 reservation-worker:queue-backlog
-synthetic-probe:probe-population-gap
