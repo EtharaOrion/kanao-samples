@@ -20,7 +20,7 @@
       "name": "rubric",
       "score": 0.647059,
       "status": "FAILED",
-      "Evaluated By": "Riya Jha",
+      "Evaluated By": "riya.jha@ethara.ai",
       "detail": "9/13 passed"
     },
     "notes": [
@@ -143,7 +143,7 @@
       "score": 0.647059,
       "status": "FAILED"
     },
-    "Evaluated By": "Riya Jha",
+    "Evaluated By": "riya.jha@ethara.ai",
     "criteria": [
       {
         "id": 0,

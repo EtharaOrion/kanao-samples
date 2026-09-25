@@ -20,7 +20,7 @@
       "name": "rubric",
       "score": 0.46,
       "status": "FAILED",
-      "Evaluated By": "Khushi Rathore",
+      "Evaluated By": "khushi.rathore@ethara.ai",
       "detail": "11/20 passed"
     }
   },
@@ -113,7 +113,7 @@
       "score": 0.46,
       "status": "FAILED"
     },
-    "Evaluated By": "Khushi Rathore",
+    "Evaluated By": "khushi.rathore@ethara.ai",
     "criteria": [
       {
         "id": 0,

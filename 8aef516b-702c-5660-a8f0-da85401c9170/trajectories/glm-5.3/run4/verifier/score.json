@@ -20,7 +20,7 @@
       "name": "rubric",
       "score": 0.3125,
       "status": "FAILED",
-      "Evaluated By": "Vikas Gupta",
+      "Evaluated By": "vikas.gupta@ethara.ai",
       "detail": "6/9 passed"
     }
   },
@@ -124,7 +124,7 @@
       "score": 0.3125,
       "status": "FAILED"
     },
-    "Evaluated By": "Vikas Gupta",
+    "Evaluated By": "vikas.gupta@ethara.ai",
     "criteria": [
       {
         "id": 0,

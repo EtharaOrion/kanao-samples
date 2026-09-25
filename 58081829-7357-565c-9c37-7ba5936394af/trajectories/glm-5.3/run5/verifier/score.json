@@ -20,7 +20,7 @@
       "name": "rubric",
       "score": 0.0,
       "status": "FAILED",
-      "Evaluated By": "Riya Jha",
+      "Evaluated By": "riya.jha@ethara.ai",
       "detail": "5/13 passed"
     }
   },
@@ -141,7 +141,7 @@
       "score": 0.0,
       "status": "FAILED"
     },
-    "Evaluated By": "Riya Jha",
+    "Evaluated By": "riya.jha@ethara.ai",
     "criteria": [
       {
         "id": 0,
