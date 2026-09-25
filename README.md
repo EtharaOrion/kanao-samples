@@ -249,7 +249,7 @@ The agent sees `instruction.md` and the built container and nothing else. `solut
 are verifier-side: the reference repair and the answer key never enter the agent's container, which
 is what closes the oracle-replay path. `task.toml` carries `schema_version = "1.4"`, the declared
 artifact list, `[metadata].difficulty` and `category`, separate agent and verifier timeouts, and
-`environment_mode = "separate"` - the verifier runs in its own container once the agent's turn is
+`environment_mode = "separate"` the verifier runs in its own container once the agent's turn is
 over, reading the estate through the declared `artifacts` list rather than sharing the agent's
 container.
 
