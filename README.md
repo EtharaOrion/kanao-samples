@@ -54,10 +54,9 @@ pass_rate(task, model) = 100 × mean( overall_score over that model's 8 runs on 
 | Models           | `opus-5` and `glm-5.3`                                                       |
 | Runs & grid      | 8 per model per task = **48 total**; full 2 × 8 grid, no gaps                |
 | Difficulty tiers | Banded on **opus-5**'s mean over 8 runs - one task per tier                  |
-| Evaluators       | Three human graders, one per task; each authored the task they grade         |
 | Score            | `overall_score` ∈ [0, 1] - the mean of pytest and rubrics, shown as %        |
 | Pytest           | Weighted deterministic tests over the delivered estate                       |
-| Rubrics          | Judged criteria over the recorded trajectory                                 |
+| Rubrics          | Judged criteria scored over the recorded trajectory                          |
 | Environment      | Verifier runs **in a separate container** after the agent's turn ends        |
 | Corpus size      | 1,833 files, 292 MB (LFS-deduped; provider binaries share a single blob)     |
 
@@ -284,12 +283,13 @@ audit.
 ```
 
 `score.json` carries `schema_version` `3`, along with `tests_score`, `rubric_score`, `overall_score`
-and a `rubric` block that records the human evaluator's name in `Evaluated By` and every criterion's
-verdict with a written justification. `execution` holds the per-test CTRF summary; `summary` restates
+and a `rubric` block that records every
+criterion's verdict with a written justification. `execution` holds the per-test CTRF summary; `summary` restates
 the composition formula and the tests/rubric breakdown. `usage.json` reports token and cost
 attribution for the agent - `input_tokens`, `output_tokens`, `cache_read_tokens`, `cache_write_tokens`
-and `cost_usd` under `sources.agent` - and rubric grading is manual, so no separate `sources.judge`
-block is emitted. Every cost figure in this document is summed from `sources.agent.cost_usd`, and
+and `cost_usd` under `sources.agent`. These sample `usage.json` files carry agent token and cost
+attribution only, so no `sources.judge` block appears. Every cost figure in
+this document is summed from `sources.agent.cost_usd`, and
 step counts are the length of `agent/trajectory.json`'s `steps` array. Run directories are named
 `run1 … run8`; the `run` field inside `score.json` spells the same run `run_1 … run_8`.
 
@@ -351,15 +351,12 @@ and eight of opus-5's eight `marrowfleet` runs cleared 100%.
 
 ### Rubrics - the recorded trajectory
 
-`tests/rubric.json` holds **42 criteria** across the three tasks, judged by **three human
-evaluators**, one per task, against `agent/trajectory.json` - the recorded reasoning, not the
-delivered files. Each criterion is scored independently and carries a weight of `±5`, `±3` or
-`±1`; **11 carry negative weight**, penalising over-reach, changing an estate the brief declared
-read-only, and citing a value the agent's own transcript contradicts. `verifier/score.json` records
-the per-criterion verdict with a justification on every criterion, and the evaluator's name in the
-`rubric.Evaluated By` field. The rubrics score is the weighted satisfaction rate. Each evaluator is
-one of the co-authors of the task they graded (see `task.toml.[task].authors`); [Limitations](#limitations)
-addresses the bias this introduces.
+`tests/rubric.json` holds **42 criteria** across the three tasks, scored against
+`agent/trajectory.json` - the recorded reasoning, not the delivered files. Each criterion is scored
+independently and carries a weight of `±5`, `±3` or `±1`; **11 carry negative weight**, penalising
+over-reach, changing an estate the brief declared read-only, and citing a value the agent's own
+transcript contradicts. `verifier/score.json` records the per-criterion verdict with a justification
+on every criterion. The rubrics score is the weighted satisfaction rate.
 
 Pytest and rubrics compose with equal weight:
 
@@ -418,25 +415,15 @@ overall opus-5   45.51%
 overall glm-5.3  27.93%
 ```
 
-**Count outright solves, artifact-clean runs, and the three human evaluators:**
+**Count outright solves and artifact-clean runs:**
 
 ```python
 import json, glob
-rs = [(p, json.load(open(p))) for p in glob.glob("*/trajectories/*/run*/verifier/score.json")]
-evaluators = {}
-for p, r in rs:
-    ev = r.get("rubric", {}).get("Evaluated By")
-    evaluators.setdefault(ev, set()).add(p.split("/")[0][:8])
+rs = [json.load(open(p)) for p in glob.glob("*/trajectories/*/run*/verifier/score.json")]
 print({"runs": len(rs),
-       "solved": sum(r["overall_score"] >= 1 for _, r in rs),
-       "tests_green": sum(r["tests_score"] >= 1 for _, r in rs),
-       "evaluators": {e: sorted(ts) for e, ts in evaluators.items()}})
-# -> {'runs': 48,
-#     'solved': 1,
-#     'tests_green': 8,
-#     'evaluators': {'riya.jha@ethara.ai': ['58081829'],
-#                    'khushi.rathore@ethara.ai': ['e79449a4'],
-#                    'vikas.gupta@ethara.ai': ['8aef516b']}}
+       "solved": sum(r["overall_score"] >= 1 for r in rs),
+       "tests_green": sum(r["tests_score"] >= 1 for r in rs)})
+# -> {'runs': 48, 'solved': 1, 'tests_green': 8}
 ```
 
 **Re-verify the pytest + rubrics composition on every run.**
@@ -564,13 +551,6 @@ that a single model saturates in one bucket cannot separate near-solvers from pa
 had no part in; that is deliberate and makes the rows comparable, but a glm-anchored banding would
 move `paymesh` from `hard` to `expert` (24.74% sits below the 25% boundary) and leave the other two
 where they are. `marrowfleet` remains in `easy` for glm-5.3 by 0.47 points.
-
-**Human evaluators, self-graded.** The rubric for each task was scored by one human, and each
-evaluator is one of the co-authors of the task they graded - Riya Jha graded her own
-`marrowfleet`, Khushi Rathore graded her own `paymesh`, Vikas Gupta graded his own `reservation`.
-There is one grader per task and no second reader, so evaluator-specific interpretation cannot be
-separated from the rubric signal, and the author-as-grader arrangement is a familiarity bias that
-tends to reward transcripts framed in terms of the task's own vocabulary. Pytest is unaffected.
 
 **Cost figures.** Costs are the harness's own `cost_usd` accounting, priced from measured token
 counts at published list rates, not billed invoices. Neither model was served through a metered
