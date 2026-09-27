@@ -1,1 +1,8 @@
-{"reward": 0.8, "earned": 24, "penalty": 0, "available": 30}
+{
+  "reward": 0.8,
+  "earned": 24,
+  "penalty": 0,
+  "available": 30,
+  "rubric_score": 0.705882,
+  "combined_score": 0.752941
+}

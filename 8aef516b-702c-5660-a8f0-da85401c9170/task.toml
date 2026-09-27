@@ -1,5 +1,6 @@
 schema_version = "1.4"
 artifacts = [
+    "/logs/agent",
     "/app/verdict.txt",
     "/app/monitor_evidence.json",
     { source = "/var/log/svc/synthetic-probe.log",    destination = "logs/synthetic-probe.log",    service = "synthetic-probe" },
@@ -33,11 +34,19 @@ expert_time_estimate_min = 30.0
 junior_time_estimate_min = 90.0
 
 [verifier]
-timeout_sec = 300.0
+timeout_sec = 900.0
 environment_mode = "separate"
 
+[verifier.env]
+OPENAI_API_KEY = "${OPENAI_API_KEY:-}"
+ANTHROPIC_API_KEY = "${ANTHROPIC_API_KEY:-}"
+OPENAI_BASE_URL = "${OPENAI_BASE_URL:-}"
+JUDGE_MODEL = "${JUDGE_MODEL:-}"
+JUDGE_WIRE = "${JUDGE_WIRE:-openai}"
+
 [verifier.environment]
-docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-verifier@sha256:172e9b104be0d8793f0f29e282dae2eca66dccd1bb8e9f1814b9a113d5f3b559"
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:8aef516b-reservation-admission-latency-verifier@sha256:8a296c2f89e342273e144224568b4339b508c55f1b771281b58d8af470ce3f44"
+network_mode = "public"
 
 [agent]
 timeout_sec = 3600.0

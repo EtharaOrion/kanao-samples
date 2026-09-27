@@ -128,18 +128,15 @@ same gate zeroes a near-correct run that adds a phantom finding
 alongside an extra fabricated fault still scores `0.0`, because a report that
 also blames a healthy service has not diagnosed the estate.
 
-**The human-eval QA composite.** `score.json` and `pass_summary.json` also
+**The QA composite.** `score.json` and `pass_summary.json` also
 carry `overall_score = 0.5 * tests_score + 0.5 * rubric_score`. The rubric half
-is scored by a human evaluator (the shipped criteria and each per-criterion
-justification live in `score.json`; the named grader is in the `Evaluated By`
-field). It exists as a quality-assurance view, not as the reward. Because the
-human rubric is not gated, `overall_score` can be non-zero on a run whose
+exists as a quality-assurance view, not as the reward. Because the
+rubric is not gated, `overall_score` can be non-zero on a run whose
 `reward.json` is `0.0`: the rubric credits genuine partial diagnostic work -
 the mechanism explanation, the two clearances, grounded reasons - even when the
 verdict label is still wrong. That divergence is expected. The authoritative,
 gated, deterministic channel is `reward.json`; `overall_score` is the
-human-eval QA lens over the same run and is not recomputable from the repo
-because it includes human judgement.
+QA lens over the same run.
 
 ## Root cause
 

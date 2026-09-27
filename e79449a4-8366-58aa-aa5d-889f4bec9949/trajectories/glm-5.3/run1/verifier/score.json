@@ -18,9 +18,9 @@
     },
     "rubric": {
       "name": "rubric",
+      "evaluated_by": "khushi.rathore@ethara.ai",
       "score": 0.42,
       "status": "FAILED",
-      "Evaluated By": "khushi.rathore@ethara.ai",
       "detail": "11/20 passed"
     }
   },
@@ -105,6 +105,7 @@
   },
   "rubric": {
     "graded": true,
+    "evaluated_by": "khushi.rathore@ethara.ai",
     "summary": {
       "total": 20,
       "passed": 11,
@@ -115,7 +116,6 @@
       "score": 0.42,
       "status": "FAILED"
     },
-    "Evaluated By": "khushi.rathore@ethara.ai",
     "criteria": [
       {
         "id": 0,

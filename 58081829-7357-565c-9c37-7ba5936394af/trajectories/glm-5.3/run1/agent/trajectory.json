@@ -4463,7 +4463,7 @@
     "total_prompt_tokens": 8301144,
     "total_completion_tokens": 88265,
     "total_cached_tokens": 8161536,
-    "total_cost_usd": 0.0,
+    "total_cost_usd": 2.944377,
     "total_steps": 115,
     "extra": {
       "total_cache_write_tokens": 136320,

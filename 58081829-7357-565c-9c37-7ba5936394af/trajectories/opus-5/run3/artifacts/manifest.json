@@ -1,111 +1,101 @@
 [
-  {
-    "source": "/logs/artifacts",
-    "destination": "artifacts/logs/artifacts",
-    "type": "directory",
-    "status": "empty",
-    "service": null,
-    "exclude": [],
-    "collected": false,
-    "skipped_reason": "logs are not evidence for this task family \u2014 files only"
-  },
-  {
-    "source": "/var/lib/marrowfleet/policy-selection.json",
-    "destination": "artifacts/var/lib/marrowfleet/policy-selection.json",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/workspace/policy",
-    "destination": "artifacts/workspace/policy",
-    "type": "directory",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/workspace/rostering",
-    "destination": "artifacts/workspace/rostering",
-    "type": "directory",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/workspace/tools",
-    "destination": "artifacts/workspace/tools",
-    "type": "directory",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/workspace/docs",
-    "destination": "artifacts/workspace/docs",
-    "type": "directory",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/srv/bases",
-    "destination": "artifacts/srv/bases",
-    "type": "directory",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/var/lib/marrowfleet/roster.register",
-    "destination": "artifacts/var/lib/marrowfleet/roster.register",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/var/lib/marrowfleet/roster.store",
-    "destination": "artifacts/var/lib/marrowfleet/roster.store",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/workspace/bin/run-roster",
-    "destination": "artifacts/workspace/bin/run-roster",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/usr/local/bin/policy-apply",
-    "destination": "artifacts/usr/local/bin/policy-apply",
-    "type": "file",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  },
-  {
-    "source": "/etc/marrowfleet/keys",
-    "destination": "artifacts/etc/marrowfleet/keys",
-    "type": "directory",
-    "status": "ok",
-    "service": null,
-    "exclude": [],
-    "collected": true
-  }
+    {
+        "source": "/var/lib/marrowfleet/policy-selection.json",
+        "destination": "artifacts/var/lib/marrowfleet/policy-selection.json",
+        "type": "file",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/workspace/policy",
+        "destination": "artifacts/workspace/policy",
+        "type": "directory",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/workspace/rostering",
+        "destination": "artifacts/workspace/rostering",
+        "type": "directory",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/workspace/tools",
+        "destination": "artifacts/workspace/tools",
+        "type": "directory",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/workspace/docs",
+        "destination": "artifacts/workspace/docs",
+        "type": "directory",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/srv/bases",
+        "destination": "artifacts/srv/bases",
+        "type": "directory",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/var/lib/marrowfleet/roster.register",
+        "destination": "artifacts/var/lib/marrowfleet/roster.register",
+        "type": "file",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/var/lib/marrowfleet/roster.store",
+        "destination": "artifacts/var/lib/marrowfleet/roster.store",
+        "type": "file",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/workspace/bin/run-roster",
+        "destination": "artifacts/workspace/bin/run-roster",
+        "type": "file",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/usr/local/bin/policy-apply",
+        "destination": "artifacts/usr/local/bin/policy-apply",
+        "type": "file",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    },
+    {
+        "source": "/etc/marrowfleet/keys",
+        "destination": "artifacts/etc/marrowfleet/keys",
+        "type": "directory",
+        "status": "ok",
+        "service": null,
+        "exclude": [],
+        "collected": true
+    }
 ]

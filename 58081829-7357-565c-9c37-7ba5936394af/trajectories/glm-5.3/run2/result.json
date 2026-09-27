@@ -1,58 +1,58 @@
 {
-    "id": "d53abcab-bf31-4300-8b42-a7720f3777b9",
-    "started_at": "2026-09-24T00:22:34.326460",
-    "updated_at": "2026-09-24T00:38:20.462224",
-    "finished_at": "2026-09-24T00:38:20.462224",
-    "n_total_trials": 1,
-    "stats": {
-        "n_completed_trials": 1,
-        "n_errored_trials": 0,
-        "n_running_trials": 0,
-        "n_pending_trials": 0,
-        "n_cancelled_trials": 0,
-        "n_retries": 0,
-        "evals": {
-            "openhands-sdk__glm-5.3__adhoc": {
-                "n_trials": 1,
-                "n_errors": 0,
-                "metrics": [
-                    {
-                        "available": 30.0,
-                        "earned": 24.0,
-                        "penalty": 0.0,
-                        "reward": 0.8
-                    }
-                ],
-                "pass_at_k": {},
-                "reward_stats": {
-                    "reward": {
-                        "0.8": [
-                            "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
-                        ]
-                    },
-                    "earned": {
-                        "24": [
-                            "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
-                        ]
-                    },
-                    "penalty": {
-                        "0": [
-                            "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
-                        ]
-                    },
-                    "available": {
-                        "30": [
-                            "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
-                        ]
-                    }
-                },
-                "exception_stats": {}
-            }
+  "id": "d53abcab-bf31-4300-8b42-a7720f3777b9",
+  "started_at": "2026-09-24T00:22:34.326460",
+  "updated_at": "2026-09-24T00:38:20.462224",
+  "finished_at": "2026-09-24T00:38:20.462224",
+  "n_total_trials": 1,
+  "stats": {
+    "n_completed_trials": 1,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0,
+    "n_cancelled_trials": 0,
+    "n_retries": 0,
+    "evals": {
+      "openhands-sdk__glm-5.3__adhoc": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "metrics": [
+          {
+            "available": 30.0,
+            "earned": 24.0,
+            "penalty": 0.0,
+            "reward": 0.8
+          }
+        ],
+        "pass_at_k": {},
+        "reward_stats": {
+          "reward": {
+            "0.8": [
+              "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
+            ]
+          },
+          "earned": {
+            "24": [
+              "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
+            ]
+          },
+          "penalty": {
+            "0": [
+              "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
+            ]
+          },
+          "available": {
+            "30": [
+              "58081829-7357-565c-9c37-7ba59363__DnP3hkf"
+            ]
+          }
         },
-        "n_input_tokens": 5820052,
-        "n_cache_tokens": 5722112,
-        "n_cache_creation_tokens": 95168,
-        "n_output_tokens": 54233,
-        "cost_usd": 0.0
-    }
+        "exception_stats": {}
+      }
+    },
+    "n_input_tokens": 5820052,
+    "n_cache_tokens": 5722112,
+    "n_cache_creation_tokens": 95168,
+    "n_output_tokens": 54233,
+    "cost_usd": 2.030034
+  }
 }

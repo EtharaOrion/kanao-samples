@@ -1,5 +1,6 @@
 schema_version = "1.4"
 artifacts = [
+    "/logs/agent",
     "/var/lib/marrowfleet/policy-selection.json",
     "/workspace/policy",
     "/workspace/rostering",
@@ -37,8 +38,16 @@ junior_time_estimate_min = 180.0
 timeout_sec = 900.0
 environment_mode = "separate"
 
+[verifier.env]
+OPENAI_API_KEY = "${OPENAI_API_KEY:-}"
+ANTHROPIC_API_KEY = "${ANTHROPIC_API_KEY:-}"
+OPENAI_BASE_URL = "${OPENAI_BASE_URL:-}"
+JUDGE_MODEL = "${JUDGE_MODEL:-}"
+JUDGE_WIRE = "${JUDGE_WIRE:-openai}"
+
 [verifier.environment]
-docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:58081829-marrowfleet-crew-roster-verifier@sha256:3150bccb4586e2825a851a579e5b7c3c67a5b2db394c905a267961f348b30bb7"
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:58081829-marrowfleet-crew-roster-verifier@sha256:6b52c8a9a6e884239a1335f19f8b0af1142c16efe5bcdd9140a782901119d47f"
+network_mode = "public"
 
 [agent]
 timeout_sec = 5400.0

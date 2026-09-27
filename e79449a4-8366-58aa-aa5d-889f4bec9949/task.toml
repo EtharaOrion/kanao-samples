@@ -1,5 +1,6 @@
 schema_version = "1.4"
 artifacts = [
+    "/logs/agent",
     "/app/workspace/envs/prod",
     "/app/workspace/policies",
     "/app/workspace/modules",
@@ -31,8 +32,16 @@ junior_time_estimate_min = 420.0
 timeout_sec = 900.0
 environment_mode = "separate"
 
+[verifier.env]
+OPENAI_API_KEY = "${OPENAI_API_KEY:-}"
+ANTHROPIC_API_KEY = "${ANTHROPIC_API_KEY:-}"
+OPENAI_BASE_URL = "${OPENAI_BASE_URL:-}"
+JUDGE_MODEL = "${JUDGE_MODEL:-}"
+JUDGE_WIRE = "${JUDGE_WIRE:-openai}"
+
 [verifier.environment]
-docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:e79449a4-iac_guardrails_paymesh-policy-verifier@sha256:76b6fb087621e46e9c18ab0ea70f7992884214511e44c2fc331266ebc84353ee"
+docker_image = "426628337772.dkr.ecr.ap-south-1.amazonaws.com/kanao:e79449a4-iac_guardrails_paymesh-policy-verifier@sha256:3788703def4d42c7e7984d9993a823ed3af58ebdcdb32ac9db04fc311f4a5c3d"
+network_mode = "public"
 
 [agent]
 timeout_sec = 9900.0

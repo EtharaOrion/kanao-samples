@@ -18,9 +18,9 @@
     },
     "rubric": {
       "name": "rubric",
+      "evaluated_by": "riya.jha@ethara.ai",
       "score": 0.176471,
       "status": "FAILED",
-      "Evaluated By": "riya.jha@ethara.ai",
       "detail": "9/13 passed"
     }
   },
@@ -131,6 +131,7 @@
   },
   "rubric": {
     "graded": true,
+    "evaluated_by": "riya.jha@ethara.ai",
     "summary": {
       "total": 13,
       "passed": 9,
@@ -141,7 +142,6 @@
       "score": 0.176471,
       "status": "FAILED"
     },
-    "Evaluated By": "riya.jha@ethara.ai",
     "criteria": [
       {
         "id": 0,
