@@ -575,21 +575,32 @@ GENERATED SECTION. DO NOT HAND-EDIT.
 
 ## Promoted set
 
-| uuid | task_lane | sealed_at | stream |
-| --- | --- | --- | --- |
-| 58081829-7357-565c-9c37-7ba5936394af | unregistered | unsealed | none |
-| 8aef516b-702c-5660-a8f0-da85401c9170 | unregistered | unsealed | none |
-| e79449a4-8366-58aa-aa5d-889f4bec9949 | unregistered | unsealed | none |
+| Property | Value |
+| --- | --- |
+| Bundles | 3 of 30 |
+| Sealed | 0 of 3 |
+| Registrations | unregistered (3) |
+| Audit verdicts | none (3) |
+| Harbor schema | 1.4 (3) |
+| Difficulty | measured by the signed pilot alone, never declared in a bundle |
+
+| Bundle | Task | Keywords | Registration | Sealed at |
+| --- | --- | --- | --- | --- |
+| [`58081829-7357-565c-9c37-7ba5936394af`](58081829-7357-565c-9c37-7ba5936394af/) | `kanao/ci_repair__marrowfleet-crew-roster` | ci, crew-rostering, deployment, lang:go, release | unregistered | unsealed |
+| [`8aef516b-702c-5660-a8f0-da85401c9170`](8aef516b-702c-5660-a8f0-da85401c9170/) | `kanao/monitoring__reservation-admission-latency` | causal-diagnosis, monitoring-forensics | unregistered | unsealed |
+| [`e79449a4-8366-58aa-aa5d-889f4bec9949`](e79449a4-8366-58aa-aa5d-889f4bec9949/) | `kanao/iac_guardrails_paymesh-policy` | iac, terraform | unregistered | unsealed |
 
 ## Standing
 
-| uuid | verdict |
-| --- | --- |
-| 58081829-7357-565c-9c37-7ba5936394af | none |
-| 8aef516b-702c-5660-a8f0-da85401c9170 | none |
-| e79449a4-8366-58aa-aa5d-889f4bec9949 | none |
+The verdict is the audit outcome recorded at the sealed digest, and `none` means no verdict has landed for that digest yet. Only a FORGE invocation removes a bundle from this lane, so removal waits for the next one.
+
+| uuid | Verdict | Sealed digest | Stream |
+| --- | --- | --- | --- |
+| 58081829-7357-565c-9c37-7ba5936394af | none | absent | none |
+| 8aef516b-702c-5660-a8f0-da85401c9170 | none | absent | none |
+| e79449a4-8366-58aa-aa5d-889f4bec9949 | none | absent | none |
 
 ## Screening roots
 
-No screening root is recorded by reconcile.
+Each bundle's signed provenance carrier holds its screening roots, screening instant, and absolute expiry. Placement moves that carrier into the private derivation set, which this page never reads, so reconcile lists no root it cannot verify here.
 <!-- trinity:lane-index:end -->
