@@ -579,16 +579,16 @@ GENERATED SECTION. DO NOT HAND-EDIT.
 | --- | --- |
 | Bundles | 3 of 30 |
 | Sealed | 0 of 3 |
-| Registrations | unregistered (3) |
+| Registrations | adopted (3) |
 | Audit verdicts | none (3) |
 | Harbor schema | 1.4 (3) |
 | Difficulty | measured by the signed pilot alone, never declared in a bundle |
 
 | Bundle | Task | Keywords | Registration | Sealed at |
 | --- | --- | --- | --- | --- |
-| [`58081829-7357-565c-9c37-7ba5936394af`](58081829-7357-565c-9c37-7ba5936394af/) | `kanao/ci_repair__marrowfleet-crew-roster` | ci, crew-rostering, deployment, lang:go, release | unregistered | unsealed |
-| [`8aef516b-702c-5660-a8f0-da85401c9170`](8aef516b-702c-5660-a8f0-da85401c9170/) | `kanao/monitoring__reservation-admission-latency` | causal-diagnosis, monitoring-forensics | unregistered | unsealed |
-| [`e79449a4-8366-58aa-aa5d-889f4bec9949`](e79449a4-8366-58aa-aa5d-889f4bec9949/) | `kanao/iac_guardrails_paymesh-policy` | iac, terraform | unregistered | unsealed |
+| [`58081829-7357-565c-9c37-7ba5936394af`](58081829-7357-565c-9c37-7ba5936394af/) | `kanao/ci_repair__marrowfleet-crew-roster` | ci, crew-rostering, deployment, lang:go, release | adopted | unsealed |
+| [`8aef516b-702c-5660-a8f0-da85401c9170`](8aef516b-702c-5660-a8f0-da85401c9170/) | `kanao/monitoring__reservation-admission-latency` | causal-diagnosis, monitoring-forensics | adopted | unsealed |
+| [`e79449a4-8366-58aa-aa5d-889f4bec9949`](e79449a4-8366-58aa-aa5d-889f4bec9949/) | `kanao/iac_guardrails_paymesh-policy` | iac, terraform | adopted | unsealed |
 
 ## Standing
 
