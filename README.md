@@ -113,4 +113,4 @@ MIT. Copyright 2026 Ethara.AI. See [LICENSE](LICENSE).
 
 ## Contact
 
-The organization is [Ethara.AI](https://github.com/EtharaOrion). For a vulnerability or a benchmark-integrity report, use the private channel in [SECURITY.md](SECURITY.md) rather than a public issue. For contribution, start at [CONTRIBUTING.md](CONTRIBUTING.md). For conduct, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+The organization is [Ethara.AI](https://github.com/Ethara-Ai), and this project's repositories live under [EtharaOrion](https://github.com/EtharaOrion). For a vulnerability or a benchmark-integrity report, use the private channel in [SECURITY.md](SECURITY.md) rather than a public issue. For contribution, start at [CONTRIBUTING.md](CONTRIBUTING.md). For conduct, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
