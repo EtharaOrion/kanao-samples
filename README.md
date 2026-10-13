@@ -56,11 +56,11 @@ The verdict is the audit outcome recorded at the sealed digest, and `none` means
 
 ## Dataset structure
 
-| Bundle | Task | Keywords | Registration | Sealed at |
-| --- | --- | --- | --- | --- |
-| [`58081829-7357-565c-9c37-7ba5936394af`](58081829-7357-565c-9c37-7ba5936394af/) | `kanao/ci_repair__marrowfleet-crew-roster` | ci, crew-rostering, deployment, lang:go, release | adopted | unsealed |
-| [`8aef516b-702c-5660-a8f0-da85401c9170`](8aef516b-702c-5660-a8f0-da85401c9170/) | `kanao/monitoring__reservation-admission-latency` | causal-diagnosis, monitoring-forensics | adopted | unsealed |
-| [`e79449a4-8366-58aa-aa5d-889f4bec9949`](e79449a4-8366-58aa-aa5d-889f4bec9949/) | `kanao/iac_guardrails_paymesh-policy` | iac, terraform | adopted | unsealed |
+| Bundle | Task | Keywords | Registration | Sealed at | Tier |
+| --- | --- | --- | --- | --- | --- |
+| [`58081829-7357-565c-9c37-7ba5936394af`](58081829-7357-565c-9c37-7ba5936394af/) | `kanao/ci_repair__marrowfleet-crew-roster` | ci, crew-rostering, deployment, lang:go, release | adopted | unsealed | - |
+| [`8aef516b-702c-5660-a8f0-da85401c9170`](8aef516b-702c-5660-a8f0-da85401c9170/) | `kanao/monitoring__reservation-admission-latency` | causal-diagnosis, monitoring-forensics | adopted | unsealed | - |
+| [`e79449a4-8366-58aa-aa5d-889f4bec9949`](e79449a4-8366-58aa-aa5d-889f4bec9949/) | `kanao/iac_guardrails_paymesh-policy` | iac, terraform | adopted | unsealed | - |
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#131a33","primaryTextColor":"#e8ecff","primaryBorderColor":"#845EF7","lineColor":"#22d3ee","fontFamily":"monospace"}}}%%
