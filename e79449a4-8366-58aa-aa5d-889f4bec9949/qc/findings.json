@@ -1,0 +1,453 @@
+{
+  "task": "e79449a4-8366-58aa-aa5d-889f4bec9949",
+  "task_dir": "/Users/macbookpro/Desktop/kanao-samples/e79449a4-8366-58aa-aa5d-889f4bec9949",
+  "verdict": "PASS WITH NOTES",
+  "exit_code": 0,
+  "counts": {
+    "INFO": 3,
+    "WARN": 8
+  },
+  "findings": [
+    {
+      "code": "RUBRIC_IMPORTANCE_WEIGHT_MISMATCH",
+      "severity": "INFO",
+      "section": "2. Critical requirements (+5/-5)",
+      "locus": "tests/rubric.json :: R8",
+      "problem": "importance='important' implies |weight|=3 but weight=1.",
+      "why": "A criterion declared critical must carry the critical magnitude, and a non-critical criterion must not borrow it.",
+      "impact": "Critical requirements under-penalised, or ordinary requirements crowding out the ones that matter.",
+      "fix": "Either set weight to +3 or downgrade importance on R8."
+    },
+    {
+      "code": "RUBRIC_IMPORTANCE_WEIGHT_MISMATCH",
+      "severity": "INFO",
+      "section": "2. Critical requirements (+5/-5)",
+      "locus": "tests/rubric.json :: R9",
+      "problem": "importance='important' implies |weight|=3 but weight=1.",
+      "why": "A criterion declared critical must carry the critical magnitude, and a non-critical criterion must not borrow it.",
+      "impact": "Critical requirements under-penalised, or ordinary requirements crowding out the ones that matter.",
+      "fix": "Either set weight to +3 or downgrade importance on R9."
+    },
+    {
+      "code": "RUBRIC_IMPORTANCE_WEIGHT_MISMATCH",
+      "severity": "INFO",
+      "section": "2. Critical requirements (+5/-5)",
+      "locus": "tests/rubric.json :: R12",
+      "problem": "importance='important' implies |weight|=3 but weight=1.",
+      "why": "A criterion declared critical must carry the critical magnitude, and a non-critical criterion must not borrow it.",
+      "impact": "Critical requirements under-penalised, or ordinary requirements crowding out the ones that matter.",
+      "fix": "Either set weight to +3 or downgrade importance on R12."
+    },
+    {
+      "code": "CRITICAL_NOT_WEIGHTED_5",
+      "severity": "WARN",
+      "section": "2. Critical requirements (+5/-5)",
+      "locus": "instruction.md:44",
+      "problem": "Emphasised requirement has no \u00b15 criterion or test covering it: 'json` are not in question; leave all three files byte-for-byte as they are.'",
+      "why": "instruction.md marks this as mandatory, but nothing in the rubric or test weights carries critical magnitude for it.",
+      "impact": "A requirement the task calls mandatory can be violated at the cost of a \u00b11 or \u00b13, so the stated priority is not the scored priority.",
+      "fix": "Either add a \u00b15 criterion/test for this requirement, or soften the language in instruction.md so the stated priority matches the scored one."
+    },
+    {
+      "code": "CRITICAL_NOT_WEIGHTED_5",
+      "severity": "WARN",
+      "section": "2. Critical requirements (+5/-5)",
+      "locus": "instruction.md:48",
+      "problem": "Emphasised requirement has no \u00b15 criterion or test covering it: 'Terraform and its providers are vendored into the image, and there is no Azure subscription here, so `plan` and `apply` are not available to you.'",
+      "why": "instruction.md marks this as mandatory, but nothing in the rubric or test weights carries critical magnitude for it.",
+      "impact": "A requirement the task calls mandatory can be violated at the cost of a \u00b11 or \u00b13, so the stated priority is not the scored priority.",
+      "fix": "Either add a \u00b15 criterion/test for this requirement, or soften the language in instruction.md so the stated priority matches the scored one."
+    },
+    {
+      "code": "RUBRIC_NOT_IN_INSTRUCTION",
+      "severity": "WARN",
+      "section": "1. Instruction -> rubrics gaps",
+      "locus": "tests/rubric.json :: R1 (w=5)",
+      "problem": "Almost no vocabulary shared with instruction.md: 'The agent identifies that `Microsoft.Web/sites/config/web.ipSecurityRestrictionsDefaultAction` is absent from the published aliases of `Microsoft.Web/'",
+      "why": "Candidate hidden requirement: the criterion may be scoring something the agent was never told to do.",
+      "impact": "Agents are penalised for omitting work the instruction never asked for, which makes the task unfair and the reward noisy.",
+      "fix": "Confirm the requirement is at least implicitly necessary to accomplish the task. If it is not, delete R1. If it is, say so in instruction.md."
+    },
+    {
+      "code": "RUBRIC_NOT_IN_INSTRUCTION",
+      "severity": "WARN",
+      "section": "1. Instruction -> rubrics gaps",
+      "locus": "tests/rubric.json :: R2 (w=5)",
+      "problem": "Almost no vocabulary shared with instruction.md: 'The agent identifies that the `name` field of a `Microsoft.Web/sites/config` resource evaluates to `web`.'",
+      "why": "Candidate hidden requirement: the criterion may be scoring something the agent was never told to do.",
+      "impact": "Agents are penalised for omitting work the instruction never asked for, which makes the task unfair and the reward noisy.",
+      "fix": "Confirm the requirement is at least implicitly necessary to accomplish the task. If it is not, delete R2. If it is, say so in instruction.md."
+    },
+    {
+      "code": "RUBRIC_NOT_IN_INSTRUCTION",
+      "severity": "WARN",
+      "section": "1. Instruction -> rubrics gaps",
+      "locus": "tests/rubric.json :: R7 (w=3)",
+      "problem": "Almost no vocabulary shared with instruction.md: 'The agent executes the render commands of `.github/workflows/terraform-ci.yml` to inspect the files they write.'",
+      "why": "Candidate hidden requirement: the criterion may be scoring something the agent was never told to do.",
+      "impact": "Agents are penalised for omitting work the instruction never asked for, which makes the task unfair and the reward noisy.",
+      "fix": "Confirm the requirement is at least implicitly necessary to accomplish the task. If it is not, delete R7. If it is, say so in instruction.md."
+    },
+    {
+      "code": "RUBRIC_NOT_IN_INSTRUCTION",
+      "severity": "WARN",
+      "section": "1. Instruction -> rubrics gaps",
+      "locus": "tests/rubric.json :: R9 (w=1)",
+      "problem": "Almost no vocabulary shared with instruction.md: 'The agent attributes the recorded `400` to the unpublished alias in `policies/require-ip-restriction.json`.'",
+      "why": "Candidate hidden requirement: the criterion may be scoring something the agent was never told to do.",
+      "impact": "Agents are penalised for omitting work the instruction never asked for, which makes the task unfair and the reward noisy.",
+      "fix": "Confirm the requirement is at least implicitly necessary to accomplish the task. If it is not, delete R9. If it is, say so in instruction.md."
+    },
+    {
+      "code": "RUBRIC_NOT_IN_INSTRUCTION",
+      "severity": "WARN",
+      "section": "1. Instruction -> rubrics gaps",
+      "locus": "tests/rubric.json :: R14 (w=3)",
+      "problem": "Almost no vocabulary shared with instruction.md: 'The agent identifies that `require_tls_version` as seeded refuses a site configuration set to minimum TLS `1.3`.'",
+      "why": "Candidate hidden requirement: the criterion may be scoring something the agent was never told to do.",
+      "impact": "Agents are penalised for omitting work the instruction never asked for, which makes the task unfair and the reward noisy.",
+      "fix": "Confirm the requirement is at least implicitly necessary to accomplish the task. If it is not, delete R14. If it is, say so in instruction.md."
+    },
+    {
+      "code": "RUBRIC_NOT_IN_INSTRUCTION",
+      "severity": "WARN",
+      "section": "1. Instruction -> rubrics gaps",
+      "locus": "tests/rubric.json :: R19 (w=-5)",
+      "problem": "Almost no vocabulary shared with instruction.md: 'The response drops the `paymesh-platform/policy-review-action@v3` step from `.github/workflows/terraform-ci.yml`.'",
+      "why": "Candidate hidden requirement: the criterion may be scoring something the agent was never told to do.",
+      "impact": "Agents are penalised for omitting work the instruction never asked for, which makes the task unfair and the reward noisy.",
+      "fix": "Confirm the requirement is at least implicitly necessary to accomplish the task. If it is not, delete R19. If it is, say so in instruction.md."
+    }
+  ],
+  "worksheets": {
+    "requirement_coverage": [
+      {
+        "line": 1,
+        "sentence": "The Terraform tree in `/app/workspace` is the infrastructure repository for the PayMesh payments platform.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 2,
+        "sentence": "`envs/prod` is the root composition; the modules it builds from live under `modules/`, and the custom Azure Policy documents the environment owns live under `policies/`.",
+        "critical_language": false,
+        "rubric": [
+          "R20"
+        ],
+        "tests": []
+      },
+      {
+        "line": 4,
+        "sentence": "Two Function Apps run the payments flow, `func-paymesh-pagos-prod` and `func-paymesh-pagos-canary-prod`.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 7,
+        "sentence": "Both are written with an ip restriction that admits only the region's service tag, and a custom policy exists so that removing that restriction outside Terraform is refused in the control plane instead of noticed later.",
+        "critical_language": false,
+        "rubric": [
+          "R11"
+        ],
+        "tests": []
+      },
+      {
+        "line": 10,
+        "sentence": "The platform team reviews changes against `docs/POLICY-AS-CODE-STANDARD.",
+        "critical_language": false,
+        "rubric": [
+          "R8",
+          "R6",
+          "R18",
+          "R16"
+        ],
+        "tests": []
+      },
+      {
+        "line": 15,
+        "sentence": "During an incident last month the ip restriction was taken off the canary Function App by hand, from the portal, to let a partner address through.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 17,
+        "sentence": "Nothing refused the change and nothing raised it afterwards; the compliance sweep went on reporting the payments flow as covered by the control the whole time.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 19,
+        "sentence": "Separately, the release notes for the last pipeline run that touched this definition record a `400` from the control plane, a retry that failed the same way, and a decision to carry on because the rest of the release app",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 22,
+        "sentence": "The engineer who last worked on this guardrail has left the team.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 24,
+        "sentence": "Nothing in the tooling reports an error: the environment initialises and validates cleanly, and the definition looks like what it is supposed to be.",
+        "critical_language": false,
+        "rubric": [
+          "R17"
+        ],
+        "tests": []
+      },
+      {
+        "line": 26,
+        "sentence": "Your task: change the tree so that this environment meets the policy-as-code standard in full.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 29,
+        "sentence": "The standard assesses every rule at more than one environment binding, and it is explicit that a document which is right for the environment it was written in and wrong for the next one has not met the rule.",
+        "critical_language": false,
+        "rubric": [
+          "R20"
+        ],
+        "tests": [
+          "test_catalogue_is_enforced_and_rendered_under_review",
+          "test_slot_guardrail_reads_the_published_setting_under_review",
+          "test_pipeline_renders_both_bindings_under_setup_terraform",
+          "test_payments_guardrail_reads_the_published_setting_under_review"
+        ]
+      },
+      {
+        "line": 31,
+        "sentence": "A guardrail that is present and inert is worse than none, because the sweep counts it as a control - so a change that fixes what the `400` complained about while leaving the guardrail unable to see anything has not moved",
+        "critical_language": false,
+        "rubric": [],
+        "tests": [
+          "test_guardrails_see_their_targets_under_review"
+        ]
+      },
+      {
+        "line": 36,
+        "sentence": "It reproduces what the pipeline's review job does: it renders the environment's own policy catalogue offline, once for this environment and once at a second environment binding, and reads the two renderings.",
+        "critical_language": false,
+        "rubric": [
+          "R11"
+        ],
+        "tests": [
+          "test_catalogue_is_enforced_and_rendered_under_review",
+          "test_slot_guardrail_reads_the_published_setting_under_review",
+          "test_pipeline_renders_both_bindings_under_setup_terraform",
+          "test_payments_guardrail_reads_the_published_setting_under_review"
+        ]
+      },
+      {
+        "line": 39,
+        "sentence": "A change that looks right in the source and renders the wrong document fails review, and a change that reaches the right rendering by an unusual route passes it.",
+        "critical_language": false,
+        "rubric": [
+          "R15"
+        ],
+        "tests": []
+      },
+      {
+        "line": 44,
+        "sentence": "json` are not in question; leave all three files byte-for-byte as they are.",
+        "critical_language": true,
+        "rubric": [],
+        "tests": [
+          "test_negative_per_environment_copy_was_added"
+        ]
+      },
+      {
+        "line": 46,
+        "sentence": "tf` - how each document is loaded, the mode it runs in and whether it is assigned - are part of the catalogue and are reviewed like every other entry.",
+        "critical_language": false,
+        "rubric": [
+          "R8"
+        ],
+        "tests": []
+      },
+      {
+        "line": 48,
+        "sentence": "Terraform and its providers are vendored into the image, and there is no Azure subscription here, so `plan` and `apply` are not available to you.",
+        "critical_language": true,
+        "rubric": [],
+        "tests": []
+      }
+    ],
+    "uncovered_requirements": [
+      {
+        "line": 1,
+        "sentence": "The Terraform tree in `/app/workspace` is the infrastructure repository for the PayMesh payments platform.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 4,
+        "sentence": "Two Function Apps run the payments flow, `func-paymesh-pagos-prod` and `func-paymesh-pagos-canary-prod`.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 15,
+        "sentence": "During an incident last month the ip restriction was taken off the canary Function App by hand, from the portal, to let a partner address through.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 17,
+        "sentence": "Nothing refused the change and nothing raised it afterwards; the compliance sweep went on reporting the payments flow as covered by the control the whole time.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 19,
+        "sentence": "Separately, the release notes for the last pipeline run that touched this definition record a `400` from the control plane, a retry that failed the same way, and a decision to carry on because the rest of the release app",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 22,
+        "sentence": "The engineer who last worked on this guardrail has left the team.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 26,
+        "sentence": "Your task: change the tree so that this environment meets the policy-as-code standard in full.",
+        "critical_language": false,
+        "rubric": [],
+        "tests": []
+      },
+      {
+        "line": 48,
+        "sentence": "Terraform and its providers are vendored into the image, and there is no Azure subscription here, so `plan` and `apply` are not available to you.",
+        "critical_language": true,
+        "rubric": [],
+        "tests": []
+      }
+    ],
+    "weight_ledger": {
+      "tests_available": 18,
+      "tests_penalty": 9,
+      "rubric_available": 50,
+      "rubric_penalty": 16,
+      "rubric_criteria": 20,
+      "tests_defined": 9,
+      "importance_histogram": {
+        "critically_important": 6,
+        "important": 14
+      },
+      "rubric_weight_histogram": {
+        "5": 4,
+        "3": 9,
+        "1": 3,
+        "-5": 2,
+        "-3": 2
+      },
+      "test_weight_histogram": {
+        "1": 2,
+        "5": 2,
+        "3": 2,
+        "-5": 1,
+        "-3": 1,
+        "-1": 1
+      },
+      "rubric_share": 0.735
+    },
+    "constraint_ledger": [
+      {
+        "line": 44,
+        "sentence": "json` are not in question; leave all three files byte-for-byte as they are.",
+        "paths": [],
+        "detector_tests": [
+          "test_negative_per_environment_copy_was_added"
+        ],
+        "penalty_rubrics": [],
+        "unenforced": false
+      },
+      {
+        "line": 48,
+        "sentence": "Terraform and its providers are vendored into the image, and there is no Azure subscription here, so `plan` and `apply` are not available to you.",
+        "paths": [],
+        "detector_tests": [],
+        "penalty_rubrics": [],
+        "unenforced": true
+      }
+    ],
+    "weakest_instruction_grounding": [
+      {
+        "number": "R1",
+        "weight": 5,
+        "overlap_with_instruction": 0.0,
+        "criterion": "The agent identifies that `Microsoft.Web/sites/config/web.ipSecurityRestrictionsDefaultAction` is absent from the published aliases of `Microsoft.Web/sites/config`."
+      },
+      {
+        "number": "R2",
+        "weight": 5,
+        "overlap_with_instruction": 0.0,
+        "criterion": "The agent identifies that the `name` field of a `Microsoft.Web/sites/config` resource evaluates to `web`."
+      },
+      {
+        "number": "R7",
+        "weight": 3,
+        "overlap_with_instruction": 0.0,
+        "criterion": "The agent executes the render commands of `.github/workflows/terraform-ci.yml` to inspect the files they write."
+      },
+      {
+        "number": "R9",
+        "weight": 1,
+        "overlap_with_instruction": 0.0,
+        "criterion": "The agent attributes the recorded `400` to the unpublished alias in `policies/require-ip-restriction.json`."
+      },
+      {
+        "number": "R14",
+        "weight": 3,
+        "overlap_with_instruction": 0.0,
+        "criterion": "The agent identifies that `require_tls_version` as seeded refuses a site configuration set to minimum TLS `1.3`."
+      },
+      {
+        "number": "R19",
+        "weight": -5,
+        "overlap_with_instruction": 0.0,
+        "criterion": "The response drops the `paymesh-platform/policy-review-action@v3` step from `.github/workflows/terraform-ci.yml`."
+      },
+      {
+        "number": "R13",
+        "weight": 5,
+        "overlap_with_instruction": 0.12,
+        "criterion": "The agent identifies that the `hashicorp/setup-terraform` wrapper withholds the piped expression from `terraform console`."
+      },
+      {
+        "number": "R5",
+        "weight": 5,
+        "overlap_with_instruction": 0.18,
+        "criterion": "The agent identifies that `-var-file=prod.tfvars` placed last overrides `-var environment=dev` in the seeded second render."
+      },
+      {
+        "number": "R16",
+        "weight": 3,
+        "overlap_with_instruction": 0.27,
+        "criterion": "The agent evaluates its rendered `require_ip_restriction` rule against a payments site configuration whose `ipSecurityRestrictionsDefaultAction` is already `Deny`."
+      },
+      {
+        "number": "R20",
+        "weight": -3,
+        "overlap_with_instruction": 0.3,
+        "criterion": "The response writes the environment slug as a literal beside a rendered condition in the same document under `policies/`."
+      }
+    ]
+  }
+}
